@@ -99,7 +99,7 @@ textarea { min-height: 130px; resize: vertical; }
         border: 0;
         background: transparent;
         box-shadow: none;
-        padding: 9px 14px;
+        padding: 5px 14px;
     }
 .top-user { margin-left: auto; display: flex; align-items: center; gap: 10px; font-weight: 750; font-size: 13px; }
 .avatar {
