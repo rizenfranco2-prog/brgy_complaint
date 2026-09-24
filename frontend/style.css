@@ -88,7 +88,7 @@ textarea { min-height: 130px; resize: vertical; }
 .top-brand span { background: var(--primary); color: white; width: 34px; height: 34px; border-radius: 9px; font-size: 11px; }
 .top-search {
     flex: 1;
-    max-width: 570px;
+    max-width: 400px;
     background: #f4f6fa;
     border-radius: 12px;
     padding-right: 13px;
