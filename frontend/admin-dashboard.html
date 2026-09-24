@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard • Barangay Connect</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-body">
+  <header class="topbar">
+    <a class="top-brand" href="admin-dashboard.html"><span>BC</span> Admin Console</a>
+    <div class="top-search"><input id="adminSearch" placeholder="Search posts or authors...">⌕</div>
+    <div class="top-user">
+      <span class="avatar admin-avatar">A</span>
+      <span id="adminName">Administrator</span>
+      <button class="icon-btn" id="adminLogout">Logout</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="profile-mini">
+        <span class="avatar large admin-avatar">A</span>
+        <strong id="adminSideName">Administrator</strong>
+        <small>System administrator</small>
+      </div>
+      <nav>
+        <a class="nav-item active" href="admin-dashboard.html">▦ <span>Posts</span></a>
+        <button class="nav-item" id="adminPasswordBtn">⚿ <span>Change Password</span></button>
+        <a class="nav-item" href="dashboard.html">👥 <span>User Feed</span></a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <section class="dashboard-heading">
+        <div>
+          <p class="eyebrow">ADMIN CONSOLE</p>
+          <h1>Community overview</h1>
+          <p class="muted">Review, publish and moderate barangay posts.</p>
+        </div>
+        <button class="primary-btn" id="newPostBtn">＋ New post</button>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat card"><span>Total posts</span><strong id="statPosts">0</strong></div>
+        <div class="stat card"><span>Comments</span><strong id="statComments">0</strong></div>
+        <div class="stat card"><span>Admin posts</span><strong id="statAdminPosts">0</strong></div>
+      </section>
+
+      <section class="admin-table-card card">
+        <div class="table-head">
+          <div><h2>Community posts</h2><p class="muted">Manage all published posts and comments.</p></div>
+        </div>
+        <div class="admin-post-list" id="adminPostList"></div>
+        <div class="loading" id="adminLoading">Loading posts...</div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="postModal">
+    <div class="modal-card">
+      <button class="close" data-close="postModal">×</button>
+      <h2 id="postModalTitle">Create post</h2>
+      <form id="adminPostForm">
+        <textarea id="adminPostContent" maxlength="5000" required placeholder="Write an announcement or community update..."></textarea>
+        <input type="hidden" id="editPostId">
+        <button class="primary-btn" type="submit" id="adminPostSubmit">Publish</button>
+        <p class="form-message" id="adminPostMessage"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="passwordModal">
+    <div class="modal-card">
+      <button class="close" data-close="passwordModal">×</button>
+      <h2>Change password</h2>
+      <form id="adminPasswordForm">
+        <label>Current password</label>
+        <input id="adminCurrentPassword" type="password" required>
+        <label>New password</label>
+        <input id="adminNewPassword" type="password" minlength="6" required>
+        <label>Confirm new password</label>
+        <input id="adminConfirmPassword" type="password" minlength="6" required>
+        <button class="primary-btn" type="submit">Update password</button>
+        <p class="form-message" id="adminPasswordMessage"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="config.js"></script>
+  <script src="admin-dashboard.js"></script>
+</body>
+</html>

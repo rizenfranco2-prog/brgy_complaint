@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin • Barangay Connect</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+  <main class="auth-shell admin-auth">
+    <section class="brand-panel admin-brand">
+      <div class="brand-mark">BC</div>
+      <p class="eyebrow">BARANGAY CONNECT</p>
+      <h1>Administrator<br>Portal</h1>
+      <p class="brand-copy">Manage community posts, announcements and comments from one secure dashboard.</p>
+    </section>
+
+    <section class="auth-card">
+      <div class="admin-badge">ADMIN ACCESS</div>
+      <h2>Administrator sign in</h2>
+      <p class="muted">This portal has no public admin registration.</p>
+      <form id="adminLoginForm">
+        <label>Username</label>
+        <input id="adminUsername" required autocomplete="username" placeholder="Admin username">
+        <label>Password</label>
+        <input id="adminPassword" type="password" required autocomplete="current-password" placeholder="Admin password">
+        <button class="primary-btn" type="submit">Sign in to dashboard</button>
+        <p class="form-message" id="adminMessage"></p>
+      </form>
+      <a class="admin-link" href="index.html">← Back to user login</a>
+    </section>
+  </main>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

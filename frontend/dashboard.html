@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Feed • Barangay Connect</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-body">
+  <header class="topbar">
+    <a class="top-brand" href="dashboard.html"><span>BC</span> Barangay Connect</a>
+    <div class="top-search"><input id="searchInput" placeholder="Search complaints and posts...">⌕</div>
+    <div class="top-user">
+      <span class="avatar" id="topAvatar">U</span>
+      <span id="topName">User</span>
+      <button class="icon-btn" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="profile-mini">
+        <span class="avatar large" id="profileAvatar">U</span>
+        <strong id="profileName">User</strong>
+        <small id="profileEmail">email</small>
+      </div>
+      <nav>
+        <a class="nav-item active" href="dashboard.html">⌂ <span>Community Feed</span></a>
+        <button class="nav-item" id="passwordBtn">⚿ <span>Change Password</span></button>
+        <a class="nav-item" href="admin.html">⚙ <span>Admin Portal</span></a>
+      </nav>
+    </aside>
+
+    <main class="feed">
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">COMMUNITY FEED</p>
+          <h1>What's happening in the barangay?</h1>
+          <p class="muted">Share a concern or keep your neighbors informed.</p>
+        </div>
+      </section>
+
+      <section class="composer card">
+        <div class="composer-head">
+          <span class="avatar" id="composerAvatar">U</span>
+          <div>
+            <strong id="composerName">You</strong>
+            <small>Public community post</small>
+          </div>
+        </div>
+        <textarea id="postContent" maxlength="5000" placeholder="Describe your complaint or share an important community update..."></textarea>
+        <div class="composer-actions">
+          <span id="charCount">0 / 5000</span>
+          <button class="primary-btn small" id="postBtn">Publish post</button>
+        </div>
+        <p class="form-message" id="postMessage"></p>
+      </section>
+
+      <div id="feedList"></div>
+      <div class="loading" id="loading">Loading community posts...</div>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="passwordModal">
+    <div class="modal-card">
+      <button class="close" data-close="passwordModal">×</button>
+      <h2>Change password</h2>
+      <form id="passwordForm">
+        <label>Current password</label>
+        <input id="currentPassword" type="password" required>
+        <label>New password</label>
+        <input id="newPassword" type="password" minlength="6" required>
+        <label>Confirm new password</label>
+        <input id="confirmPassword" type="password" minlength="6" required>
+        <button class="primary-btn" type="submit">Update password</button>
+        <p class="form-message" id="passwordMessage"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
