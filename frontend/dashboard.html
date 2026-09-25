@@ -118,13 +118,11 @@
 
                 <div class="composer-head">
 
-                    <span class="avatar"
-                          id="composerAvatar">
+                    <span class="avatar" id="composerAvatar">
                         U
                     </span>
 
                     <div>
-
                         <strong id="composerName">
                             You
                         </strong>
@@ -132,15 +130,43 @@
                         <small>
                             Public community post
                         </small>
-
                     </div>
 
                 </div>
 
-
                 <textarea id="postContent"
                           maxlength="5000"
                           placeholder="Describe your complaint or share an important community update..."></textarea>
+
+
+                <!-- COMPLAINT PICTURE -->
+                <div class="image-upload">
+
+                    <label for="postImage" class="image-upload-btn">
+                        📷 Add complaint picture
+                    </label>
+
+                    <input type="file"
+                           id="postImage"
+                           accept="image/jpeg,image/png,image/webp"
+                           hidden>
+
+                    <div id="imagePreviewContainer"
+                         class="image-preview-container hidden">
+
+                        <img id="imagePreview"
+                             class="image-preview"
+                             alt="Complaint picture preview">
+
+                        <button type="button"
+                                id="removeImageBtn"
+                                class="remove-image-btn">
+                            Remove picture
+                        </button>
+
+                    </div>
+
+                </div>
 
 
                 <div class="composer-actions">
@@ -155,7 +181,6 @@
                     </button>
 
                 </div>
-
 
                 <p class="form-message"
                    id="postMessage"></p>

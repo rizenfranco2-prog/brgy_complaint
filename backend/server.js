@@ -29,13 +29,40 @@ const adminSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
-  authorId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
-  authorName: { type: String, required: true },
-  content: { type: String, required: true, trim: true, maxlength: 5000 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+    authorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+    },
 
+    authorName: {
+        type: String,
+        required: true
+    },
+
+    content: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 5000
+    },
+
+    image: {
+        type: String,
+        default: "",
+        maxlength: 1200000
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
 const commentSchema = new mongoose.Schema({
   postId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Post" },
   authorId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
@@ -234,35 +261,79 @@ app.get("/api/posts", auth, async (req, res) => {
 });
 
 app.post("/api/posts", auth, async (req, res) => {
-  try {
-    const content = String(req.body.content || "").trim();
-    if (!content) return res.status(400).json({ message: "Post content is required." });
+    try {
+        const content = String(req.body.content || "").trim();
+        const image = String(req.body.image || "").trim();
 
-    if (req.auth.role === "admin") {
-      const admin = await Admin.findById(req.auth.id);
-      if (!admin) return res.status(404).json({ message: "Admin account not found." });
+        if (!content) {
+            return res.status(400).json({
+                message: "Post content is required."
+            });
+        }
 
-      const post = await Post.create({
-        authorId: admin._id,
-        authorName: `${admin.username} (Admin)`,
-        content
-      });
-      return res.status(201).json(post);
+        // Validate image if provided
+        if (image) {
+            const validImage =
+                /^data:image\/(jpeg|png|webp);base64,/.test(image);
+
+            if (!validImage) {
+                return res.status(400).json({
+                    message: "Invalid image format."
+                });
+            }
+
+            if (image.length > 1200000) {
+                return res.status(400).json({
+                    message: "Image is too large."
+                });
+            }
+        }
+
+        // ADMIN POST
+        if (req.auth.role === "admin") {
+            const admin = await Admin.findById(req.auth.id);
+
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Admin account not found."
+                });
+            }
+
+            const post = await Post.create({
+                authorId: admin._id,
+                authorName: `${admin.username} (Admin)`,
+                content,
+                image
+            });
+
+            return res.status(201).json(post);
+        }
+
+        // USER POST
+        const user = await User.findById(req.auth.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User account not found."
+            });
+        }
+
+        const post = await Post.create({
+            authorId: user._id,
+            authorName: user.name,
+            content,
+            image
+        });
+
+        res.status(201).json(post);
+
+    } catch (err) {
+        console.error("CREATE POST ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not create post."
+        });
     }
-
-    const user = await User.findById(req.auth.id);
-    if (!user) return res.status(404).json({ message: "User account not found." });
-
-    const post = await Post.create({
-      authorId: user._id,
-      authorName: user.name,
-      content
-    });
-    res.status(201).json(post);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Could not create post." });
-  }
 });
 
 app.put("/api/posts/:id", auth, adminOnly, async (req, res) => {

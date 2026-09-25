@@ -279,3 +279,73 @@ textarea { min-height: 130px; resize: vertical; }
     .profile-post small {
         color: #777;
     }
+
+.image-upload {
+    margin-top: 12px;
+}
+
+.image-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid #d9dee8;
+    border-radius: 10px;
+    background: #f7f8fb;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+    .image-upload-btn:hover {
+        background: #eef1f6;
+    }
+
+.image-preview-container {
+    margin-top: 12px;
+}
+
+.image-preview {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e0e4eb;
+}
+
+.remove-image-btn {
+    margin-top: 8px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: #f0f1f4;
+    cursor: pointer;
+}
+
+.post-image-container {
+    margin-top: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.post-image {
+    display: block;
+    width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+}
+
+.profile-post-image {
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .profile-post-image img {
+        display: block;
+        width: 100%;
+        max-height: 350px;
+        object-fit: contain;
+    }

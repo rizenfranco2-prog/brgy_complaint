@@ -1,6 +1,6 @@
 let posts = [];
 let currentUser = null;
-
+let selectedImage = "";
 function token() {
     return localStorage.getItem("barangay_token");
 }
@@ -149,8 +149,19 @@ function renderPosts(list = posts) {
 
 
         <div class="post-content">
-          ${escapeHTML(post.content).replace(/\n/g, "<br>")}
-        </div>
+  ${escapeHTML(post.content).replace(/\n/g, "<br>")}
+</div>
+
+${post.image ? `
+  <div class="post-image-container">
+    <img
+      src="${escapeHTML(post.image)}"
+      class="post-image"
+      alt="Complaint picture"
+      loading="lazy"
+    >
+  </div>
+` : ""}
 
 
         <div class="post-meta">
@@ -480,10 +491,19 @@ async function openUserProfile(userId, userName) {
           <div class="profile-post-date">
             ${timeAgo(post.createdAt)}
           </div>
+<div class="profile-post-content">
+  ${escapeHTML(post.content).replace(/\n/g, "<br>")}
+</div>
 
-          <div class="profile-post-content">
-            ${escapeHTML(post.content).replace(/\n/g, "<br>")}
-          </div>
+${post.image ? `
+  <div class="profile-post-image">
+    <img
+      src="${escapeHTML(post.image)}"
+      alt="Complaint picture"
+      loading="lazy"
+    >
+  </div>
+` : ""}
 
           <div class="profile-post-comments">
             ${post.comments?.length || 0}
@@ -642,6 +662,163 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     };
 
+    /* ================================================= */
+    /* COMPLAINT IMAGE */
+    /* ================================================= */
+
+    const imageInput =
+        document.getElementById("postImage");
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    const imagePreviewContainer =
+        document.getElementById("imagePreviewContainer");
+
+    const removeImageBtn =
+        document.getElementById("removeImageBtn");
+
+
+    async function compressImage(file) {
+
+        if (!file.type.startsWith("image/")) {
+            throw new Error("Please select an image file.");
+        }
+
+        if (file.size > 8 * 1024 * 1024) {
+            throw new Error("Image must be smaller than 8MB.");
+        }
+
+        const image = new Image();
+
+        const objectUrl =
+            URL.createObjectURL(file);
+
+        image.src = objectUrl;
+
+        await new Promise((resolve, reject) => {
+
+            image.onload = resolve;
+            image.onerror = reject;
+
+        });
+
+        const maxSize = 1200;
+
+        let width = image.width;
+        let height = image.height;
+
+        if (width > maxSize || height > maxSize) {
+
+            const scale =
+                Math.min(
+                    maxSize / width,
+                    maxSize / height
+                );
+
+            width =
+                Math.round(width * scale);
+
+            height =
+                Math.round(height * scale);
+        }
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx =
+            canvas.getContext("2d");
+
+        ctx.drawImage(
+            image,
+            0,
+            0,
+            width,
+            height
+        );
+
+        URL.revokeObjectURL(objectUrl);
+
+        let quality = 0.8;
+
+        let dataUrl =
+            canvas.toDataURL(
+                "image/jpeg",
+                quality
+            );
+
+        // Keep the stored image reasonably small
+        while (
+            dataUrl.length > 1200000 &&
+            quality > 0.4
+        ) {
+
+            quality -= 0.1;
+
+            dataUrl =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    quality
+                );
+        }
+
+        if (dataUrl.length > 1200000) {
+            throw new Error(
+                "The picture is still too large. Please choose a smaller image."
+            );
+        }
+
+        return dataUrl;
+    }
+
+
+    imageInput.onchange = async () => {
+
+        const file =
+            imageInput.files[0];
+
+        if (!file) return;
+
+        try {
+
+            selectedImage =
+                await compressImage(file);
+
+            imagePreview.src =
+                selectedImage;
+
+            imagePreviewContainer
+                .classList.remove("hidden");
+
+        } catch (error) {
+
+            selectedImage = "";
+
+            imageInput.value = "";
+
+            imagePreviewContainer
+                .classList.add("hidden");
+
+            toast(error.message);
+        }
+    };
+
+
+    removeImageBtn.onclick = () => {
+
+        selectedImage = "";
+
+        imageInput.value = "";
+
+        imagePreview.src = "";
+
+        imagePreviewContainer
+            .classList.add("hidden");
+    };
+
 
     /* ================================================= */
     /* CREATE POST */
@@ -653,11 +830,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             try {
 
                 if (!textarea.value.trim()) {
-
                     return toast("Write something first.");
-
                 }
-
 
                 await api(
                     "/api/posts",
@@ -665,7 +839,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         method: "POST",
 
                         body: JSON.stringify({
-                            content: textarea.value
+                            content: textarea.value,
+                            image: selectedImage
                         })
                     }
                 );
@@ -675,6 +850,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 document.getElementById("charCount")
                     .textContent = "0 / 5000";
+
+
+                // Clear selected picture
+                selectedImage = "";
+
+                imageInput.value = "";
+
+                imagePreview.src = "";
+
+                imagePreviewContainer
+                    .classList.add("hidden");
 
 
                 toast("Post published.");
