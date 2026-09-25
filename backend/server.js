@@ -331,13 +331,24 @@ app.post("/api/posts/:id/comments", auth, userOnly, async (req, res) => {
 // GET POSTS OF A SPECIFIC USER
 app.get("/api/users/:userId/posts", auth, async (req, res) => {
     try {
+        const { userId } = req.params;
+
+        // Check that the ID is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID."
+            });
+        }
+
+        // Find posts made by this user
         const userPosts = await Post.find({
-            authorId: req.params.userId
+            authorId: new mongoose.Types.ObjectId(userId)
         })
             .sort({ createdAt: -1 })
             .limit(100)
             .lean();
 
+        // Get comments for these posts
         const postIds = userPosts.map(post => post._id);
 
         const comments = await Comment.find({
@@ -346,6 +357,7 @@ app.get("/api/users/:userId/posts", auth, async (req, res) => {
             .sort({ createdAt: 1 })
             .lean();
 
+        // Group comments by post
         const commentMap = {};
 
         for (const comment of comments) {
@@ -358,6 +370,7 @@ app.get("/api/users/:userId/posts", auth, async (req, res) => {
             commentMap[key].push(comment);
         }
 
+        // Attach comments to each post
         const posts = userPosts.map(post => ({
             ...post,
             comments: commentMap[post._id.toString()] || []
@@ -366,7 +379,7 @@ app.get("/api/users/:userId/posts", auth, async (req, res) => {
         res.json({ posts });
 
     } catch (err) {
-        console.error(err);
+        console.error("GET USER POSTS ERROR:", err);
 
         res.status(500).json({
             message: "Could not load user posts."
