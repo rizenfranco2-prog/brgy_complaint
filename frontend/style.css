@@ -200,3 +200,82 @@ textarea { min-height: 130px; resize: vertical; }
   .dashboard-heading { align-items: flex-start; gap: 15px; }
   .stats-grid { grid-template-columns: 1fr; }
 }
+
+/* =========================================
+   CLICKABLE PROFILE
+========================================= */
+
+.clickable-profile {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+    .clickable-profile:hover {
+        opacity: 0.75;
+    }
+
+
+/* =========================================
+   PROFILE MODAL
+========================================= */
+
+.profile-modal {
+    max-width: 650px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+
+/* =========================================
+   PROFILE HEADER
+========================================= */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+    .profile-header h2 {
+        margin: 0 0 5px;
+    }
+
+.profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 24px;
+}
+
+
+/* =========================================
+   PROFILE DIVIDER
+========================================= */
+
+.profile-modal hr {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 20px 0;
+}
+
+
+/* =========================================
+   USER PROFILE POSTS
+========================================= */
+
+.profile-post {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+    .profile-post p {
+        margin: 0 0 8px;
+        line-height: 1.5;
+    }
+
+    .profile-post small {
+        color: #777;
+    }

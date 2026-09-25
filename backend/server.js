@@ -328,6 +328,29 @@ app.post("/api/posts/:id/comments", auth, userOnly, async (req, res) => {
   }
 });
 
+// GET POSTS OF A SPECIFIC USER
+app.get("/api/users/:userId/posts", auth, async (req, res) => {
+    try {
+        const posts = await Post.find({
+            authorId: req.params.userId
+        })
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .lean();
+
+        res.json({
+            posts
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            message: "Could not load user posts."
+        });
+    }
+});
+
 app.delete("/api/comments/:id", auth, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
