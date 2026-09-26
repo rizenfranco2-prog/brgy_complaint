@@ -303,26 +303,30 @@ function renderAnnouncements(announcements) {
     ${!isAdmin
                     ? `
             <form
-                class="comment-form"
-                data-post-id="${post._id}"
-            >
+    class="comment-form"
+    data-post-id="${post._id}"
+>
 
-                <span class="avatar tiny">
-                    U
-                </span>
+    <span class="avatar tiny">
+        ${escapeHTML(
+            initials(
+                isAdmin ? "Admin" : "User"
+            )
+        )}
+    </span>
 
-                <input
-                    type="text"
-                    maxlength="1000"
-                    placeholder="Write a comment..."
-                    required
-                >
+    <input
+        type="text"
+        maxlength="1000"
+        placeholder="Write a comment..."
+        required
+    >
 
-                <button type="submit">
-                    Post
-                </button>
+    <button type="submit">
+        Post
+    </button>
 
-            </form>
+</form>
           `
                     : ""
     }
@@ -360,13 +364,11 @@ function renderAnnouncements(announcements) {
                         return;
                     }
 
-
                     const newContent =
                         prompt(
                             "Edit announcement:",
                             post.content
                         );
-
 
                     if (
                         newContent === null ||
@@ -374,7 +376,6 @@ function renderAnnouncements(announcements) {
                     ) {
                         return;
                     }
-
 
                     try {
 
@@ -390,53 +391,9 @@ function renderAnnouncements(announcements) {
                             }
                         );
 
-
                         toast(
                             "Announcement updated."
                         );
-
-                        loadAnnouncements();
-
-
-                    } catch (error) {
-
-                        toast(
-                            error.message
-                        );
-
-                    }
-
-                };
-
-            });
-
-
-        /* ================================================= */
-        /* DELETE COMMENT */
-        /* ================================================= */
-
-        container
-            .querySelectorAll(
-                "[data-delete-comment]"
-            )
-            .forEach(button => {
-
-                button.onclick = async () => {
-
-                    if (!confirm("Delete this comment?")) {
-                        return;
-                    }
-
-                    try {
-
-                        await api(
-                            `/api/comments/${button.dataset.deleteComment}`,
-                            {
-                                method: "DELETE"
-                            }
-                        );
-
-                        toast("Comment deleted.");
 
                         loadAnnouncements();
 
@@ -452,57 +409,142 @@ function renderAnnouncements(announcements) {
 
 
         /* ================================================= */
-        /* ADD COMMENT */
+        /* ADMIN DELETE ANNOUNCEMENT */
         /* ================================================= */
 
-        if (!isAdmin) {
+        container
+            .querySelectorAll(
+                "[data-delete-announcement]"
+            )
+            .forEach(button => {
 
-            container
-                .querySelectorAll(".comment-form")
-                .forEach(form => {
+                button.onclick = async () => {
 
-                    form.onsubmit = async event => {
+                    if (
+                        !confirm(
+                            "Delete this announcement?"
+                        )
+                    ) {
+                        return;
+                    }
 
-                        event.preventDefault();
+                    try {
 
-                        const input =
-                            form.querySelector("input");
+                        await api(
+                            `/api/posts/${button.dataset.deleteAnnouncement}`,
+                            {
+                                method: "DELETE"
+                            }
+                        );
 
-                        if (!input || !input.value.trim()) {
-                            return;
-                        }
+                        toast(
+                            "Announcement deleted."
+                        );
 
-                        try {
+                        loadAnnouncements();
 
-                            await api(
-                                `/api/posts/${form.dataset.postId}/comments`,
-                                {
-                                    method: "POST",
+                    } catch (error) {
 
-                                    body: JSON.stringify({
-                                        content:
-                                            input.value.trim()
-                                    })
-                                }
-                            );
+                        toast(error.message);
 
-                            toast("Comment added.");
+                    }
 
-                            loadAnnouncements();
+                };
 
-                        } catch (error) {
-
-                            toast(error.message);
-
-                        }
-
-                    };
-
-                });
-
-        }
+            });
 
     }
+
+
+    /* ================================================= */
+    /* DELETE COMMENT */
+    /* ================================================= */
+
+    container
+        .querySelectorAll("[data-delete-comment]")
+        .forEach(button => {
+
+            button.onclick = async () => {
+
+                if (!confirm("Delete this comment?")) {
+                    return;
+                }
+
+                try {
+
+                    await api(
+                        `/api/comments/${button.dataset.deleteComment}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+                    toast("Comment deleted.");
+
+                    loadAnnouncements();
+
+                } catch (error) {
+
+                    toast(error.message);
+
+                }
+
+            };
+
+        });
+
+
+    /* ================================================= */
+    /* ADD COMMENT */
+    /* ================================================= */
+
+    container
+        .querySelectorAll(".comment-form")
+        .forEach(form => {
+
+            form.onsubmit = async event => {
+
+                event.preventDefault();
+
+                const input =
+                    form.querySelector("input");
+
+                if (
+                    !input ||
+                    !input.value.trim()
+                ) {
+                    return;
+                }
+
+                try {
+
+                    await api(
+                        `/api/posts/${form.dataset.postId}/comments`,
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+                                content:
+                                    input.value.trim()
+                            })
+                        }
+                    );
+
+                    input.value = "";
+
+                    toast("Comment added.");
+
+                    loadAnnouncements();
+
+                } catch (error) {
+
+                    toast(error.message);
+
+                }
+
+            };
+
+        });
 
 }
 
