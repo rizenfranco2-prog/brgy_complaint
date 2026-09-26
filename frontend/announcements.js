@@ -373,92 +373,335 @@ async function loadAnnouncements() {
 /* PAGE LOAD */
 /* ================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+document.addEventListener("DOMContentLoaded", async () => {
+
+    if (!token()) {
+
+        location.href = "index.html";
+
+        return;
+    }
 
 
-        if (!token()) {
+    try {
 
-            location.href =
-                "index.html";
+        const me =
+            await api("/api/auth/me");
+
+
+        /* ============================================= */
+        /* ALLOW BOTH RESIDENT AND ADMIN */
+        /* ============================================= */
+
+        if (
+            me.role !== "user" &&
+            me.role !== "admin"
+        ) {
+
+            location.href = "index.html";
 
             return;
         }
 
 
-        try {
+        /* ============================================= */
+        /* RESIDENT INFORMATION */
+        /* ============================================= */
 
-            const me =
-                await api(
-                    "/api/auth/me"
-                );
+        if (me.role === "user") {
+
+            const user = me.account;
 
 
-            if (me.role !== "user") {
+            const topName =
+                document.getElementById("topName");
 
-                location.href =
-                    "admin-dashboard.html";
+            const profileName =
+                document.getElementById("profileName");
 
-                return;
+            const profileEmail =
+                document.getElementById("profileEmail");
+
+            const topAvatar =
+                document.getElementById("topAvatar");
+
+            const profileAvatar =
+                document.getElementById("profileAvatar");
+
+
+            if (topName) {
+
+                topName.textContent =
+                    user.name;
 
             }
 
 
-            const user =
-                me.account;
+            if (profileName) {
+
+                profileName.textContent =
+                    user.name;
+
+            }
 
 
-            document.getElementById(
-                "topName"
-            ).textContent =
-                user.name;
+            if (profileEmail) {
 
+                profileEmail.textContent =
+                    user.email;
 
-            document.getElementById(
-                "profileName"
-            ).textContent =
-                user.name;
-
-
-            document.getElementById(
-                "profileEmail"
-            ).textContent =
-                user.email;
+            }
 
 
             const userInitials =
                 initials(user.name);
 
 
-            document.getElementById(
-                "topAvatar"
-            ).textContent =
-                userInitials;
+            if (topAvatar) {
+
+                topAvatar.textContent =
+                    userInitials;
+
+            }
 
 
-            document.getElementById(
-                "profileAvatar"
-            ).textContent =
-                userInitials;
+            if (profileAvatar) {
+
+                profileAvatar.textContent =
+                    userInitials;
+
+            }
+
+        }
 
 
-            loadAnnouncements();
+        /* ============================================= */
+        /* LOAD ANNOUNCEMENTS FOR BOTH */
+        /* ============================================= */
+
+        loadAnnouncements();
 
 
-        } catch {
+    } catch (error) {
 
-            localStorage.removeItem(
-                "barangay_token"
-            );
+        console.error(error);
+
+        localStorage.removeItem(
+            "barangay_token"
+        );
+
+        location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    /* ================================================= */
+    /* LOGOUT */
+    /* ================================================= */
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+
+    if (logoutBtn) {
+
+        logoutBtn.onclick = () => {
+
+            localStorage.clear();
 
             location.href =
                 "index.html";
 
-            return;
+        };
 
-        }
+    }
 
+
+    /* ================================================= */
+    /* CHANGE PASSWORD */
+    /* ================================================= */
+
+    const passwordBtn =
+        document.getElementById("passwordBtn");
+
+
+    if (passwordBtn) {
+
+        passwordBtn.onclick = () => {
+
+            const passwordModal =
+                document.getElementById(
+                    "passwordModal"
+                );
+
+            if (passwordModal) {
+
+                passwordModal.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        };
+
+    }
+
+
+    /* ================================================= */
+    /* CLOSE MODALS */
+    /* ================================================= */
+
+    document
+        .querySelectorAll("[data-close]")
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                const modal =
+                    document.getElementById(
+                        button.dataset.close
+                    );
+
+                if (modal) {
+
+                    modal.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            };
+
+        });
+
+
+    /* ================================================= */
+    /* CHANGE PASSWORD FORM */
+    /* ================================================= */
+
+    const passwordForm =
+        document.getElementById(
+            "passwordForm"
+        );
+
+
+    if (passwordForm) {
+
+        passwordForm.onsubmit =
+            async event => {
+
+                event.preventDefault();
+
+
+                const currentPassword =
+                    document.getElementById(
+                        "currentPassword"
+                    );
+
+                const newPassword =
+                    document.getElementById(
+                        "newPassword"
+                    );
+
+                const confirmPassword =
+                    document.getElementById(
+                        "confirmPassword"
+                    );
+
+                const message =
+                    document.getElementById(
+                        "passwordMessage"
+                    );
+
+
+                if (
+                    !currentPassword ||
+                    !newPassword ||
+                    !confirmPassword
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    newPassword.value !==
+                    confirmPassword.value
+                ) {
+
+                    if (message) {
+
+                        message.textContent =
+                            "New passwords do not match.";
+
+                        message.className =
+                            "form-message error";
+
+                    }
+
+                    return;
+
+                }
+
+
+                try {
+
+                    await api(
+                        "/api/auth/change-password",
+                        {
+                            method: "PUT",
+
+                            body: JSON.stringify({
+
+                                currentPassword:
+                                    currentPassword.value,
+
+                                newPassword:
+                                    newPassword.value
+
+                            })
+
+                        }
+                    );
+
+
+                    if (message) {
+
+                        message.textContent =
+                            "Password changed successfully.";
+
+                        message.className =
+                            "form-message success";
+
+                    }
+
+
+                    passwordForm.reset();
+
+
+                } catch (error) {
+
+                    if (message) {
+
+                        message.textContent =
+                            error.message;
+
+                        message.className =
+                            "form-message error";
+
+                    }
+
+                }
+
+            };
+
+    }
+
+});
 
         /* ================================================= */
         /* LOGOUT */
@@ -630,26 +873,3 @@ document.addEventListener(
     }
 );
 
-document.addEventListener("DOMContentLoaded", async () => {
-
-    if (!token()) {
-        location.href = "index.html";
-        return;
-    }
-
-    try {
-        const me = await api("/api/auth/me");
-
-        if (me.role !== "user" && me.role !== "admin") {
-            location.href = "index.html";
-            return;
-        }
-
-        loadAnnouncements();
-
-    } catch (error) {
-        console.error(error);
-        localStorage.clear();
-        location.href = "index.html";
-    }
-});
