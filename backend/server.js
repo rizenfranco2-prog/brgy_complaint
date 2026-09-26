@@ -454,27 +454,97 @@ app.delete("/api/posts/:id", auth, async (req, res) => {
 });
 
 // COMMENTS
-app.post("/api/posts/:id/comments", auth, userOnly, async (req, res) => {
-  try {
-    const content = String(req.body.content || "").trim();
-    if (!content) return res.status(400).json({ message: "Comment cannot be empty." });
+app.post("/api/posts/:id/comments", auth, async (req, res) => {
+    try {
 
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found." });
+        const content =
+            String(req.body.content || "").trim();
 
-    const user = await User.findById(req.auth.id);
-    const comment = await Comment.create({
-      postId: post._id,
-      authorId: user._id,
-      authorName: user.name,
-      content
-    });
+        if (!content) {
+            return res.status(400).json({
+                message: "Comment cannot be empty."
+            });
+        }
 
-    res.status(201).json(comment);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Could not add comment." });
-  }
+
+        const post =
+            await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found."
+            });
+        }
+
+
+        let authorId;
+        let authorName;
+
+
+        /* =============================== */
+        /* ADMIN COMMENT */
+        /* =============================== */
+
+        if (req.auth.role === "admin") {
+
+            const admin =
+                await Admin.findById(req.auth.id);
+
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Admin account not found."
+                });
+            }
+
+            authorId = admin._id;
+
+            authorName =
+                `${admin.username} (Admin)`;
+        }
+
+
+        /* =============================== */
+        /* RESIDENT COMMENT */
+        /* =============================== */
+
+        else {
+
+            const user =
+                await User.findById(req.auth.id);
+
+            if (!user) {
+                return res.status(404).json({
+                    message: "User account not found."
+                });
+            }
+
+            authorId = user._id;
+            authorName = user.name;
+        }
+
+
+        const comment =
+            await Comment.create({
+                postId: post._id,
+                authorId: authorId,
+                authorName: authorName,
+                content: content
+            });
+
+
+        res.status(201).json(comment);
+
+    } catch (err) {
+
+        console.error(
+            "CREATE COMMENT ERROR:",
+            err
+        );
+
+        res.status(500).json({
+            message: "Could not add comment."
+        });
+    }
 });
 
 // GET POSTS OF A SPECIFIC USER
