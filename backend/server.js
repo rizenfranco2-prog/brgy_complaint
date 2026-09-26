@@ -29,7 +29,6 @@ const adminSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
-
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -50,8 +49,7 @@ const postSchema = new mongoose.Schema({
 
     image: {
         type: String,
-        default: "",
-        maxlength: 1200000
+        default: ""
     },
 
     isAnnouncement: {

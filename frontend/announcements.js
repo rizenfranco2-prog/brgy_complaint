@@ -226,39 +226,108 @@ function renderAnnouncements(announcements) {
 
                     <div class="post-meta">
 
-                        <span>
-                            ${comments.length}
-                            comment${comments.length === 1
-                    ? ""
-                    : "s"
-                }
-                        </span>
+    <span>
+        ${comments.length}
+        comment${comments.length === 1 ? "" : "s"}
+    </span>
 
-
-                        ${isAdmin
+    ${isAdmin
                     ? `
-                                    <div class="announcement-actions">
+            <div class="announcement-actions">
 
-                                        <button
-                                            class="secondary-btn"
-                                            data-edit-announcement="${post._id}"
-                                        >
-                                            Edit
-                                        </button>
+                <button
+                    class="secondary-btn"
+                    data-edit-announcement="${post._id}"
+                >
+                    Edit
+                </button>
 
-                                        <button
-                                            class="danger-btn"
-                                            data-delete-announcement="${post._id}"
-                                        >
-                                            Delete
-                                        </button>
+                <button
+                    class="danger-btn"
+                    data-delete-announcement="${post._id}"
+                >
+                    Delete
+                </button>
 
-                                    </div>
-                                `
+            </div>
+          `
                     : ""
                 }
 
-                    </div>
+</div>
+
+
+<div class="comments">
+
+    ${comments.map(comment => `
+        <div class="comment">
+
+            <span class="avatar tiny">
+                ${escapeHTML(
+                    initials(comment.authorName)
+                )}
+            </span>
+
+            <div class="comment-body">
+
+                <strong>
+                    ${escapeHTML(comment.authorName)}
+                </strong>
+
+                <p>
+                    ${escapeHTML(comment.content)}
+                </p>
+
+                <small>
+                    ${timeAgo(comment.createdAt)}
+                </small>
+
+            </div>
+
+            ${!isAdmin
+                        ? `
+                    <button
+                        class="delete-comment"
+                        data-delete-comment="${comment._id}"
+                    >
+                        ×
+                    </button>
+                  `
+                        : ""
+                    }
+
+        </div>
+    `).join("")}
+
+
+    ${!isAdmin
+                    ? `
+            <form
+                class="comment-form"
+                data-post-id="${post._id}"
+            >
+
+                <span class="avatar tiny">
+                    U
+                </span>
+
+                <input
+                    type="text"
+                    maxlength="1000"
+                    placeholder="Write a comment..."
+                    required
+                >
+
+                <button type="submit">
+                    Post
+                </button>
+
+            </form>
+          `
+                    : ""
+    }
+
+</div>
 
                 </article>
             `;
@@ -396,6 +465,93 @@ function renderAnnouncements(announcements) {
 
 }
 
+/* ================================================= */
+/* DELETE COMMENT */
+/* ================================================= */
+
+container
+    .querySelectorAll("[data-delete-comment]")
+    .forEach(button => {
+
+        button.onclick = async () => {
+
+            if (!confirm("Delete this comment?")) {
+                return;
+            }
+
+            try {
+
+                await api(
+                    `/api/comments/${button.dataset.deleteComment}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+                toast("Comment deleted.");
+
+                loadAnnouncements();
+
+            } catch (error) {
+
+                toast(error.message);
+
+            }
+
+        };
+
+    });
+
+
+/* ================================================= */
+/* ADD COMMENT */
+/* ================================================= */
+
+container
+    .querySelectorAll(".comment-form")
+    .forEach(form => {
+
+        form.onsubmit = async event => {
+
+            event.preventDefault();
+
+            const input =
+                form.querySelector("input");
+
+            if (!input.value.trim()) {
+                return;
+            }
+
+            try {
+
+                await api(
+                    `/api/posts/${form.dataset.postId}/comments`,
+                    {
+                        method: "POST",
+
+                        body: JSON.stringify({
+                            content:
+                                input.value.trim()
+                        })
+                    }
+                );
+
+                input.value = "";
+
+                toast("Comment added.");
+
+                loadAnnouncements();
+
+            } catch (error) {
+
+                toast(error.message);
+
+            }
+
+        };
+
+    });
+
 
 /* ================================================= */
 /* LOAD ANNOUNCEMENTS */
@@ -414,6 +570,8 @@ async function loadAnnouncements() {
             await api(
                 "/api/announcements"
             );
+        const currentName =
+            document.getElementById("profileName")?.textContent || "User";
 
         renderAnnouncements(
             announcements
