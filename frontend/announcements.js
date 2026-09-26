@@ -412,48 +412,37 @@ function renderAnnouncements(announcements) {
 
 
         /* ================================================= */
-        /* ADMIN DELETE */
+        /* DELETE COMMENT */
         /* ================================================= */
 
         container
             .querySelectorAll(
-                "[data-delete-announcement]"
+                "[data-delete-comment]"
             )
             .forEach(button => {
 
                 button.onclick = async () => {
 
-                    if (
-                        !confirm(
-                            "Delete this announcement?"
-                        )
-                    ) {
+                    if (!confirm("Delete this comment?")) {
                         return;
                     }
-
 
                     try {
 
                         await api(
-                            `/api/posts/${button.dataset.deleteAnnouncement}`,
+                            `/api/comments/${button.dataset.deleteComment}`,
                             {
                                 method: "DELETE"
                             }
                         );
 
-
-                        toast(
-                            "Announcement deleted."
-                        );
+                        toast("Comment deleted.");
 
                         loadAnnouncements();
 
-
                     } catch (error) {
 
-                        toast(
-                            error.message
-                        );
+                        toast(error.message);
 
                     }
 
@@ -461,96 +450,61 @@ function renderAnnouncements(announcements) {
 
             });
 
+
+        /* ================================================= */
+        /* ADD COMMENT */
+        /* ================================================= */
+
+        if (!isAdmin) {
+
+            container
+                .querySelectorAll(".comment-form")
+                .forEach(form => {
+
+                    form.onsubmit = async event => {
+
+                        event.preventDefault();
+
+                        const input =
+                            form.querySelector("input");
+
+                        if (!input || !input.value.trim()) {
+                            return;
+                        }
+
+                        try {
+
+                            await api(
+                                `/api/posts/${form.dataset.postId}/comments`,
+                                {
+                                    method: "POST",
+
+                                    body: JSON.stringify({
+                                        content:
+                                            input.value.trim()
+                                    })
+                                }
+                            );
+
+                            toast("Comment added.");
+
+                            loadAnnouncements();
+
+                        } catch (error) {
+
+                            toast(error.message);
+
+                        }
+
+                    };
+
+                });
+
+        }
+
     }
 
 }
-
-/* ================================================= */
-/* DELETE COMMENT */
-/* ================================================= */
-
-container
-    .querySelectorAll("[data-delete-comment]")
-    .forEach(button => {
-
-        button.onclick = async () => {
-
-            if (!confirm("Delete this comment?")) {
-                return;
-            }
-
-            try {
-
-                await api(
-                    `/api/comments/${button.dataset.deleteComment}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-                toast("Comment deleted.");
-
-                loadAnnouncements();
-
-            } catch (error) {
-
-                toast(error.message);
-
-            }
-
-        };
-
-    });
-
-
-/* ================================================= */
-/* ADD COMMENT */
-/* ================================================= */
-
-container
-    .querySelectorAll(".comment-form")
-    .forEach(form => {
-
-        form.onsubmit = async event => {
-
-            event.preventDefault();
-
-            const input =
-                form.querySelector("input");
-
-            if (!input.value.trim()) {
-                return;
-            }
-
-            try {
-
-                await api(
-                    `/api/posts/${form.dataset.postId}/comments`,
-                    {
-                        method: "POST",
-
-                        body: JSON.stringify({
-                            content:
-                                input.value.trim()
-                        })
-                    }
-                );
-
-                input.value = "";
-
-                toast("Comment added.");
-
-                loadAnnouncements();
-
-            } catch (error) {
-
-                toast(error.message);
-
-            }
-
-        };
-
-    });
 
 
 /* ================================================= */
