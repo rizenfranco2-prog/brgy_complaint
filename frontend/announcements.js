@@ -114,14 +114,10 @@ function toast(message) {
 function renderAnnouncements(announcements) {
 
     const container =
-        document.getElementById(
-            "announcementList"
-        );
+        document.getElementById("announcementList");
 
     const loading =
-        document.getElementById(
-            "announcementLoading"
-        );
+        document.getElementById("announcementLoading");
 
     if (loading) {
         loading.style.display = "none";
@@ -154,6 +150,11 @@ function renderAnnouncements(announcements) {
         return;
     }
 
+
+    const isAdmin =
+        localStorage.getItem("barangay_role") === "admin";
+
+
     container.innerHTML =
         announcements.map(post => {
 
@@ -169,9 +170,7 @@ function renderAnnouncements(announcements) {
 
                             <span class="avatar">
                                 ${escapeHTML(
-                initials(
-                    post.authorName
-                )
+                initials(post.authorName)
             )}
                             </span>
 
@@ -195,6 +194,7 @@ function renderAnnouncements(announcements) {
 
                     </div>
 
+
                     <div class="post-content">
                         ${escapeHTML(
                 post.content
@@ -203,6 +203,7 @@ function renderAnnouncements(announcements) {
                 "<br>"
             )}
                     </div>
+
 
                     ${post.image
                     ? `
@@ -222,6 +223,7 @@ function renderAnnouncements(announcements) {
                     : ""
                 }
 
+
                     <div class="post-meta">
 
                         <span>
@@ -232,12 +234,166 @@ function renderAnnouncements(announcements) {
                 }
                         </span>
 
+
+                        ${isAdmin
+                    ? `
+                                    <div class="announcement-actions">
+
+                                        <button
+                                            class="secondary-btn"
+                                            data-edit-announcement="${post._id}"
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            class="danger-btn"
+                                            data-delete-announcement="${post._id}"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+                                `
+                    : ""
+                }
+
                     </div>
 
                 </article>
             `;
 
         }).join("");
+
+
+    /* ================================================= */
+    /* ADMIN EDIT */
+    /* ================================================= */
+
+    if (isAdmin) {
+
+        container
+            .querySelectorAll(
+                "[data-edit-announcement]"
+            )
+            .forEach(button => {
+
+                button.onclick = async () => {
+
+                    const post =
+                        announcements.find(
+                            item =>
+                                item._id ===
+                                button.dataset.editAnnouncement
+                        );
+
+                    if (!post) {
+                        return;
+                    }
+
+
+                    const newContent =
+                        prompt(
+                            "Edit announcement:",
+                            post.content
+                        );
+
+
+                    if (
+                        newContent === null ||
+                        !newContent.trim()
+                    ) {
+                        return;
+                    }
+
+
+                    try {
+
+                        await api(
+                            `/api/posts/${post._id}`,
+                            {
+                                method: "PUT",
+
+                                body: JSON.stringify({
+                                    content:
+                                        newContent.trim()
+                                })
+                            }
+                        );
+
+
+                        toast(
+                            "Announcement updated."
+                        );
+
+                        loadAnnouncements();
+
+
+                    } catch (error) {
+
+                        toast(
+                            error.message
+                        );
+
+                    }
+
+                };
+
+            });
+
+
+        /* ================================================= */
+        /* ADMIN DELETE */
+        /* ================================================= */
+
+        container
+            .querySelectorAll(
+                "[data-delete-announcement]"
+            )
+            .forEach(button => {
+
+                button.onclick = async () => {
+
+                    if (
+                        !confirm(
+                            "Delete this announcement?"
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    try {
+
+                        await api(
+                            `/api/posts/${button.dataset.deleteAnnouncement}`,
+                            {
+                                method: "DELETE"
+                            }
+                        );
+
+
+                        toast(
+                            "Announcement deleted."
+                        );
+
+                        loadAnnouncements();
+
+
+                    } catch (error) {
+
+                        toast(
+                            error.message
+                        );
+
+                    }
+
+                };
+
+            });
+
+    }
+
 }
 
 
@@ -301,6 +457,85 @@ document.addEventListener(
                 await api(
                     "/api/auth/me"
                 );
+
+            if (me.role === "admin") {
+                const controls =
+                    document.getElementById(
+                        "adminAnnouncementControls"
+                    );
+
+                if (controls) {
+
+                    const addButton =
+                        document.createElement(
+                            "button"
+                        );
+
+                    addButton.textContent =
+                        "＋ Add Announcement";
+
+                    addButton.className =
+                        "primary-btn";
+
+                    addButton.style.marginTop =
+                        "12px";
+
+                    controls.appendChild(
+                        addButton
+                    );
+
+
+                    addButton.onclick =
+                        async () => {
+
+                            const content =
+                                prompt(
+                                    "Enter announcement:"
+                                );
+
+                            if (
+                                content === null ||
+                                !content.trim()
+                            ) {
+                                return;
+                            }
+
+
+                            try {
+
+                                await api(
+                                    "/api/posts",
+                                    {
+                                        method: "POST",
+
+                                        body: JSON.stringify({
+                                            content:
+                                                content.trim()
+                                        })
+                                    }
+                                );
+
+
+                                toast(
+                                    "Announcement published."
+                                );
+
+                                loadAnnouncements();
+
+
+                            } catch (error) {
+
+                                toast(
+                                    error.message
+                                );
+
+                            }
+
+                        };
+
+                }
+
+            }
 
 
             /* ========================================= */

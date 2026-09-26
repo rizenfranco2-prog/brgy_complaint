@@ -400,3 +400,33 @@ textarea { min-height: 130px; resize: vertical; }
         max-height: 500px;
         object-fit: contain;
     }
+
+.announcement-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+    .announcement-actions button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+.primary-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.secondary-btn {
+    background: #e9edf3;
+    color: #333;
+}
+
+.danger-btn {
+    background: #dc3545;
+    color: white;
+}
