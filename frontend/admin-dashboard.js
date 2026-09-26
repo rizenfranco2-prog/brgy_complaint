@@ -177,55 +177,53 @@ function render(list = adminPosts) {
 
                     <!-- COMMENTS -->
 
-                    <div class="admin-comments">
+<div class="admin-comments">
 
-                        ${comments.map(c => `
-                            <div class="admin-comment">
+    ${comments.map(c => `
+        <div class="admin-comment">
 
-                                <span>
+            <span>
 
-                                    <strong>
-                                        ${esc(c.authorName)}
-                                    </strong>
+                <strong>
+                    ${esc(c.authorName)}
+                </strong>
 
-                                    :
-                                    ${esc(c.content)}
+                :
+                ${esc(c.content)}
 
-                                </span>
+            </span>
 
-                                <button
-                                    data-comment="${c._id}"
-                                >
-                                    Delete
-                                </button>
+            <button
+                data-comment="${c._id}"
+            >
+                Delete
+            </button>
 
-                            </div>
-                        `).join("")}
+        </div>
+    `).join("")}
 
-                    </div>
-
-                </div>
+</div>
 
 
-                <!-- ACTIONS -->
+<!-- ADD COMMENT -->
 
-                <div class="row-actions">
+<form
+    class="admin-comment-form"
+    data-post-id="${p._id}"
+>
 
-                    <button
-                        class="secondary-btn"
-                        data-edit="${p._id}"
-                    >
-                        Edit
-                    </button>
+    <input
+        type="text"
+        maxlength="1000"
+        placeholder="Write a comment..."
+        required
+    >
 
-                    <button
-                        class="danger-btn"
-                        data-delete="${p._id}"
-                    >
-                        Delete
-                    </button>
+    <button type="submit">
+        Post
+    </button>
 
-                </div>
+</form>
 
             </article>
         `;
@@ -342,6 +340,60 @@ function render(list = adminPosts) {
     updateStats();
 }
 
+
+/* ================================================= */
+/* ADD COMMENT */
+/* ================================================= */
+
+box
+    .querySelectorAll(".admin-comment-form")
+    .forEach(form => {
+
+        form.onsubmit = async e => {
+
+            e.preventDefault();
+
+            const input =
+                form.querySelector("input");
+
+            if (!input || !input.value.trim()) {
+                return;
+            }
+
+            try {
+
+                await api(
+                    `/api/posts/${form.dataset.postId}/comments`,
+                    {
+                        method: "POST",
+
+                        body: JSON.stringify({
+                            content:
+                                input.value.trim()
+                        })
+                    }
+                );
+
+                input.value = "";
+
+                toast("Comment added.");
+
+                load();
+
+            } catch (error) {
+
+                console.error(
+                    "Comment error:",
+                    error
+                );
+
+                toast(error.message);
+
+            }
+
+        };
+
+    });
 
 /* ================================================= */
 /* STATISTICS */
