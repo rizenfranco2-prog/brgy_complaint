@@ -431,30 +431,3 @@ textarea { min-height: 130px; resize: vertical; }
     color: white;
 }
 
-.admin-comment-form {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    width: 100%;
-}
-
-    .admin-comment-form input {
-        flex: 1;
-        padding: 9px 12px;
-        border: 1px solid #d9dee7;
-        border-radius: 8px;
-        outline: none;
-        font-size: 14px;
-    }
-
-        .admin-comment-form input:focus {
-            border-color: #2563eb;
-        }
-
-    .admin-comment-form button {
-        border: none;
-        border-radius: 8px;
-        padding: 9px 16px;
-        cursor: pointer;
-        font-weight: 600;
-    }
