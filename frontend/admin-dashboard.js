@@ -337,6 +337,61 @@ function render(list = adminPosts) {
     });
 
 
+    /* ================================================= */
+    /* ADD COMMENT */
+    /* ================================================= */
+
+    box
+        .querySelectorAll(".admin-comment-form")
+        .forEach(form => {
+
+            form.onsubmit = async e => {
+
+                e.preventDefault();
+
+                const input =
+                    form.querySelector("input");
+
+                if (!input || !input.value.trim()) {
+                    return;
+                }
+
+                try {
+
+                    await api(
+                        `/api/posts/${form.dataset.postId}/comments`,
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+                                content:
+                                    input.value.trim()
+                            })
+                        }
+                    );
+
+                    input.value = "";
+
+                    toast("Comment added.");
+
+                    load();
+
+                } catch (error) {
+
+                    console.error(
+                        "Comment error:",
+                        error
+                    );
+
+                    toast(error.message);
+
+                }
+
+            };
+
+        });
+
+
     updateStats();
 }
 
