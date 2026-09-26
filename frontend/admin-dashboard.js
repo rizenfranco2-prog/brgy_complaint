@@ -1,4 +1,4 @@
-let posts = [];
+let adminPosts = [];
 
 function token() { return localStorage.getItem("barangay_token"); }
 

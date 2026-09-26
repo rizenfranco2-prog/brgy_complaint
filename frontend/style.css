@@ -366,3 +366,19 @@ textarea { min-height: 130px; resize: vertical; }
         object-fit: contain;
         border-radius: 12px;
     }
+.admin-post-image {
+    margin-top: 14px;
+    width: 100%;
+    max-width: 650px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f5f6f8;
+}
+
+    .admin-post-image img {
+        display: block;
+        width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: 12px;
+    }
