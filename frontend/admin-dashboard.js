@@ -36,13 +36,140 @@ function showMessage(id, msg, error = true) {
 }
 
 function render(list = posts) {
-  const box = document.getElementById("adminPostList");
-  document.getElementById("adminLoading").style.display = "none";
+    const box = document.getElementById("adminPostList");
+    document.getElementById("adminLoading").style.display = "none";
 
-  if (!list.length) {
-    box.innerHTML = `<div class="empty"><div class="empty-icon">◎</div><h3>No posts</h3><p>There are no matching posts.</p></div>`;
-    return;
-  }
+    if (!list.length) {
+        box.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">◎</div>
+        <h3>No posts</h3>
+        <p>There are no matching posts.</p>
+      </div>
+    `;
+        return;
+    }
+
+    box.innerHTML = list.map(p => `
+    <article class="admin-row">
+
+      <div class="admin-row-main">
+
+        <div class="admin-post-top">
+          <strong>${esc(p.authorName)}</strong>
+          <span>${ago(p.createdAt)}</span>
+        </div>
+
+        <p>
+          ${esc(p.content).replace(/\n/g, "<br>")}
+        </p>
+
+        <!-- COMPLAINT IMAGE -->
+        ${p.image ? `
+          <div class="admin-post-image">
+            <img
+              src="${esc(p.image)}"
+              alt="Complaint picture"
+              loading="lazy"
+            >
+          </div>
+        ` : ""}
+
+        <div class="admin-row-meta">
+          ${p.comments.length}
+          comment${p.comments.length === 1 ? "" : "s"}
+        </div>
+
+        <div class="admin-comments">
+
+          ${p.comments.map(c => `
+            <div class="admin-comment">
+
+              <span>
+                <strong>${esc(c.authorName)}</strong>:
+                ${esc(c.content)}
+              </span>
+
+              <button data-comment="${c._id}">
+                Delete
+              </button>
+
+            </div>
+          `).join("")}
+
+        </div>
+
+      </div>
+
+      <div class="row-actions">
+
+        <button
+          class="secondary-btn"
+          data-edit="${p._id}">
+          Edit
+        </button>
+
+        <button
+          class="danger-btn"
+          data-delete="${p._id}">
+          Delete
+        </button>
+
+      </div>
+
+    </article>
+  `).join("");
+
+    box.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => {
+        const p = posts.find(x => x._id === b.dataset.edit);
+
+        document.getElementById("editPostId").value = p._id;
+        document.getElementById("adminPostContent").value = p.content;
+        document.getElementById("postModalTitle").textContent = "Edit post";
+        document.getElementById("adminPostSubmit").textContent = "Save changes";
+        document.getElementById("postModal").classList.remove("hidden");
+    });
+
+    box.querySelectorAll("[data-delete]").forEach(b => b.onclick = async () => {
+        if (!confirm("Delete this post and all of its comments?")) return;
+
+        try {
+            await api(`/api/posts/${b.dataset.delete}`, {
+                method: "DELETE"
+            });
+
+            toast("Post deleted.");
+            load();
+
+        } catch (e) {
+            toast(e.message);
+        }
+    });
+
+    box.querySelectorAll("[data-comment]").forEach(b => b.onclick = async () => {
+        if (!confirm("Delete this comment?")) return;
+
+        try {
+            await api(`/api/comments/${b.dataset.comment}`, {
+                method: "DELETE"
+            });
+
+            toast("Comment deleted.");
+            load();
+
+        } catch (e) {
+            toast(e.message);
+        }
+    });
+
+    document.getElementById("statPosts").textContent = posts.length;
+
+    document.getElementById("statComments").textContent =
+        posts.reduce((n, p) => n + p.comments.length, 0);
+
+    document.getElementById("statAdminPosts").textContent =
+        posts.filter(p => p.authorName.includes("(Admin)")).length;
+}
 
   box.innerHTML = list.map(p => `
     <article class="admin-row">
