@@ -1,69 +1,41 @@
 ﻿function token() {
-
-    return localStorage.getItem(
-        "barangay_token"
-    );
+    return localStorage.getItem("barangay_token");
 }
 
-
-async function api(
-    path,
-    options = {}
-) {
+async function api(path, options = {}) {
 
     const headers = {
-
-        "Content-Type":
-            "application/json",
-
+        "Content-Type": "application/json",
         ...(options.headers || {})
-
     };
-
 
     const currentToken = token();
 
-
     if (currentToken) {
-
-        headers.Authorization =
-            `Bearer ${currentToken}`;
-
+        headers.Authorization = `Bearer ${currentToken}`;
     }
 
+    const res = await fetch(
+        `${API_URL}${path}`,
+        {
+            ...options,
+            headers
+        }
+    );
 
-    const res =
-        await fetch(
-            `${API_URL}${path}`,
-            {
-                ...options,
-                headers
-            }
-        );
-
-
-    const data =
-        await res
-            .json()
-            .catch(() => ({}));
-
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-
         throw new Error(
-            data.message ||
-            "Request failed."
+            data.message || "Request failed."
         );
-
     }
-
 
     return data;
 }
 
 
 function escapeHTML(value) {
-
     return String(value).replace(
         /[&<>"']/g,
         ch => ({
@@ -78,95 +50,60 @@ function escapeHTML(value) {
 
 
 function initials(name) {
-
     return String(name || "U")
         .split(/\s+/)
         .slice(0, 2)
         .map(x => x[0])
         .join("")
         .toUpperCase();
-
 }
 
 
 function timeAgo(date) {
 
-    const seconds =
-        Math.floor(
-            (
-                Date.now() -
-                new Date(date).getTime()
-            ) / 1000
-        );
-
+    const seconds = Math.floor(
+        (
+            Date.now() -
+            new Date(date).getTime()
+        ) / 1000
+    );
 
     if (seconds < 60) {
         return "Just now";
     }
 
-
     if (seconds < 3600) {
-
-        return `${Math.floor(
-            seconds / 60
-        )}m`;
-
+        return `${Math.floor(seconds / 60)}m`;
     }
-
 
     if (seconds < 86400) {
-
-        return `${Math.floor(
-            seconds / 3600
-        )}h`;
-
+        return `${Math.floor(seconds / 3600)}h`;
     }
-
 
     if (seconds < 604800) {
-
-        return `${Math.floor(
-            seconds / 86400
-        )}d`;
-
+        return `${Math.floor(seconds / 86400)}d`;
     }
 
-
-    return new Date(
-        date
-    ).toLocaleDateString();
-
+    return new Date(date).toLocaleDateString();
 }
 
 
 function toast(message) {
 
     const element =
-        document.getElementById(
-            "toast"
-        );
+        document.getElementById("toast");
 
+    if (!element) {
+        return;
+    }
 
-    if (!element) return;
+    element.textContent = message;
 
-
-    element.textContent =
-        message;
-
-
-    element.classList.add(
-        "show"
-    );
-
+    element.classList.add("show");
 
     setTimeout(() => {
-
-        element.classList.remove(
-            "show"
-        );
-
+        element.classList.remove("show");
     }, 2500);
-
 }
 
 
@@ -174,30 +111,29 @@ function toast(message) {
 /* RENDER ANNOUNCEMENTS */
 /* ================================================= */
 
-function renderAnnouncements(
-    announcements
-) {
+function renderAnnouncements(announcements) {
 
     const container =
         document.getElementById(
             "announcementList"
         );
 
-
     const loading =
         document.getElementById(
             "announcementLoading"
         );
 
+    if (loading) {
+        loading.style.display = "none";
+    }
 
-    loading.style.display =
-        "none";
-
+    if (!container) {
+        return;
+    }
 
     if (!announcements.length) {
 
         container.innerHTML = `
-
             <div class="empty card">
 
                 <div class="empty-icon">
@@ -213,124 +149,95 @@ function renderAnnouncements(
                 </p>
 
             </div>
-
         `;
 
         return;
     }
 
-
     container.innerHTML =
-        announcements.map(post => `
+        announcements.map(post => {
 
-            <article class="post card">
+            const comments =
+                post.comments || [];
 
+            return `
+                <article class="post card">
 
-                <!-- HEADER -->
+                    <div class="post-head">
 
-                <div class="post-head">
+                        <div class="clickable-profile">
 
-                    <div
-                        class="clickable-profile"
-                    >
-
-                        <span class="avatar">
-
-                            ${escapeHTML(
-            initials(
-                post.authorName
-            )
-        )}
-
-                        </span>
-
-
-                        <div class="post-author">
-
-                            <strong>
-
+                            <span class="avatar">
                                 ${escapeHTML(
-            post.authorName
-        )}
+                initials(
+                    post.authorName
+                )
+            )}
+                            </span>
 
-                            </strong>
+                            <div class="post-author">
 
+                                <strong>
+                                    ${escapeHTML(
+                post.authorName
+            )}
+                                </strong>
 
-                            <small>
+                                <small>
+                                    ${timeAgo(
+                post.createdAt
+            )}
+                                </small>
 
-                                ${timeAgo(
-            post.createdAt
-        )}
-
-                            </small>
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                    <div class="post-content">
+                        ${escapeHTML(
+                post.content
+            ).replace(
+                /\n/g,
+                "<br>"
+            )}
+                    </div>
 
+                    ${post.image
+                    ? `
+                                <div class="post-image-container">
 
-                <!-- ANNOUNCEMENT CONTENT -->
+                                    <img
+                                        src="${escapeHTML(
+                        post.image
+                    )}"
+                                        class="post-image"
+                                        alt="Barangay announcement picture"
+                                        loading="lazy"
+                                    >
 
-                <div class="post-content">
+                                </div>
+                            `
+                    : ""
+                }
 
-                    ${escapeHTML(
-            post.content
-        ).replace(
-            /\n/g,
-            "<br>"
-        )}
+                    <div class="post-meta">
 
-                </div>
+                        <span>
+                            ${comments.length}
+                            comment${comments.length === 1
+                    ? ""
+                    : "s"
+                }
+                        </span>
 
+                    </div>
 
-                <!-- COMPLAINT / ANNOUNCEMENT IMAGE -->
+                </article>
+            `;
 
-                ${post.image
-                ? `
-                            <div class="post-image-container">
-
-                                <img
-                                    src="${escapeHTML(
-                    post.image
-                )}"
-                                    class="post-image"
-                                    alt="Barangay announcement picture"
-                                    loading="lazy"
-                                >
-
-                            </div>
-                          `
-                : ""
-            }
-
-
-                <!-- COMMENTS -->
-
-                <div class="post-meta">
-
-                    <span>
-
-                        ${(post.comments || [])
-                .length
-            }
-
-                        comment${(post.comments || [])
-                .length === 1
-                ? ""
-                : "s"
-            }
-
-                    </span>
-
-                </div>
-
-
-            </article>
-
-        `).join("");
-
+        }).join("");
 }
 
 
@@ -340,6 +247,11 @@ function renderAnnouncements(
 
 async function loadAnnouncements() {
 
+    const loading =
+        document.getElementById(
+            "announcementLoading"
+        );
+
     try {
 
         const announcements =
@@ -347,25 +259,23 @@ async function loadAnnouncements() {
                 "/api/announcements"
             );
 
-
         renderAnnouncements(
             announcements
         );
 
-
     } catch (error) {
 
-        const loading =
-            document.getElementById(
-                "announcementLoading"
-            );
+        console.error(
+            "Announcement error:",
+            error
+        );
 
-
-        loading.textContent =
-            error.message;
+        if (loading) {
+            loading.textContent =
+                error.message;
+        }
 
     }
-
 }
 
 
@@ -373,201 +283,182 @@ async function loadAnnouncements() {
 /* PAGE LOAD */
 /* ================================================= */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    if (!token()) {
+        if (!token()) {
 
-        location.href = "index.html";
+            location.href =
+                "index.html";
 
-        return;
-    }
+            return;
+        }
+
+        try {
+
+            const me =
+                await api(
+                    "/api/auth/me"
+                );
 
 
-    try {
+            /* ========================================= */
+            /* ALLOW BOTH ROLES */
+            /* ========================================= */
 
-        const me =
-            await api("/api/auth/me");
+            if (
+                me.role !== "user" &&
+                me.role !== "admin"
+            ) {
+
+                location.href =
+                    "index.html";
+
+                return;
+            }
 
 
-        /* ============================================= */
-        /* ALLOW BOTH RESIDENT AND ADMIN */
-        /* ============================================= */
+            /* ========================================= */
+            /* RESIDENT INFORMATION */
+            /* ========================================= */
 
-        if (
-            me.role !== "user" &&
-            me.role !== "admin"
-        ) {
+            if (me.role === "user") {
 
-            location.href = "index.html";
+                const user =
+                    me.account;
+
+                const topName =
+                    document.getElementById(
+                        "topName"
+                    );
+
+                const profileName =
+                    document.getElementById(
+                        "profileName"
+                    );
+
+                const profileEmail =
+                    document.getElementById(
+                        "profileEmail"
+                    );
+
+                const topAvatar =
+                    document.getElementById(
+                        "topAvatar"
+                    );
+
+                const profileAvatar =
+                    document.getElementById(
+                        "profileAvatar"
+                    );
+
+
+                if (topName) {
+                    topName.textContent =
+                        user.name;
+                }
+
+
+                if (profileName) {
+                    profileName.textContent =
+                        user.name;
+                }
+
+
+                if (profileEmail) {
+                    profileEmail.textContent =
+                        user.email;
+                }
+
+
+                const userInitials =
+                    initials(user.name);
+
+
+                if (topAvatar) {
+                    topAvatar.textContent =
+                        userInitials;
+                }
+
+
+                if (profileAvatar) {
+                    profileAvatar.textContent =
+                        userInitials;
+                }
+
+            }
+
+
+            /* ========================================= */
+            /* LOAD ANNOUNCEMENTS */
+            /* ========================================= */
+
+            await loadAnnouncements();
+
+
+        } catch (error) {
+
+            console.error(
+                "Page load error:",
+                error
+            );
+
+            localStorage.removeItem(
+                "barangay_token"
+            );
+
+            location.href =
+                "index.html";
 
             return;
         }
 
 
-        /* ============================================= */
-        /* RESIDENT INFORMATION */
-        /* ============================================= */
+        /* ================================================= */
+        /* LOGOUT */
+        /* ================================================= */
 
-        if (me.role === "user") {
+        const logoutBtn =
+            document.getElementById(
+                "logoutBtn"
+            );
 
-            const user = me.account;
+        if (logoutBtn) {
 
+            logoutBtn.onclick = () => {
 
-            const topName =
-                document.getElementById("topName");
+                localStorage.clear();
 
-            const profileName =
-                document.getElementById("profileName");
+                location.href =
+                    "index.html";
 
-            const profileEmail =
-                document.getElementById("profileEmail");
-
-            const topAvatar =
-                document.getElementById("topAvatar");
-
-            const profileAvatar =
-                document.getElementById("profileAvatar");
-
-
-            if (topName) {
-
-                topName.textContent =
-                    user.name;
-
-            }
-
-
-            if (profileName) {
-
-                profileName.textContent =
-                    user.name;
-
-            }
-
-
-            if (profileEmail) {
-
-                profileEmail.textContent =
-                    user.email;
-
-            }
-
-
-            const userInitials =
-                initials(user.name);
-
-
-            if (topAvatar) {
-
-                topAvatar.textContent =
-                    userInitials;
-
-            }
-
-
-            if (profileAvatar) {
-
-                profileAvatar.textContent =
-                    userInitials;
-
-            }
+            };
 
         }
 
 
-        /* ============================================= */
-        /* LOAD ANNOUNCEMENTS FOR BOTH */
-        /* ============================================= */
+        /* ================================================= */
+        /* CHANGE PASSWORD BUTTON */
+        /* ================================================= */
 
-        loadAnnouncements();
+        const passwordBtn =
+            document.getElementById(
+                "passwordBtn"
+            );
 
+        if (passwordBtn) {
 
-    } catch (error) {
+            passwordBtn.onclick = () => {
 
-        console.error(error);
-
-        localStorage.removeItem(
-            "barangay_token"
-        );
-
-        location.href =
-            "index.html";
-
-        return;
-
-    }
-
-
-    /* ================================================= */
-    /* LOGOUT */
-    /* ================================================= */
-
-    const logoutBtn =
-        document.getElementById("logoutBtn");
-
-
-    if (logoutBtn) {
-
-        logoutBtn.onclick = () => {
-
-            localStorage.clear();
-
-            location.href =
-                "index.html";
-
-        };
-
-    }
-
-
-    /* ================================================= */
-    /* CHANGE PASSWORD */
-    /* ================================================= */
-
-    const passwordBtn =
-        document.getElementById("passwordBtn");
-
-
-    if (passwordBtn) {
-
-        passwordBtn.onclick = () => {
-
-            const passwordModal =
-                document.getElementById(
-                    "passwordModal"
-                );
-
-            if (passwordModal) {
-
-                passwordModal.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-        };
-
-    }
-
-
-    /* ================================================= */
-    /* CLOSE MODALS */
-    /* ================================================= */
-
-    document
-        .querySelectorAll("[data-close]")
-        .forEach(button => {
-
-            button.onclick = () => {
-
-                const modal =
+                const passwordModal =
                     document.getElementById(
-                        button.dataset.close
+                        "passwordModal"
                     );
 
-                if (modal) {
+                if (passwordModal) {
 
-                    modal.classList.add(
+                    passwordModal.classList.remove(
                         "hidden"
                     );
 
@@ -575,169 +466,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             };
 
-        });
-
-
-    /* ================================================= */
-    /* CHANGE PASSWORD FORM */
-    /* ================================================= */
-
-    const passwordForm =
-        document.getElementById(
-            "passwordForm"
-        );
-
-
-    if (passwordForm) {
-
-        passwordForm.onsubmit =
-            async event => {
-
-                event.preventDefault();
-
-
-                const currentPassword =
-                    document.getElementById(
-                        "currentPassword"
-                    );
-
-                const newPassword =
-                    document.getElementById(
-                        "newPassword"
-                    );
-
-                const confirmPassword =
-                    document.getElementById(
-                        "confirmPassword"
-                    );
-
-                const message =
-                    document.getElementById(
-                        "passwordMessage"
-                    );
-
-
-                if (
-                    !currentPassword ||
-                    !newPassword ||
-                    !confirmPassword
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    newPassword.value !==
-                    confirmPassword.value
-                ) {
-
-                    if (message) {
-
-                        message.textContent =
-                            "New passwords do not match.";
-
-                        message.className =
-                            "form-message error";
-
-                    }
-
-                    return;
-
-                }
-
-
-                try {
-
-                    await api(
-                        "/api/auth/change-password",
-                        {
-                            method: "PUT",
-
-                            body: JSON.stringify({
-
-                                currentPassword:
-                                    currentPassword.value,
-
-                                newPassword:
-                                    newPassword.value
-
-                            })
-
-                        }
-                    );
-
-
-                    if (message) {
-
-                        message.textContent =
-                            "Password changed successfully.";
-
-                        message.className =
-                            "form-message success";
-
-                    }
-
-
-                    passwordForm.reset();
-
-
-                } catch (error) {
-
-                    if (message) {
-
-                        message.textContent =
-                            error.message;
-
-                        message.className =
-                            "form-message error";
-
-                    }
-
-                }
-
-            };
-
-    }
-
-});
-
-        /* ================================================= */
-        /* LOGOUT */
-        /* ================================================= */
-
-        document.getElementById(
-            "logoutBtn"
-        ).onclick = () => {
-
-            localStorage.clear();
-
-            location.href =
-                "index.html";
-
-        };
+        }
 
 
         /* ================================================= */
-        /* CHANGE PASSWORD */
-        /* ================================================= */
-
-        document.getElementById(
-            "passwordBtn"
-        ).onclick = () => {
-
-            document.getElementById(
-                "passwordModal"
-            ).classList.remove(
-                "hidden"
-            );
-
-        };
-
-
-        /* ================================================= */
-        /* CLOSE MODAL */
+        /* CLOSE MODALS */
         /* ================================================= */
 
         document
@@ -748,13 +481,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 button.onclick = () => {
 
-                    document
-                        .getElementById(
+                    const modal =
+                        document.getElementById(
                             button.dataset.close
-                        )
-                        .classList.add(
+                        );
+
+                    if (modal) {
+
+                        modal.classList.add(
                             "hidden"
                         );
+
+                    }
 
                 };
 
@@ -765,111 +503,117 @@ document.addEventListener("DOMContentLoaded", async () => {
         /* CHANGE PASSWORD */
         /* ================================================= */
 
-        document.getElementById(
-            "passwordForm"
-        ).onsubmit = async event => {
+        const passwordForm =
+            document.getElementById(
+                "passwordForm"
+            );
 
-            event.preventDefault();
+        if (passwordForm) {
 
+            passwordForm.onsubmit =
+                async event => {
 
-            const currentPassword =
-                document.getElementById(
-                    "currentPassword"
-                );
-
-
-            const newPassword =
-                document.getElementById(
-                    "newPassword"
-                );
+                    event.preventDefault();
 
 
-            const confirmPassword =
-                document.getElementById(
-                    "confirmPassword"
-                );
+                    const currentPassword =
+                        document.getElementById(
+                            "currentPassword"
+                        );
+
+                    const newPassword =
+                        document.getElementById(
+                            "newPassword"
+                        );
+
+                    const confirmPassword =
+                        document.getElementById(
+                            "confirmPassword"
+                        );
+
+                    const message =
+                        document.getElementById(
+                            "passwordMessage"
+                        );
 
 
-            if (
-                newPassword.value !==
-                confirmPassword.value
-            ) {
-
-                const message =
-                    document.getElementById(
-                        "passwordMessage"
-                    );
+                    if (
+                        !currentPassword ||
+                        !newPassword ||
+                        !confirmPassword
+                    ) {
+                        return;
+                    }
 
 
-                message.textContent =
-                    "New passwords do not match.";
+                    if (
+                        newPassword.value !==
+                        confirmPassword.value
+                    ) {
+
+                        if (message) {
+
+                            message.textContent =
+                                "New passwords do not match.";
+
+                            message.className =
+                                "form-message error";
+
+                        }
+
+                        return;
+                    }
 
 
-                message.className =
-                    "form-message error";
+                    try {
+
+                        await api(
+                            "/api/auth/change-password",
+                            {
+                                method: "PUT",
+
+                                body: JSON.stringify({
+                                    currentPassword:
+                                        currentPassword.value,
+
+                                    newPassword:
+                                        newPassword.value
+                                })
+                            }
+                        );
 
 
-                return;
-            }
+                        if (message) {
+
+                            message.textContent =
+                                "Password changed successfully.";
+
+                            message.className =
+                                "form-message success";
+
+                        }
 
 
-            try {
+                        passwordForm.reset();
 
-                await api(
-                    "/api/auth/change-password",
-                    {
-                        method: "PUT",
 
-                        body: JSON.stringify({
+                    } catch (error) {
 
-                            currentPassword:
-                                currentPassword.value,
+                        if (message) {
 
-                            newPassword:
-                                newPassword.value
+                            message.textContent =
+                                error.message;
 
-                        })
+                            message.className =
+                                "form-message error";
+
+                        }
 
                     }
-                );
 
+                };
 
-                const message =
-                    document.getElementById(
-                        "passwordMessage"
-                    );
-
-
-                message.textContent =
-                    "Password changed successfully.";
-
-
-                message.className =
-                    "form-message success";
-
-
-                event.target.reset();
-
-
-            } catch (error) {
-
-                const message =
-                    document.getElementById(
-                        "passwordMessage"
-                    );
-
-
-                message.textContent =
-                    error.message;
-
-
-                message.className =
-                    "form-message error";
-
-            }
-
-        };
+        }
 
     }
 );
-
