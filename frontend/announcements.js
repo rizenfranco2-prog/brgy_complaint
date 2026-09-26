@@ -457,158 +457,122 @@ document.addEventListener(
                 await api(
                     "/api/auth/me"
                 );
-
             if (me.role === "admin") {
+
+                /* =============================== */
+                /* ADMIN TOP BAR */
+                /* =============================== */
+
+                const brand =
+                    document.querySelector(".top-brand");
+
+                if (brand) {
+                    brand.href = "admin-dashboard.html";
+                    brand.innerHTML = `
+            <span>BC</span>
+            Admin Console
+        `;
+                }
+
+
+                /* =============================== */
+                /* ADMIN PROFILE */
+                /* =============================== */
+
+                const topName =
+                    document.getElementById("topName");
+
+                const profileName =
+                    document.getElementById("profileName");
+
+                const profileEmail =
+                    document.getElementById("profileEmail");
+
+                const topAvatar =
+                    document.getElementById("topAvatar");
+
+                const profileAvatar =
+                    document.getElementById("profileAvatar");
+
+                const adminName =
+                    me.account.username;
+
+                if (topName) {
+                    topName.textContent = adminName;
+                }
+
+                if (profileName) {
+                    profileName.textContent = adminName;
+                }
+
+                if (profileEmail) {
+                    profileEmail.textContent =
+                        "System administrator";
+                }
+
+                if (topAvatar) {
+                    topAvatar.textContent =
+                        initials(adminName);
+                }
+
+                if (profileAvatar) {
+                    profileAvatar.textContent =
+                        initials(adminName);
+                }
+
+
+                /* =============================== */
+                /* ADMIN SIDEBAR */
+                /* =============================== */
+
+                const nav =
+                    document.querySelector(".sidebar nav");
+
+                if (nav) {
+
+                    nav.innerHTML = `
+
+            <a class="nav-item"
+               href="admin-dashboard.html">
+                ▦
+                <span>Posts</span>
+            </a>
+
+            <button class="nav-item"
+                    id="adminPasswordBtn">
+                ⚿
+                <span>Change Password</span>
+            </button>
+
+            <a class="nav-item active"
+               href="announcements.html">
+                📢
+                <span>Announcements</span>
+            </a>
+
+            <a class="nav-item"
+               href="dashboard.html">
+                👥
+                <span>User Feed</span>
+            </a>
+
+        `;
+                }
+
+
+                /* =============================== */
+                /* ADD ANNOUNCEMENT */
+                /* =============================== */
+
                 const controls =
                     document.getElementById(
                         "adminAnnouncementControls"
                     );
 
-                if (me.role === "admin") {
-
-                    // Change admin page navigation
-                    const brand = document.querySelector(".top-brand");
-                    if (brand) {
-                        brand.href = "admin-dashboard.html";
-                        brand.innerHTML = `
-            <span>BC</span>
-            Admin Console
-        `;
-                    }
-
-                    const sidebar = document.querySelector(".sidebar nav");
-
-                    if (sidebar) {
-                        sidebar.innerHTML = `
-            <a class="nav-item" href="admin-dashboard.html">
-                ▦
-                <span>Posts</span>
-            </a>
-
-            <button class="nav-item" id="adminPasswordBtn">
-                ⚿
-                <span>Change Password</span>
-            </button>
-
-            <a class="nav-item active" href="announcements.html">
-                📢
-                <span>Announcements</span>
-            </a>
-
-            <a class="nav-item" href="dashboard.html">
-                👥
-                <span>User Feed</span>
-            </a>
-        `;
-                    }
-
-                    const topName =
-                        document.getElementById("topName");
-
-                    const profileName =
-                        document.getElementById("profileName");
-
-                    const profileEmail =
-                        document.getElementById("profileEmail");
-
-                    if (topName) {
-                        topName.textContent =
-                            me.account.username;
-                    }
-
-                    if (profileName) {
-                        profileName.textContent =
-                            me.account.username;
-                    }
-
-                    if (profileEmail) {
-                        profileEmail.textContent =
-                            "System administrator";
-                    }
-
-                    const initialsText =
-                        initials(me.account.username);
-
-                    const topAvatar =
-                        document.getElementById("topAvatar");
-
-                    const profileAvatar =
-                        document.getElementById("profileAvatar");
-
-                    if (topAvatar) {
-                        topAvatar.textContent = initialsText;
-                    }
-
-                    if (profileAvatar) {
-                        profileAvatar.textContent = initialsText;
-                    }
-
-                    // Add announcement button
-                    const controls =
-                        document.getElementById(
-                            "adminAnnouncementControls"
-                        );
-
-                    if (controls) {
-
-                        const addButton =
-                            document.createElement("button");
-
-                        addButton.textContent =
-                            "＋ Add Announcement";
-
-                        addButton.className =
-                            "primary-btn";
-
-                        controls.appendChild(addButton);
-
-                        addButton.onclick = async () => {
-
-                            const content =
-                                prompt("Enter announcement:");
-
-                            if (
-                                content === null ||
-                                !content.trim()
-                            ) {
-                                return;
-                            }
-
-                            try {
-
-                                await api(
-                                    "/api/posts",
-                                    {
-                                        method: "POST",
-                                        body: JSON.stringify({
-                                            content:
-                                                content.trim()
-                                        })
-                                    }
-                                );
-
-                                toast(
-                                    "Announcement published."
-                                );
-
-                                loadAnnouncements();
-
-                            } catch (error) {
-
-                                toast(error.message);
-
-                            }
-
-                        };
-                    }
-                }
-
                 if (controls) {
 
                     const addButton =
-                        document.createElement(
-                            "button"
-                        );
+                        document.createElement("button");
 
                     addButton.textContent =
                         "＋ Add Announcement";
@@ -617,61 +581,53 @@ document.addEventListener(
                         "primary-btn";
 
                     addButton.style.marginTop =
-                        "12px";
+                        "10px";
 
-                    controls.appendChild(
-                        addButton
-                    );
+                    controls.appendChild(addButton);
 
 
-                    addButton.onclick =
-                        async () => {
+                    addButton.onclick = async () => {
 
-                            const content =
-                                prompt(
-                                    "Enter announcement:"
-                                );
+                        const content =
+                            prompt(
+                                "Enter announcement:"
+                            );
 
-                            if (
-                                content === null ||
-                                !content.trim()
-                            ) {
-                                return;
-                            }
+                        if (
+                            content === null ||
+                            !content.trim()
+                        ) {
+                            return;
+                        }
 
+                        try {
 
-                            try {
+                            await api(
+                                "/api/posts",
+                                {
+                                    method: "POST",
 
-                                await api(
-                                    "/api/posts",
-                                    {
-                                        method: "POST",
+                                    body: JSON.stringify({
+                                        content:
+                                            content.trim()
+                                    })
+                                }
+                            );
 
-                                        body: JSON.stringify({
-                                            content:
-                                                content.trim()
-                                        })
-                                    }
-                                );
+                            toast(
+                                "Announcement published."
+                            );
 
+                            loadAnnouncements();
 
-                                toast(
-                                    "Announcement published."
-                                );
+                        } catch (error) {
 
-                                loadAnnouncements();
+                            toast(
+                                error.message
+                            );
 
-
-                            } catch (error) {
-
-                                toast(
-                                    error.message
-                                );
-
-                            }
-
-                        };
-
+                        }
+                    };
                 }
 
             }
