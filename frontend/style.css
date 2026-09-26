@@ -366,3 +366,37 @@ textarea { min-height: 130px; resize: vertical; }
         object-fit: contain;
         border-radius: 12px;
     }
+
+/* ========================================= */
+/* ANNOUNCEMENTS */
+/* ========================================= */
+
+.announcement-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.announcement-card {
+    border-left: 4px solid #333;
+}
+
+.admin-post-image,
+.post-image-container {
+    margin-top: 14px;
+    width: 100%;
+    max-width: 650px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+    .admin-post-image img,
+    .post-image {
+        display: block;
+        width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+    }

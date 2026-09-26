@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Announcements • Barangay Connect</title>
+
+    <link rel="icon"
+          href="favicon.ico"
+          type="image/x-icon">
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body class="app-body">
+
+
+    <header class="topbar">
+
+        <a class="top-brand"
+           href="dashboard.html">
+            <span>BC</span>
+            Barangay Connect
+        </a>
+
+
+        <div class="top-user">
+
+            <div class="clickable-profile">
+
+                <span class="avatar"
+                      id="topAvatar">
+                    U
+                </span>
+
+                <span id="topName">
+                    User
+                </span>
+
+            </div>
+
+
+            <button class="icon-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <div class="layout">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+
+            <div class="profile-mini">
+
+                <span class="avatar large"
+                      id="profileAvatar">
+                    U
+                </span>
+
+
+                <strong id="profileName">
+                    User
+                </strong>
+
+
+                <small id="profileEmail">
+                    email
+                </small>
+
+            </div>
+
+
+            <nav>
+
+
+                <a class="nav-item"
+                   href="dashboard.html">
+                    ⌂
+                    <span>Community Feed</span>
+                </a>
+
+
+                <button class="nav-item"
+                        id="passwordBtn">
+                    ⚿
+                    <span>Change Password</span>
+                </button>
+
+
+                <a class="nav-item active"
+                   href="announcements.html">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+
+                <a class="nav-item"
+                   href="admin.html">
+                    ⚙
+                    <span>Admin Portal</span>
+                </a>
+
+
+            </nav>
+
+        </aside>
+
+
+
+        <!-- MAIN -->
+
+        <main class="feed">
+
+
+            <section class="welcome">
+
+                <div>
+
+                    <p class="eyebrow">
+                        BARANGAY ANNOUNCEMENTS
+                    </p>
+
+
+                    <h1>
+                        Official Barangay Announcements
+                    </h1>
+
+
+                    <p class="muted">
+                        Important announcements and updates from the barangay.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <div id="announcementList"></div>
+
+
+            <div class="loading"
+                 id="announcementLoading">
+                Loading announcements...
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- CHANGE PASSWORD -->
+
+    <div class="modal hidden"
+         id="passwordModal">
+
+        <div class="modal-card">
+
+            <button class="close"
+                    data-close="passwordModal">
+                ×
+            </button>
+
+
+            <h2>
+                Change password
+            </h2>
+
+
+            <form id="passwordForm">
+
+
+                <label>
+                    Current password
+                </label>
+
+                <input id="currentPassword"
+                       type="password"
+                       required>
+
+
+                <label>
+                    New password
+                </label>
+
+                <input id="newPassword"
+                       type="password"
+                       minlength="6"
+                       required>
+
+
+                <label>
+                    Confirm new password
+                </label>
+
+                <input id="confirmPassword"
+                       type="password"
+                       minlength="6"
+                       required>
+
+
+                <button class="primary-btn"
+                        type="submit">
+                    Update password
+                </button>
+
+
+                <p class="form-message"
+                   id="passwordMessage"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="toast"
+         id="toast"></div>
+
+
+    <script src="config.js"></script>
+    <script src="announcements.js"></script>
+
+</body>
+</html>

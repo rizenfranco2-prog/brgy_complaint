@@ -29,6 +29,7 @@ const adminSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
+
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -51,6 +52,11 @@ const postSchema = new mongoose.Schema({
         type: String,
         default: "",
         maxlength: 1200000
+    },
+
+    isAnnouncement: {
+        type: Boolean,
+        default: false
     },
 
     createdAt: {
@@ -303,7 +309,8 @@ app.post("/api/posts", auth, async (req, res) => {
                 authorId: admin._id,
                 authorName: `${admin.username} (Admin)`,
                 content,
-                image
+                image,
+                isAnnouncement: true
             });
 
             return res.status(201).json(post);
@@ -333,6 +340,79 @@ app.post("/api/posts", auth, async (req, res) => {
         res.status(500).json({
             message: "Could not create post."
         });
+    }
+});
+
+// GET BARANGAY ANNOUNCEMENTS
+app.get("/api/announcements", auth, async (req, res) => {
+    try {
+
+        const announcements = await Post.find({
+            $or: [
+                { isAnnouncement: true },
+                { authorName: { $regex: /\(Admin\)$/ } }
+            ]
+        })
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .lean();
+
+
+        const postIds =
+            announcements.map(post => post._id);
+
+
+        const comments =
+            await Comment.find({
+                postId: {
+                    $in: postIds
+                }
+            })
+                .sort({ createdAt: 1 })
+                .lean();
+
+
+        const commentMap = {};
+
+
+        for (const comment of comments) {
+
+            const key =
+                comment.postId.toString();
+
+            if (!commentMap[key]) {
+                commentMap[key] = [];
+            }
+
+            commentMap[key].push(comment);
+        }
+
+
+        const posts =
+            announcements.map(post => ({
+                ...post,
+
+                comments:
+                    commentMap[
+                    post._id.toString()
+                    ] || []
+            }));
+
+
+        res.json(posts);
+
+    } catch (err) {
+
+        console.error(
+            "GET ANNOUNCEMENTS ERROR:",
+            err
+        );
+
+        res.status(500).json({
+            message:
+                "Could not load announcements."
+        });
+
     }
 });
 
