@@ -1,42 +1,5 @@
 let adminPosts = [];
 
-function token() { return localStorage.getItem("barangay_token"); }
-
-async function api(path, options = {}) {
-  const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
-  headers.Authorization = `Bearer ${token()}`;
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.message || "Request failed.");
-  return data;
-}
-
-function esc(v) {
-  return String(v).replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
-}
-
-function ago(date) {
-  const s = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (s < 60) return "Just now";
-  if (s < 3600) return `${Math.floor(s/60)}m`;
-  if (s < 86400) return `${Math.floor(s/3600)}h`;
-  return new Date(date).toLocaleDateString();
-}
-
-function toast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2500);
-}
-
-function showMessage(id, msg, error = true) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.className = `form-message ${error ? "error" : "success"}`;
-}
-
-let posts = [];
-
 function token() {
     return localStorage.getItem("barangay_token");
 }
@@ -47,7 +10,11 @@ async function api(path, options = {}) {
         ...(options.headers || {})
     };
 
-    headers.Authorization = `Bearer ${token()}`;
+    const currentToken = token();
+
+    if (currentToken) {
+        headers.Authorization = `Bearer ${currentToken}`;
+    }
 
     const res = await fetch(`${API_URL}${path}`, {
         ...options,
@@ -91,6 +58,8 @@ function ago(date) {
 function toast(msg) {
     const t = document.getElementById("toast");
 
+    if (!t) return;
+
     t.textContent = msg;
     t.classList.add("show");
 
@@ -102,6 +71,8 @@ function toast(msg) {
 function showMessage(id, msg, error = true) {
     const el = document.getElementById(id);
 
+    if (!el) return;
+
     el.textContent = msg;
     el.className = `form-message ${error ? "error" : "success"}`;
 }
@@ -111,153 +82,155 @@ function showMessage(id, msg, error = true) {
 /* RENDER ADMIN POSTS */
 /* ================================================= */
 
-function render(list = posts) {
+function render(list = adminPosts) {
 
     const box = document.getElementById("adminPostList");
+    const loading = document.getElementById("adminLoading");
 
-    document.getElementById("adminLoading").style.display = "none";
+    if (loading) {
+        loading.style.display = "none";
+    }
 
+    if (!box) return;
 
     if (!list.length) {
 
         box.innerHTML = `
-      <div class="empty">
+            <div class="empty">
 
-        <div class="empty-icon">
-          ◎
-        </div>
+                <div class="empty-icon">
+                    ◎
+                </div>
 
-        <h3>
-          No posts
-        </h3>
+                <h3>
+                    No posts
+                </h3>
 
-        <p>
-          There are no matching posts.
-        </p>
+                <p>
+                    There are no matching posts.
+                </p>
 
-      </div>
-    `;
+            </div>
+        `;
 
+        updateStats();
         return;
     }
 
 
-    box.innerHTML = list.map(p => `
+    box.innerHTML = list.map(p => {
 
-    <article class="admin-row">
+        const comments = p.comments || [];
 
-      <div class="admin-row-main">
+        return `
+            <article class="admin-row">
 
+                <div class="admin-row-main">
 
-        <!-- POST HEADER -->
+                    <!-- POST HEADER -->
 
-        <div class="admin-post-top">
+                    <div class="admin-post-top">
 
-          <strong>
-            ${esc(p.authorName)}
-          </strong>
+                        <strong>
+                            ${esc(p.authorName)}
+                        </strong>
 
-          <span>
-            ${ago(p.createdAt)}
-          </span>
+                        <span>
+                            ${ago(p.createdAt)}
+                        </span>
 
-        </div>
-
-
-        <!-- POST CONTENT -->
-
-        <p>
-          ${esc(p.content).replace(/\n/g, "<br>")}
-        </p>
+                    </div>
 
 
-        <!-- COMPLAINT IMAGE -->
+                    <!-- POST CONTENT -->
 
-        ${p.image ? `
-          <div class="admin-post-image">
-
-            <img
-              src="${esc(p.image)}"
-              alt="Complaint picture"
-              loading="lazy"
-            >
-
-          </div>
-        ` : ""}
+                    <p>
+                        ${esc(p.content).replace(/\n/g, "<br>")}
+                    </p>
 
 
-        <!-- COMMENT COUNT -->
+                    <!-- COMPLAINT IMAGE -->
 
-        <div class="admin-row-meta">
+                    ${p.image ? `
+                        <div class="admin-post-image">
 
-          ${p.comments.length}
+                            <img
+                                src="${esc(p.image)}"
+                                alt="Complaint picture"
+                                loading="lazy"
+                            >
 
-          comment${p.comments.length === 1 ? "" : "s"}
-
-        </div>
-
-
-        <!-- COMMENTS -->
-
-        <div class="admin-comments">
-
-          ${p.comments.map(c => `
-
-            <div class="admin-comment">
-
-              <span>
-
-                <strong>
-                  ${esc(c.authorName)}
-                </strong>
-
-                :
-                ${esc(c.content)}
-
-              </span>
+                        </div>
+                    ` : ""}
 
 
-              <button
-                data-comment="${c._id}"
-              >
-                Delete
-              </button>
+                    <!-- COMMENT COUNT -->
 
-            </div>
+                    <div class="admin-row-meta">
 
-          `).join("")}
+                        ${comments.length}
 
-        </div>
+                        comment${comments.length === 1 ? "" : "s"}
+
+                    </div>
 
 
-      </div>
+                    <!-- COMMENTS -->
+
+                    <div class="admin-comments">
+
+                        ${comments.map(c => `
+                            <div class="admin-comment">
+
+                                <span>
+
+                                    <strong>
+                                        ${esc(c.authorName)}
+                                    </strong>
+
+                                    :
+                                    ${esc(c.content)}
+
+                                </span>
+
+                                <button
+                                    data-comment="${c._id}"
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
+                        `).join("")}
+
+                    </div>
+
+                </div>
 
 
-      <!-- ACTIONS -->
+                <!-- ACTIONS -->
 
-      <div class="row-actions">
+                <div class="row-actions">
 
-        <button
-          class="secondary-btn"
-          data-edit="${p._id}"
-        >
-          Edit
-        </button>
+                    <button
+                        class="secondary-btn"
+                        data-edit="${p._id}"
+                    >
+                        Edit
+                    </button>
 
+                    <button
+                        class="danger-btn"
+                        data-delete="${p._id}"
+                    >
+                        Delete
+                    </button>
 
-        <button
-          class="danger-btn"
-          data-delete="${p._id}"
-        >
-          Delete
-        </button>
+                </div>
 
-      </div>
+            </article>
+        `;
 
-
-    </article>
-
-  `).join("");
+    }).join("");
 
 
     /* ================================================= */
@@ -268,12 +241,11 @@ function render(list = posts) {
 
         b.onclick = () => {
 
-            const p = posts.find(
+            const p = adminPosts.find(
                 x => x._id === b.dataset.edit
             );
 
             if (!p) return;
-
 
             document.getElementById("editPostId").value =
                 p._id;
@@ -290,7 +262,6 @@ function render(list = posts) {
             document
                 .getElementById("postModal")
                 .classList.remove("hidden");
-
         };
 
     });
@@ -310,7 +281,6 @@ function render(list = posts) {
                 return;
             }
 
-
             try {
 
                 await api(
@@ -329,7 +299,6 @@ function render(list = posts) {
                 toast(e.message);
 
             }
-
         };
 
     });
@@ -346,7 +315,6 @@ function render(list = posts) {
             if (!confirm("Delete this comment?")) {
                 return;
             }
-
 
             try {
 
@@ -366,32 +334,61 @@ function render(list = posts) {
                 toast(e.message);
 
             }
-
         };
 
     });
 
 
-    /* ================================================= */
-    /* STATISTICS */
-    /* ================================================= */
-
-    document.getElementById("statPosts").textContent =
-        posts.length;
+    updateStats();
+}
 
 
-    document.getElementById("statComments").textContent =
-        posts.reduce(
-            (n, p) => n + p.comments.length,
-            0
-        );
+/* ================================================= */
+/* STATISTICS */
+/* ================================================= */
+
+function updateStats() {
+
+    const statPosts =
+        document.getElementById("statPosts");
+
+    const statComments =
+        document.getElementById("statComments");
+
+    const statAdminPosts =
+        document.getElementById("statAdminPosts");
 
 
-    document.getElementById("statAdminPosts").textContent =
-        posts.filter(
-            p => p.authorName.includes("(Admin)")
-        ).length;
+    if (statPosts) {
 
+        statPosts.textContent =
+            adminPosts.length;
+
+    }
+
+
+    if (statComments) {
+
+        statComments.textContent =
+            adminPosts.reduce(
+                (total, post) =>
+                    total + (post.comments || []).length,
+                0
+            );
+
+    }
+
+
+    if (statAdminPosts) {
+
+        statAdminPosts.textContent =
+            adminPosts.filter(
+                post =>
+                    String(post.authorName || "")
+                        .includes("(Admin)")
+            ).length;
+
+    }
 }
 
 
@@ -403,20 +400,21 @@ async function load(search = "") {
 
     try {
 
-        posts = await api(
+        adminPosts = await api(
             `/api/posts?search=${encodeURIComponent(search)}`
         );
 
-        render(posts);
+        render(adminPosts);
 
     } catch (e) {
 
-        document.getElementById(
-            "adminLoading"
-        ).textContent = e.message;
+        const loading =
+            document.getElementById("adminLoading");
 
+        if (loading) {
+            loading.textContent = e.message;
+        }
     }
-
 }
 
 
@@ -427,7 +425,6 @@ async function load(search = "") {
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
-
 
         /* ================================================= */
         /* ADMIN AUTH */
@@ -502,7 +499,6 @@ document.addEventListener(
 
         let timer;
 
-
         document.getElementById("adminSearch").oninput =
             e => {
 
@@ -572,7 +568,9 @@ document.addEventListener(
 
 
                 const id =
-                    document.getElementById("editPostId").value;
+                    document
+                        .getElementById("editPostId")
+                        .value;
 
 
                 const content =
@@ -624,7 +622,8 @@ document.addEventListener(
 
                     document
                         .getElementById("postModal")
-                        .classList.add("hidden");
+                        .classList
+                        .add("hidden");
 
 
                     load();
@@ -651,7 +650,8 @@ document.addEventListener(
 
                 document
                     .getElementById("passwordModal")
-                    .classList.remove("hidden");
+                    .classList
+                    .remove("hidden");
 
             };
 
@@ -662,9 +662,25 @@ document.addEventListener(
                 e.preventDefault();
 
 
+                const currentPassword =
+                    document.getElementById(
+                        "adminCurrentPassword"
+                    );
+
+                const newPassword =
+                    document.getElementById(
+                        "adminNewPassword"
+                    );
+
+                const confirmPassword =
+                    document.getElementById(
+                        "adminConfirmPassword"
+                    );
+
+
                 if (
-                    adminNewPassword.value !==
-                    adminConfirmPassword.value
+                    newPassword.value !==
+                    confirmPassword.value
                 ) {
 
                     showMessage(
@@ -686,10 +702,10 @@ document.addEventListener(
                             body: JSON.stringify({
 
                                 currentPassword:
-                                    adminCurrentPassword.value,
+                                    currentPassword.value,
 
                                 newPassword:
-                                    adminNewPassword.value
+                                    newPassword.value
 
                             })
                         }
@@ -719,179 +735,3 @@ document.addEventListener(
 
     }
 );
-
-    box.querySelectorAll("[data-comment]").forEach(b => b.onclick = async () => {
-        if (!confirm("Delete this comment?")) return;
-
-        try {
-            await api(`/api/comments/${b.dataset.comment}`, {
-                method: "DELETE"
-            });
-
-            toast("Comment deleted.");
-            load();
-
-        } catch (e) {
-            toast(e.message);
-        }
-    });
-
-    document.getElementById("statPosts").textContent = posts.length;
-
-    document.getElementById("statComments").textContent =
-        posts.reduce((n, p) => n + p.comments.length, 0);
-
-    document.getElementById("statAdminPosts").textContent =
-        posts.filter(p => p.authorName.includes("(Admin)")).length;
-}
-
-  box.innerHTML = list.map(p => `
-    <article class="admin-row">
-      <div class="admin-row-main">
-        <div class="admin-post-top">
-          <strong>${esc(p.authorName)}</strong>
-          <span>${ago(p.createdAt)}</span>
-        </div>
-        <p>${esc(p.content).replace(/\n/g,"<br>")}</p>
-        <div class="admin-row-meta">${p.comments.length} comment${p.comments.length === 1 ? "" : "s"}</div>
-        <div class="admin-comments">
-          ${p.comments.map(c => `
-            <div class="admin-comment">
-              <span><strong>${esc(c.authorName)}</strong>: ${esc(c.content)}</span>
-              <button data-comment="${c._id}">Delete</button>
-            </div>`).join("")}
-        </div>
-      </div>
-      <div class="row-actions">
-        <button class="secondary-btn" data-edit="${p._id}">Edit</button>
-        <button class="danger-btn" data-delete="${p._id}">Delete</button>
-      </div>
-    </article>`).join("");
-
-  box.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => {
-    const p = posts.find(x => x._id === b.dataset.edit);
-    document.getElementById("editPostId").value = p._id;
-    document.getElementById("adminPostContent").value = p.content;
-    document.getElementById("postModalTitle").textContent = "Edit post";
-    document.getElementById("adminPostSubmit").textContent = "Save changes";
-    document.getElementById("postModal").classList.remove("hidden");
-  });
-
-  box.querySelectorAll("[data-delete]").forEach(b => b.onclick = async () => {
-    if (!confirm("Delete this post and all of its comments?")) return;
-    try {
-      await api(`/api/posts/${b.dataset.delete}`, { method: "DELETE" });
-      toast("Post deleted.");
-      load();
-    } catch (e) { toast(e.message); }
-  });
-
-  box.querySelectorAll("[data-comment]").forEach(b => b.onclick = async () => {
-    if (!confirm("Delete this comment?")) return;
-    try {
-      await api(`/api/comments/${b.dataset.comment}`, { method: "DELETE" });
-      toast("Comment deleted.");
-      load();
-    } catch (e) { toast(e.message); }
-  });
-
-  document.getElementById("statPosts").textContent = posts.length;
-  document.getElementById("statComments").textContent = posts.reduce((n,p) => n + p.comments.length, 0);
-  document.getElementById("statAdminPosts").textContent = posts.filter(p => p.authorName.includes("(Admin)")).length;
-}
-
-async function load(search = "") {
-  try {
-    posts = await api(`/api/posts?search=${encodeURIComponent(search)}`);
-    render(posts);
-  } catch (e) {
-    document.getElementById("adminLoading").textContent = e.message;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
-  if (!token() || localStorage.getItem("barangay_role") !== "admin") {
-    location.href = "admin.html";
-    return;
-  }
-
-  try {
-    const me = await api("/api/auth/me");
-    if (me.role !== "admin") throw new Error();
-    document.getElementById("adminName").textContent = me.account.username;
-    document.getElementById("adminSideName").textContent = me.account.username;
-  } catch {
-    localStorage.clear();
-    location.href = "admin.html";
-    return;
-  }
-
-  load();
-
-  document.getElementById("adminLogout").onclick = () => {
-    localStorage.clear();
-    location.href = "admin.html";
-  };
-
-  let timer;
-  document.getElementById("adminSearch").oninput = e => {
-    clearTimeout(timer);
-    timer = setTimeout(() => load(e.target.value), 300);
-  };
-
-  document.getElementById("newPostBtn").onclick = () => {
-    document.getElementById("editPostId").value = "";
-    document.getElementById("adminPostContent").value = "";
-    document.getElementById("postModalTitle").textContent = "Create post";
-    document.getElementById("adminPostSubmit").textContent = "Publish";
-    document.getElementById("postModal").classList.remove("hidden");
-  };
-
-  document.querySelectorAll("[data-close]").forEach(b => {
-    b.onclick = () => document.getElementById(b.dataset.close).classList.add("hidden");
-  });
-
-  document.getElementById("adminPostForm").onsubmit = async e => {
-    e.preventDefault();
-    const id = document.getElementById("editPostId").value;
-    const content = document.getElementById("adminPostContent").value.trim();
-    if (!content) return;
-
-    try {
-      if (id) {
-        await api(`/api/posts/${id}`, { method: "PUT", body: JSON.stringify({ content }) });
-        toast("Post updated.");
-      } else {
-        await api("/api/posts", { method: "POST", body: JSON.stringify({ content }) });
-        toast("Post published.");
-      }
-      document.getElementById("postModal").classList.add("hidden");
-      load();
-    } catch (err) {
-      showMessage("adminPostMessage", err.message);
-    }
-  };
-
-  document.getElementById("adminPasswordBtn").onclick = () => document.getElementById("passwordModal").classList.remove("hidden");
-
-  document.getElementById("adminPasswordForm").onsubmit = async e => {
-    e.preventDefault();
-    if (adminNewPassword.value !== adminConfirmPassword.value) {
-      showMessage("adminPasswordMessage", "New passwords do not match.");
-      return;
-    }
-    try {
-      await api("/api/auth/change-password", {
-        method: "PUT",
-        body: JSON.stringify({
-          currentPassword: adminCurrentPassword.value,
-          newPassword: adminNewPassword.value
-        })
-      });
-      showMessage("adminPasswordMessage", "Password changed successfully.", false);
-      e.target.reset();
-    } catch (err) {
-      showMessage("adminPasswordMessage", err.message);
-    }
-  };
-});
