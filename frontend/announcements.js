@@ -629,3 +629,27 @@ document.addEventListener(
 
     }
 );
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    if (!token()) {
+        location.href = "index.html";
+        return;
+    }
+
+    try {
+        const me = await api("/api/auth/me");
+
+        if (me.role !== "user" && me.role !== "admin") {
+            location.href = "index.html";
+            return;
+        }
+
+        loadAnnouncements();
+
+    } catch (error) {
+        console.error(error);
+        localStorage.clear();
+        location.href = "index.html";
+    }
+});
