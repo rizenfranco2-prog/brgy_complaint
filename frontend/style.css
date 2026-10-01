@@ -2551,3 +2551,243 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =========================================
+   ADMIN POSTS
+========================================= */
+
+.admin-post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.admin-row {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.admin-row-main {
+    width: 100%;
+}
+
+
+/* =========================================
+   POST HEADER
+========================================= */
+
+.admin-post-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+    .admin-post-top strong {
+        font-size: 15px;
+        color: #1e293b;
+    }
+
+    .admin-post-top span {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+.admin-row-main > p {
+    margin: 0 0 16px;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: normal;
+}
+
+
+/* =========================================
+   COMPLAINT DETAILS
+========================================= */
+
+.complaint-details {
+    margin: 16px 0;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+
+/* EACH DETAIL */
+
+.complaint-detail {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+/* LABEL */
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+}
+
+
+/* VALUE */
+
+.complaint-detail strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-word;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status-badge {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+    .status-badge.pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .status-badge.in-progress {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .status-badge.resolved {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+
+/* =========================================
+   COMPLAINT IMAGE
+========================================= */
+
+.admin-post-image {
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+    .admin-post-image img {
+        display: block;
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+
+/* =========================================
+   COMMENTS
+========================================= */
+
+.admin-row-meta {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.admin-comments {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+    .admin-comment button {
+        border: 0;
+        background: transparent;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+/* =========================================
+   COMMENT FORM
+========================================= */
+
+.admin-comment-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+    .admin-comment-form input {
+        flex: 1;
+        min-width: 0;
+        padding: 10px 12px;
+        border: 1px solid #dbe2ea;
+        border-radius: 8px;
+        outline: none;
+    }
+
+        .admin-comment-form input:focus {
+            border-color: #94a3b8;
+        }
+
+    .admin-comment-form button {
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .complaint-details {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-comment-form {
+        flex-direction: column;
+    }
+
+        .admin-comment-form button {
+            width: 100%;
+        }
+}
