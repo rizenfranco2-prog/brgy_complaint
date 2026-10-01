@@ -3540,16 +3540,38 @@ body.app-body {
     }
 
 /* =========================================================
-   FIX LIGHT TEXT VISIBILITY ON NAVY THEME
+   FINAL TEXT VISIBILITY FIX
    ========================================================= */
 
-/* Sidebar menu text */
-.app-body .sidebar .nav-link {
-    color: #DCEBFA !important;
-    font-weight: 600 !important;
+/* =========================
+   PROFILE CARD
+   ========================= */
+
+.app-body .profile-mini {
+    background: #102A47 !important;
 }
 
-    /* Active sidebar menu */
+    .app-body .profile-mini strong {
+        color: #FFFFFF !important;
+    }
+
+    .app-body .profile-mini small {
+        color: #D6E9FA !important;
+    }
+
+/* =========================
+   SIDEBAR MENU
+   ========================= */
+
+.app-body .sidebar .nav-link {
+    color: #DCEBFA !important;
+}
+
+    .app-body .sidebar .nav-link * {
+        color: inherit !important;
+    }
+
+    /* Active Community Feed */
     .app-body .sidebar .nav-link.active {
         background: #E8F2FF !important;
         color: #1D4ED8 !important;
@@ -3559,65 +3581,100 @@ body.app-body {
             color: #1D4ED8 !important;
         }
 
-    /* Hover */
-    .app-body .sidebar .nav-link:hover {
-        background: #1B4168 !important;
-        color: #FFFFFF !important;
-    }
+/* =========================
+   COMPLAINT FORM LABELS
+   ========================= */
 
-        .app-body .sidebar .nav-link:hover * {
-            color: #FFFFFF !important;
-        }
+.app-body .composer label,
+.app-body .complaint-form label {
+    color: #DCEBFA !important;
+    font-weight: 600 !important;
+}
 
-/* Profile */
-.app-body .profile-mini strong {
+/* =========================
+   INPUT PLACEHOLDERS
+   ========================= */
+
+.app-body input::placeholder,
+.app-body textarea::placeholder {
+    color: #8FA8C2 !important;
+}
+
+/* Actual input text */
+.app-body input,
+.app-body textarea,
+.app-body select {
     color: #FFFFFF !important;
 }
 
-.app-body .profile-mini small {
-    color: #D6E9FA !important;
+    /* Select option text */
+    .app-body select option {
+        background: #102A47 !important;
+        color: #FFFFFF !important;
+    }
+
+/* =========================
+   COMPLAINT DESCRIPTION
+   ========================= */
+
+.app-body .composer h3,
+.app-body .composer h4,
+.app-body .composer .field-label {
+    color: #EAF4FF !important;
 }
 
-/* Complaint status section */
+/* =========================
+   COMPLAINT STATUS
+   ========================= */
+
 .app-body .complaint-status,
 .app-body .status-card {
     color: #17324D !important;
 }
 
-    /* Status title */
     .app-body .complaint-status strong,
     .app-body .status-card strong {
         color: #17324D !important;
     }
 
-    /* Pending description */
     .app-body .complaint-status p,
-    .app-body .status-card p,
-    .app-body .complaint-status small,
-    .app-body .status-card small {
+    .app-body .status-card p {
         color: #5B7590 !important;
     }
 
-/* Status badge */
+/* Pending badge */
 .app-body .status-pending {
     color: #B45309 !important;
     background: #FFF7ED !important;
     border: 1px solid #FDBA74 !important;
 }
 
-/* Character counter */
-.app-body .composer .char-count,
+/* =========================
+   IMAGE BUTTON
+   ========================= */
+
+.app-body .image-upload-btn,
+.app-body .upload-btn {
+    color: #334155 !important;
+}
+
+/* =========================
+   CHARACTER COUNTER
+   ========================= */
+
+.app-body .char-count,
 .app-body .character-count {
     color: #D6E9FA !important;
 }
 
-/* General labels */
-.app-body label {
-    color: #DCEBFA !important;
+/* =========================
+   TOPBAR USER
+   ========================= */
+
+.app-body .top-user strong {
+    color: #FFFFFF !important;
 }
 
-/* Form helper text */
-.app-body .form-help,
-.app-body .helper-text {
-    color: #AFC4D9 !important;
+.app-body .top-user small {
+    color: #C5DAEC !important;
 }
