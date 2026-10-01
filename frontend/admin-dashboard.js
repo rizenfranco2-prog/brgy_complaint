@@ -170,6 +170,17 @@ async function load(search = "") {
 
         adminPosts = data.posts || [];
 
+        console.log("FULL ADMIN API RESPONSE:", data);
+        console.log("FIRST POST:", adminPosts[0]);
+        console.log("USER INFO:", {
+            name: adminPosts[0]?.authorName,
+            category: adminPosts[0]?.category,
+            address: adminPosts[0]?.address,
+            age: adminPosts[0]?.age,
+            gender: adminPosts[0]?.gender,
+            contactNumber: adminPosts[0]?.contactNumber
+        });
+
         console.log(
             "ADMIN POSTS:",
             adminPosts
