@@ -8,12 +8,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.API_URL ||
         "https://brgy-complaint.onrender.com";
 
-    const token = localStorage.getItem("barangay_token");
+    const token =
+        localStorage.getItem("barangay_token");
 
     if (!token) {
         window.location.href = "admin.html";
         return;
     }
+
+
+    /* =========================================================
+       CHART INSTANCES
+    ========================================================= */
+
+    let monthlyChart = null;
+    let categoryChart = null;
+    let statusChart = null;
+
+    let allReports = [];
 
 
     /* =========================================================
@@ -27,7 +39,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             ...(options.headers || {})
         };
 
-        headers.Authorization = `Bearer ${token}`;
+        headers.Authorization =
+            `Bearer ${token}`;
 
         const response = await fetch(
             `${API_URL}${path}`,
@@ -39,11 +52,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) {
 
-            if (response.status === 401 || response.status === 403) {
-                localStorage.removeItem("barangay_token");
-                localStorage.removeItem("barangay_role");
+            if (
+                response.status === 401 ||
+                response.status === 403
+            ) {
 
-                window.location.href = "admin.html";
+                localStorage.removeItem(
+                    "barangay_token"
+                );
+
+                localStorage.removeItem(
+                    "barangay_role"
+                );
+
+                window.location.href =
+                    "admin.html";
+
                 return;
             }
 
@@ -64,37 +88,78 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
 
-            const me = await api("/api/auth/me");
+            const me =
+                await api("/api/auth/me");
 
-            if (!me || me.role !== "admin") {
-                localStorage.removeItem("barangay_token");
-                localStorage.removeItem("barangay_role");
+            if (
+                !me ||
+                me.role !== "admin"
+            ) {
 
-                window.location.href = "admin.html";
+                localStorage.removeItem(
+                    "barangay_token"
+                );
+
+                localStorage.removeItem(
+                    "barangay_role"
+                );
+
+                window.location.href =
+                    "admin.html";
+
                 return false;
             }
 
+
+            /*
+                Your backend may return:
+
+                {
+                    role: "admin",
+                    account: {...}
+                }
+
+                So support both account and
+                the older response structure.
+            */
+
+            const account =
+                me.account ||
+                me.user ||
+                me;
+
+
+            const name =
+                account.username ||
+                account.name ||
+                "Administrator";
+
+
             const nameElement =
-                document.getElementById("topName");
+                document.getElementById(
+                    "topName"
+                );
 
             const avatarElement =
-                document.getElementById("topAvatar");
+                document.getElementById(
+                    "topAvatar"
+                );
+
 
             if (nameElement) {
                 nameElement.textContent =
-                    me.username || me.name || "Administrator";
+                    name;
             }
+
 
             if (avatarElement) {
 
-                const name =
-                    me.username ||
-                    me.name ||
-                    "A";
-
                 avatarElement.textContent =
-                    name.charAt(0).toUpperCase();
+                    name
+                        .charAt(0)
+                        .toUpperCase();
             }
+
 
             return true;
 
@@ -118,53 +183,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
 
-            const result =
-                await api("/api/posts");
-
-            /*
-                Your API normally returns an array.
-
-                This also protects against an API response
-                such as { posts: [...] }.
-            */
-
-            const posts =
-                Array.isArray(result)
-                    ? result
-                    : result.posts || [];
-
-
             /*
                 IMPORTANT:
 
-                Only posts with:
+                Use the dedicated reports endpoint.
 
-                    type: "complaint"
+                This endpoint should include:
+                - Pending complaints
+                - In Progress complaints
+                - Resolved complaints
+                - Archived complaints
 
-                are counted as reports.
-
-                Announcements and community posts
-                will NOT appear in the reports.
+                This is better than /api/posts because
+                resolved complaints are archived.
             */
 
-            const reports =
-                posts.filter(post =>
-                    post.type === "complaint"
+            const result =
+                await api(
+                    "/api/reports/complaints"
                 );
 
 
-            console.log(
-                "All posts:",
-                posts
-            );
+            /*
+                Expected:
+
+                {
+                    complaints: [...]
+                }
+            */
+
+            allReports =
+                Array.isArray(
+                    result?.complaints
+                )
+                    ? result.complaints
+                    : Array.isArray(result)
+                        ? result
+                        : [];
+
 
             console.log(
-                "Complaint reports:",
-                reports
+                "Complaint Reports:",
+                allReports
             );
 
 
-            initializeReports(reports);
+            initializeReports();
 
         } catch (error) {
 
@@ -173,21 +237,48 @@ document.addEventListener("DOMContentLoaded", async () => {
                 error
             );
 
+            allReports = [];
+
             showEmptyReports();
         }
     }
 
 
     /* =========================================================
-       INITIALIZE REPORTS
+       INITIALIZE
     ========================================================= */
 
-    function initializeReports(reports) {
+    function initializeReports() {
 
-        /*
-            If there are no complaints,
-            everything should show 0.
-        */
+        const yearFilter =
+            document.getElementById(
+                "yearFilter"
+            );
+
+
+        const currentYear =
+            new Date().getFullYear();
+
+
+        const selectedYear =
+            yearFilter
+                ? Number(yearFilter.value) ||
+                currentYear
+                : currentYear;
+
+
+        const reports =
+            filterByYear(
+                allReports,
+                selectedYear
+            );
+
+
+        console.log(
+            `Reports for ${selectedYear}:`,
+            reports
+        );
+
 
         updateStatistics(reports);
 
@@ -202,27 +293,64 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     /* =========================================================
+       YEAR FILTER
+    ========================================================= */
+
+    function filterByYear(
+        reports,
+        year
+    ) {
+
+        return reports.filter(post => {
+
+            if (!post.createdAt) {
+                return false;
+            }
+
+            const date =
+                new Date(post.createdAt);
+
+            return (
+                date.getFullYear() ===
+                Number(year)
+            );
+        });
+    }
+
+
+    /* =========================================================
        STATISTICS
     ========================================================= */
 
-    function updateStatistics(reports) {
+    function updateStatistics(
+        reports
+    ) {
 
         const total =
             reports.length;
 
+
         const pending =
             reports.filter(post =>
-                normalizeStatus(post.status) === "pending"
+                normalizeStatus(
+                    post.status
+                ) === "pending"
             ).length;
+
 
         const progress =
             reports.filter(post =>
-                normalizeStatus(post.status) === "in progress"
+                normalizeStatus(
+                    post.status
+                ) === "in progress"
             ).length;
+
 
         const resolved =
             reports.filter(post =>
-                normalizeStatus(post.status) === "resolved"
+                normalizeStatus(
+                    post.status
+                ) === "resolved"
             ).length;
 
 
@@ -248,19 +376,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         if (totalElement) {
-            totalElement.textContent = total;
+            totalElement.textContent =
+                total;
         }
+
 
         if (pendingElement) {
-            pendingElement.textContent = pending;
+            pendingElement.textContent =
+                pending;
         }
+
 
         if (progressElement) {
-            progressElement.textContent = progress;
+            progressElement.textContent =
+                progress;
         }
 
+
         if (resolvedElement) {
-            resolvedElement.textContent = resolved;
+            resolvedElement.textContent =
+                resolved;
         }
     }
 
@@ -269,31 +404,29 @@ document.addEventListener("DOMContentLoaded", async () => {
        MONTHLY CHART
     ========================================================= */
 
-    function createMonthlyChart(reports) {
+    function createMonthlyChart(
+        reports
+    ) {
 
         const canvas =
             document.getElementById(
                 "monthlyChart"
             );
 
+
         if (!canvas) return;
 
 
-        const yearFilter =
-            document.getElementById(
-                "yearFilter"
-            );
+        /*
+            Destroy previous chart.
 
+            This prevents Chart.js from creating
+            multiple charts when changing the year.
+        */
 
-        const currentYear =
-            new Date().getFullYear();
-
-
-        let selectedYear =
-            yearFilter
-                ? Number(yearFilter.value) ||
-                currentYear
-                : currentYear;
+        if (monthlyChart) {
+            monthlyChart.destroy();
+        }
 
 
         const monthlyValues =
@@ -302,88 +435,106 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         reports.forEach(post => {
 
-            if (!post.createdAt) return;
+            if (!post.createdAt) {
+                return;
+            }
+
 
             const date =
                 new Date(post.createdAt);
 
-            if (
-                date.getFullYear() ===
-                selectedYear
-            ) {
 
-                monthlyValues[
-                    date.getMonth()
-                ]++;
-            }
+            const month =
+                date.getMonth();
+
+
+            monthlyValues[month]++;
         });
 
 
-        new Chart(canvas, {
+        monthlyChart =
+            new Chart(canvas, {
 
-            type: "line",
+                type: "line",
 
-            data: {
+                data: {
 
-                labels: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec"
-                ],
+                    labels: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec"
+                    ],
 
-                datasets: [{
+                    datasets: [{
 
-                    label: "Complaints",
+                        label:
+                            "Complaints",
 
-                    data: monthlyValues,
+                        data:
+                            monthlyValues,
 
-                    borderWidth: 3,
+                        borderWidth: 3,
 
-                    tension: 0.35,
+                        tension: 0.35,
 
-                    fill: true,
+                        fill: true,
 
-                    pointRadius: 4,
+                        pointRadius: 4,
 
-                    pointHoverRadius: 6
-                }]
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-
-                    legend: {
-                        display: false
-                    }
+                        pointHoverRadius: 6
+                    }]
                 },
 
-                scales: {
+                options: {
 
-                    y: {
+                    responsive: true,
 
-                        beginAtZero: true,
+                    maintainAspectRatio: false,
 
-                        ticks: {
-                            precision: 0
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (context) {
+
+                                        return (
+                                            " Complaints: " +
+                                            context.raw
+                                        );
+                                    }
+                            }
+                        }
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+                                precision: 0
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
     }
 
 
@@ -391,14 +542,22 @@ document.addEventListener("DOMContentLoaded", async () => {
        CATEGORY CHART
     ========================================================= */
 
-    function createCategoryChart(reports) {
+    function createCategoryChart(
+        reports
+    ) {
 
         const canvas =
             document.getElementById(
                 "categoryChart"
             );
 
+
         if (!canvas) return;
+
+
+        if (categoryChart) {
+            categoryChart.destroy();
+        }
 
 
         const categories = {};
@@ -417,56 +576,61 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
 
-        const labels =
+        let labels =
             Object.keys(categories);
 
 
-        const values =
+        let values =
             Object.values(categories);
 
 
         /*
-            When there are no reports,
-            display a clean empty chart.
+            Empty state
         */
 
         if (labels.length === 0) {
 
-            labels.push("No Reports");
-            values.push(0);
+            labels = [
+                "No Reports"
+            ];
+
+            values = [1];
         }
 
 
-        new Chart(canvas, {
+        categoryChart =
+            new Chart(canvas, {
 
-            type: "doughnut",
+                type: "doughnut",
 
-            data: {
+                data: {
 
-                labels: labels,
+                    labels: labels,
 
-                datasets: [{
+                    datasets: [{
 
-                    data: values,
+                        data: values,
 
-                    borderWidth: 3
-                }]
-            },
+                        borderWidth: 3
+                    }]
+                },
 
-            options: {
+                options: {
 
-                responsive: true,
+                    responsive: true,
 
-                maintainAspectRatio: false,
+                    maintainAspectRatio: false,
 
-                plugins: {
+                    plugins: {
 
-                    legend: {
-                        position: "bottom"
+                        legend: {
+
+                            position:
+                                "bottom"
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
 
@@ -474,14 +638,22 @@ document.addEventListener("DOMContentLoaded", async () => {
        STATUS CHART
     ========================================================= */
 
-    function createStatusChart(reports) {
+    function createStatusChart(
+        reports
+    ) {
 
         const canvas =
             document.getElementById(
                 "statusChart"
             );
 
+
         if (!canvas) return;
+
+
+        if (statusChart) {
+            statusChart.destroy();
+        }
 
 
         let pending = 0;
@@ -492,61 +664,75 @@ document.addEventListener("DOMContentLoaded", async () => {
         reports.forEach(post => {
 
             const status =
-                normalizeStatus(post.status);
+                normalizeStatus(
+                    post.status
+                );
 
 
-            if (status === "pending") {
+            if (
+                status === "pending"
+            ) {
+
                 pending++;
             }
 
-            else if (status === "in progress") {
+            else if (
+                status === "in progress"
+            ) {
+
                 progress++;
             }
 
-            else if (status === "resolved") {
+            else if (
+                status === "resolved"
+            ) {
+
                 resolved++;
             }
         });
 
 
-        new Chart(canvas, {
+        statusChart =
+            new Chart(canvas, {
 
-            type: "doughnut",
+                type: "doughnut",
 
-            data: {
+                data: {
 
-                labels: [
-                    "Pending",
-                    "In Progress",
-                    "Resolved"
-                ],
-
-                datasets: [{
-
-                    data: [
-                        pending,
-                        progress,
-                        resolved
+                    labels: [
+                        "Pending",
+                        "In Progress",
+                        "Resolved"
                     ],
 
-                    borderWidth: 3
-                }]
-            },
+                    datasets: [{
 
-            options: {
+                        data: [
+                            pending,
+                            progress,
+                            resolved
+                        ],
 
-                responsive: true,
+                        borderWidth: 3
+                    }]
+                },
 
-                maintainAspectRatio: false,
+                options: {
 
-                plugins: {
+                    responsive: true,
 
-                    legend: {
-                        position: "bottom"
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position:
+                                "bottom"
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
 
@@ -554,37 +740,44 @@ document.addEventListener("DOMContentLoaded", async () => {
        SUMMARY TABLE
     ========================================================= */
 
-    function createSummaryTable(reports) {
+    function createSummaryTable(
+        reports
+    ) {
 
         const table =
             document.querySelector(
                 ".report-summary"
             );
 
-        if (!table) return;
+
+        if (!table) {
+            return;
+        }
 
 
         const pending =
             reports.filter(post =>
-                normalizeStatus(post.status) === "pending"
+                normalizeStatus(
+                    post.status
+                ) === "pending"
             ).length;
+
 
         const progress =
             reports.filter(post =>
-                normalizeStatus(post.status) === "in progress"
+                normalizeStatus(
+                    post.status
+                ) === "in progress"
             ).length;
+
 
         const resolved =
             reports.filter(post =>
-                normalizeStatus(post.status) === "resolved"
+                normalizeStatus(
+                    post.status
+                ) === "resolved"
             ).length;
 
-
-        /*
-            Find existing summary rows.
-            This works with the HTML structure
-            you previously showed.
-        */
 
         const rows =
             table.querySelectorAll(
@@ -592,23 +785,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
 
 
+        /*
+            Expected structure:
+
+            row 0 = header
+            row 1 = Pending
+            row 2 = In Progress
+            row 3 = Resolved
+        */
+
         if (rows.length >= 4) {
 
             updateSummaryRow(
                 rows[1],
-                "Pending",
                 pending
             );
 
             updateSummaryRow(
                 rows[2],
-                "In Progress",
                 progress
             );
 
             updateSummaryRow(
                 rows[3],
-                "Resolved",
                 resolved
             );
         }
@@ -617,35 +816,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function updateSummaryRow(
         row,
-        status,
         count
     ) {
 
         if (!row) return;
 
 
-        const cells =
-            row.querySelectorAll(
-                "span, strong"
+        const countElement =
+            row.querySelector(
+                ".summary-count"
             );
 
 
-        if (cells.length > 0) {
+        if (countElement) {
 
-            /*
-                Don't destroy the existing
-                status badge styling.
-            */
-
-            const countElement =
-                row.querySelector(
-                    ".summary-count"
-                );
-
-            if (countElement) {
-                countElement.textContent =
-                    count;
-            }
+            countElement.textContent =
+                count;
         }
     }
 
@@ -654,14 +840,19 @@ document.addEventListener("DOMContentLoaded", async () => {
        NORMALIZE STATUS
     ========================================================= */
 
-    function normalizeStatus(status) {
+    function normalizeStatus(
+        status
+    ) {
 
         return String(
             status || "Pending"
         )
             .trim()
             .toLowerCase()
-            .replace(/\s+/g, " ");
+            .replace(
+                /\s+/g,
+                " "
+            );
     }
 
 
@@ -672,9 +863,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     function showEmptyReports() {
 
         const ids = [
+
             "totalComplaints",
+
             "pendingComplaints",
+
             "progressComplaints",
+
             "resolvedComplaints"
         ];
 
@@ -684,14 +879,34 @@ document.addEventListener("DOMContentLoaded", async () => {
             const element =
                 document.getElementById(id);
 
+
             if (element) {
-                element.textContent = "0";
+
+                element.textContent =
+                    "0";
             }
         });
+    }
 
 
-        console.log(
-            "No complaint reports found."
+    /* =========================================================
+       YEAR CHANGE
+    ========================================================= */
+
+    const yearFilter =
+        document.getElementById(
+            "yearFilter"
+        );
+
+
+    if (yearFilter) {
+
+        yearFilter.addEventListener(
+            "change",
+            () => {
+
+                initializeReports();
+            }
         );
     }
 
@@ -736,6 +951,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     if (authenticated) {
+
         await loadReports();
     }
 
