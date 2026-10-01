@@ -119,14 +119,20 @@ function renderPosts(list = posts) {
 
         container.innerHTML = `
             <div class="empty card">
-                <div class="empty-icon">◎</div>
 
-                <h3>No posts found</h3>
+                <div class="empty-icon">
+                    ◎
+                </div>
+
+                <h3>
+                    No posts found
+                </h3>
 
                 <p>
                     Try another search or publish the first
                     community post.
                 </p>
+
             </div>
         `;
 
@@ -144,17 +150,18 @@ function renderPosts(list = posts) {
 
         const status = post.status || "Pending";
 
+
         return `
             <article class="post card">
 
+                <!-- ================================= -->
+                <!-- POST HEADER -->
+                <!-- ================================= -->
+
                 <div class="post-head">
 
-                    <button
-                        class="post-profile-btn"
-                        data-user-id="${escapeHTML(post.authorId)}"
-                        data-user-name="${escapeHTML(post.authorName)}"
-                        type="button"
-                    >
+                    <!-- AUTHOR IS NOW PLAIN TEXT -->
+                    <div class="post-profile">
 
                         <span class="avatar">
                             ${escapeHTML(
@@ -174,57 +181,76 @@ function renderPosts(list = posts) {
 
                         </div>
 
-                    </button>
+                    </div>
 
 
                     ${own
                 ? `
-                                <button
-                                    class="more-btn"
-                                    data-delete-post="${post._id}"
-                                    title="Delete post"
-                                >
-                                    ⋯
-                                </button>
-                              `
+                            <button
+                                class="more-btn"
+                                data-delete-post="${post._id}"
+                                title="Delete post"
+                                type="button"
+                            >
+                                ⋯
+                            </button>
+                        `
                 : ""
             }
 
                 </div>
 
+
+                <!-- ================================= -->
+                <!-- CATEGORY -->
+                <!-- ================================= -->
 
                 ${post.category
                 ? `
-                            <div class="post-category">
-                                ${escapeHTML(post.category)}
-                            </div>
-                          `
+                        <div class="post-category">
+                            ${escapeHTML(post.category)}
+                        </div>
+                    `
                 : ""
             }
 
 
+                <!-- ================================= -->
+                <!-- CONTENT -->
+                <!-- ================================= -->
+
                 <div class="post-content">
+
                     ${escapeHTML(post.content)
                 .replace(/\n/g, "<br>")}
+
                 </div>
 
 
+                <!-- ================================= -->
+                <!-- IMAGE -->
+                <!-- ================================= -->
+
                 ${post.image
                 ? `
-                            <div class="post-image-container">
+                        <div class="post-image-container">
 
-                                <img
-                                    src="${escapeHTML(post.image)}"
-                                    class="post-image"
-                                    alt="Complaint picture"
-                                    loading="lazy"
-                                >
+                            <img
+                                src="${escapeHTML(post.image)}"
+                                class="post-image"
+                                alt="Complaint picture"
+                                loading="lazy"
+                            >
 
-                            </div>
-                          `
+                        </div>
+                    `
                 : ""
             }
 
+
+                <!-- ================================= -->
+                <!-- STATUS -->
+                <!-- ================================= -->
 
                 <div class="post-status">
 
@@ -239,15 +265,25 @@ function renderPosts(list = posts) {
                 </div>
 
 
+                <!-- ================================= -->
+                <!-- POST META -->
+                <!-- ================================= -->
+
                 <div class="post-meta">
 
                     <span>
+
                         ${comments.length}
                         comment${comments.length === 1 ? "" : "s"}
+
                     </span>
 
                 </div>
 
+
+                <!-- ================================= -->
+                <!-- COMMENTS -->
+                <!-- ================================= -->
 
                 <div class="comments">
 
@@ -256,9 +292,11 @@ function renderPosts(list = posts) {
                         <div class="comment">
 
                             <span class="avatar tiny">
+
                                 ${escapeHTML(
                     initials(c.authorName)
                 )}
+
                             </span>
 
 
@@ -282,14 +320,16 @@ function renderPosts(list = posts) {
                             ${currentUser &&
                         String(c.authorId) ===
                         String(currentUser._id)
+
                         ? `
-                                        <button
-                                            class="delete-comment"
-                                            data-delete-comment="${c._id}"
-                                        >
-                                            ×
-                                        </button>
-                                      `
+                                    <button
+                                        class="delete-comment"
+                                        data-delete-comment="${c._id}"
+                                        type="button"
+                                    >
+                                        ×
+                                    </button>
+                                `
                         : ""
                     }
 
@@ -298,15 +338,19 @@ function renderPosts(list = posts) {
                     `).join("")}
 
 
+                    <!-- COMMENT FORM -->
+
                     <form
                         class="comment-form"
                         data-post-id="${post._id}"
                     >
 
                         <span class="avatar tiny">
+
                             ${escapeHTML(
                         initials(currentUser?.name)
                     )}
+
                         </span>
 
 
@@ -330,26 +374,6 @@ function renderPosts(list = posts) {
         `;
 
     }).join("");
-
-
-    /* ================================================= */
-    /* USER PROFILE */
-    /* ================================================= */
-
-    container
-        .querySelectorAll(".post-profile-btn")
-        .forEach(btn => {
-
-            btn.onclick = () => {
-
-                openUserProfile(
-                    btn.dataset.userId,
-                    btn.dataset.userName
-                );
-
-            };
-
-        });
 
 
     /* ================================================= */
@@ -490,8 +514,12 @@ async function loadPosts(search = "") {
     try {
 
         if (loading) {
+
             loading.style.display = "block";
-            loading.textContent = "Loading posts...";
+
+            loading.textContent =
+                "Loading posts...";
+
         }
 
 
@@ -499,16 +527,6 @@ async function loadPosts(search = "") {
             `/api/posts?search=${encodeURIComponent(search)}`
         );
 
-
-        /*
-         * IMPORTANT:
-         *
-         * Server returns:
-         *
-         * {
-         *     posts: [...]
-         * }
-         */
 
         posts = data.posts || [];
 
@@ -518,8 +536,12 @@ async function loadPosts(search = "") {
     } catch (e) {
 
         if (loading) {
+
             loading.style.display = "block";
-            loading.textContent = e.message;
+
+            loading.textContent =
+                e.message;
+
         }
 
     }
@@ -554,15 +576,12 @@ async function openUserProfile(userId, userName) {
     }
 
 
-    nameElement.textContent = userName;
+    nameElement.textContent =
+        userName;
 
     avatarElement.textContent =
         initials(userName);
 
-
-    /*
-     * Email is shown only for own profile.
-     */
 
     if (
         currentUser &&
@@ -615,8 +634,10 @@ async function openUserProfile(userId, userName) {
                     </h3>
 
                     <p class="muted">
+
                         ${escapeHTML(userName)}
                         has not published any posts.
+
                     </p>
 
                 </div>
@@ -641,10 +662,10 @@ async function openUserProfile(userId, userName) {
 
                         ${post.category
                         ? `
-                                    <div class="profile-post-category">
-                                        ${escapeHTML(post.category)}
-                                    </div>
-                                  `
+                                <div class="profile-post-category">
+                                    ${escapeHTML(post.category)}
+                                </div>
+                            `
                         : ""
                     }
 
@@ -659,16 +680,16 @@ async function openUserProfile(userId, userName) {
 
                         ${post.image
                         ? `
-                                    <div class="profile-post-image">
+                                <div class="profile-post-image">
 
-                                        <img
-                                            src="${escapeHTML(post.image)}"
-                                            alt="Complaint picture"
-                                            loading="lazy"
-                                        >
+                                    <img
+                                        src="${escapeHTML(post.image)}"
+                                        alt="Complaint picture"
+                                        loading="lazy"
+                                    >
 
-                                    </div>
-                                  `
+                                </div>
+                            `
                         : ""
                     }
 
@@ -698,7 +719,9 @@ async function openUserProfile(userId, userName) {
         postsElement.innerHTML = `
 
             <p class="form-message error">
+
                 ${escapeHTML(error.message)}
+
             </p>
 
         `;
@@ -715,14 +738,20 @@ async function openUserProfile(userId, userName) {
 async function compressImage(file) {
 
     if (!file.type.startsWith("image/")) {
-        throw new Error("Please select an image file.");
+
+        throw new Error(
+            "Please select an image file."
+        );
+
     }
 
 
     if (file.size > 8 * 1024 * 1024) {
+
         throw new Error(
             "Image must be smaller than 8MB."
         );
+
     }
 
 
@@ -893,23 +922,34 @@ document.addEventListener(
 
 
             if (topName) {
+
                 topName.textContent =
                     displayName;
+
             }
+
 
             if (profileName) {
+
                 profileName.textContent =
                     displayName;
+
             }
+
 
             if (profileEmail) {
+
                 profileEmail.textContent =
                     currentUser.email;
+
             }
 
+
             if (composerName) {
+
                 composerName.textContent =
                     displayName;
+
             }
 
 
@@ -933,28 +973,8 @@ document.addEventListener(
 
 
             /* ========================================= */
-            /* OWN PROFILE */
+            /* SIDEBAR PROFILE */
             /* ========================================= */
-
-            const topProfileBtn =
-                document.getElementById(
-                    "topProfileBtn"
-                );
-
-            if (topProfileBtn) {
-
-                topProfileBtn.onclick =
-                    () => {
-
-                        openUserProfile(
-                            currentUser._id,
-                            currentUser.name
-                        );
-
-                    };
-
-            }
-
 
             const sidebarProfileBtn =
                 document.getElementById(
@@ -1128,7 +1148,9 @@ document.addEventListener(
 
 
                         if (imagePreview) {
+
                             imagePreview.src = "";
+
                         }
 
 
@@ -1163,11 +1185,15 @@ document.addEventListener(
                 selectedImage = "";
 
                 if (imageInput) {
+
                     imageInput.value = "";
+
                 }
 
                 if (imagePreview) {
+
                     imagePreview.src = "";
+
                 }
 
                 if (imagePreviewContainer) {
@@ -1387,18 +1413,20 @@ document.addEventListener(
 
 
                         if (imageInput) {
+
                             imageInput.value = "";
+
                         }
 
 
                         if (imagePreview) {
+
                             imagePreview.src = "";
+
                         }
 
 
-                        if (
-                            imagePreviewContainer
-                        ) {
+                        if (imagePreviewContainer) {
 
                             imagePreviewContainer
                                 .classList
@@ -1636,7 +1664,6 @@ function showMessage(
     el.textContent = message;
 
     el.className =
-        `form-message ${error ? "error" : "success"
-        }`;
+        `form-message ${error ? "error" : "success"}`;
 
 }
