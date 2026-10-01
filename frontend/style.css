@@ -1,809 +1,529 @@
 /* =========================================================
-   BARANGAY CONNECT — PROFESSIONAL DASHBOARD COLORS
-   Dashboard + Admin Dashboard Enhancement
+   BARANGAY CONNECT — DASHBOARD POLISH
+   Add this at the VERY END of style.css
    ========================================================= */
 
-/* ---------------------------------------------------------
-   GLOBAL BACKGROUND
-   --------------------------------------------------------- */
+/* ---------- Resident dashboard profile ---------- */
 
-.app-body {
-    background: radial-gradient( circle at 0% 0%, rgba(20, 184, 166, 0.07), transparent 28% ), #f4f7f9;
+.top-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 9px;
+    border-radius: 10px;
+    transition: background .2s ease;
 }
 
-
-/* ---------------------------------------------------------
-   TOPBAR — PROFESSIONAL
-   --------------------------------------------------------- */
-
-.topbar {
-    background: rgba(255, 255, 255, 0.96);
-    border-bottom: 1px solid #dbe5e8;
-    box-shadow: 0 3px 18px rgba(15, 23, 42, 0.06);
-}
-
-.top-brand {
-    color: #0f172a;
-}
-
-    .top-brand span {
-        background: linear-gradient( 135deg, #0f172a 0%, #115e59 55%, #0f766e 100% );
-        color: white;
-        box-shadow: 0 5px 15px rgba(15, 118, 110, 0.22), inset 0 1px 0 rgba(255,255,255,.18);
+    .top-profile:hover {
+        background: #f1f5f7;
     }
 
-.top-search {
-    background: #f1f5f7;
-    border: 1px solid #e3eaed;
+.top-profile-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
-    .top-search:hover {
-        background: #ffffff;
-        border-color: #cbd5dc;
+    .top-profile-info strong {
+        color: var(--ink);
+        font-size: 13px;
+        white-space: nowrap;
     }
 
-    .top-search:focus-within {
-        border-color: #2dd4bf;
-        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.09);
-    }
-
-.logout-btn {
-    background: #ffffff;
-    border: 1px solid #d9e2e6;
-    color: #334155;
-}
-
-    .logout-btn:hover {
-        background: #fef2f2;
-        border-color: #fecaca;
-        color: #dc2626;
+    .top-profile-info small {
+        color: var(--muted);
+        font-size: 10px;
     }
 
 
-/* ---------------------------------------------------------
-   RESIDENT SIDEBAR
-   --------------------------------------------------------- */
+/* ---------- Post profile ---------- */
 
-.sidebar {
-    background: #ffffff;
-    border: 1px solid #dce5e8;
-    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.055);
+.post-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
 }
 
-.profile-mini {
-    background: linear-gradient( 145deg, #ecfdf5 0%, #f0fdfa 55%, #ffffff 100% );
-    border: 1px solid #d5f3ed;
-}
-
-    .profile-mini strong {
-        color: #172033;
+    .post-profile .avatar {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
     }
 
-    .profile-mini .avatar {
-        background: linear-gradient( 135deg, #ccfbf1, #99f6e4 );
-        color: #0f766e;
-        border-color: #d5f3ed;
+    .post-profile .post-author {
+        min-width: 0;
     }
 
-.sidebar-title {
-    color: #94a3b8;
-}
-
-.nav-item,
-.sidebar-item {
-    color: #475569;
-}
-
-    .nav-item:hover,
-    .sidebar-item:hover {
-        background: #f0fdfa;
-        color: #0f766e;
-    }
-
-    .nav-item.active,
-    .sidebar-item.active {
-        background: linear-gradient( 90deg, #ccfbf1 0%, #ecfdf5 100% );
-        color: #0f766e;
-        box-shadow: inset 4px 0 0 #0f766e;
-    }
-
-
-/* ---------------------------------------------------------
-   DASHBOARD HEADER
-   --------------------------------------------------------- */
-
-.welcome,
-.dashboard-heading {
-    position: relative;
-}
-
-    .welcome h1,
-    .dashboard-heading h1 {
-        color: #0f172a;
-    }
-
-    .welcome .muted,
-    .dashboard-heading .muted {
-        color: #64748b;
-    }
-
-
-/* ---------------------------------------------------------
-   COMPLAINT COMPOSER
-   --------------------------------------------------------- */
-
-.composer {
-    position: relative;
-    overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #dce7e8;
-    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.055);
-}
-
-    .composer::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient( 90deg, #0f766e, #14b8a6, #2dd4bf );
-    }
-
-.composer-head strong {
-    color: #172033;
-}
-
-.composer textarea {
-    background: #f8fafc;
-    border-color: #e2e8f0;
-}
-
-    .composer textarea:hover {
-        border-color: #cbd5e1;
-    }
-
-    .composer textarea:focus {
-        border-color: #14b8a6;
-        box-shadow: 0 0 0 4px rgba(20,184,166,.08);
-    }
-
-
-/* ---------------------------------------------------------
-   COMPLAINT FORM
-   --------------------------------------------------------- */
-
-.complaint-form-grid {
-    background: #f8fafc;
-    padding: 18px;
-    border-radius: 12px;
-    border: 1px solid #edf2f4;
-}
-
-.form-group label {
-    color: #334155;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    background: #ffffff;
-    border-color: #d6e0e4;
-}
-
-    .form-group input:hover,
-    .form-group select:hover,
-    .form-group textarea:hover {
-        border-color: #b9c9ce;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: #14b8a6;
-        box-shadow: 0 0 0 4px rgba(20,184,166,.09);
-    }
-
-
-/* ---------------------------------------------------------
-   SUBMIT BUTTON
-   --------------------------------------------------------- */
-
-.primary-btn {
-    background: linear-gradient( 135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100% );
-    box-shadow: 0 6px 15px rgba(15,118,110,.20);
-}
-
-    .primary-btn:hover {
-        background: linear-gradient( 135deg, #115e59, #0f766e );
-    }
-
-
-/* ---------------------------------------------------------
-   FEED CARDS
-   --------------------------------------------------------- */
-
-.feed {
-    gap: 18px;
-}
-
-.post,
-.post-card,
-.feed-card {
-    background: #ffffff;
-    border: 1px solid #dfe7ea;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.045);
-}
-
-    .post:hover,
-    .post-card:hover,
-    .feed-card:hover {
-        border-color: #cbdfe0;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.075);
-    }
-
-.post-author strong {
-    color: #172033;
-}
-
-.post-content {
-    color: #334155;
-}
-
-.post-actions {
-    border-top-color: #edf1f3;
-}
-
-.post-action:hover {
-    background: #ccfbf1;
-    color: #0f766e;
-}
-
-
-/* ---------------------------------------------------------
-   STATUS COLORS
-   --------------------------------------------------------- */
-
-.status-badge.pending {
-    background: #fff7ed;
-    color: #c2410c;
-    border: 1px solid #fed7aa;
-}
-
-.status-badge.in-progress,
-.status-badge.progress {
-    background: #ecfeff;
-    color: #0e7490;
-    border: 1px solid #a5f3fc;
-}
-
-.status-badge.resolved {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-}
-
-
-/* ---------------------------------------------------------
-   STATUS INFORMATION BOX
-   --------------------------------------------------------- */
-
-.complaint-status-info {
-    background: linear-gradient( 135deg, #f8fafc, #f0fdfa );
-    border-color: #d9ecea;
-}
-
-.status-label {
-    color: #334155;
-}
-
-
-/* ---------------------------------------------------------
-   COMMENTS
-   --------------------------------------------------------- */
-
-.comment-body {
-    background: #f1f5f7;
-    border: 1px solid #e8edef;
-}
-
-    .comment-body strong {
-        color: #1e293b;
-    }
-
-    .comment-body p {
-        color: #475569;
-    }
-
-.comment-form input {
-    background: #f8fafc;
-    border-color: #dce4e8;
-}
-
-    .comment-form input:focus {
-        border-color: #14b8a6;
-    }
-
-.comment-form button {
-    background: #ccfbf1;
-    color: #0f766e;
-}
-
-    .comment-form button:hover {
-        background: #99f6e4;
-    }
-
-
-/* =========================================================
-   ADMIN DASHBOARD
-   ========================================================= */
-
-/* Admin gets a slightly darker blue/navy identity */
-
-.admin-dashboard,
-.admin-main {
-    --admin-primary: #2563eb;
-    --admin-primary-dark: #1d4ed8;
-    --admin-primary-light: #eff6ff;
-    --admin-border: #dbe3ee;
-}
-
-
-/* Admin background */
-
-.app-body:has(.admin-main) {
-    background: radial-gradient( circle at 100% 0%, rgba(37, 99, 235, 0.07), transparent 30% ), #f4f7fb;
-}
-
-
-    /* Admin sidebar */
-
-    .app-body:has(.admin-main) .sidebar {
-        border-color: #d9e2ef;
-        box-shadow: 0 6px 22px rgba(15, 23, 42, 0.065);
-    }
-
-    .app-body:has(.admin-main) .profile-mini {
-        background: linear-gradient( 145deg, #eff6ff, #f8fafc );
-        border-color: #dbeafe;
-    }
-
-        .app-body:has(.admin-main) .profile-mini .avatar {
-            background: linear-gradient( 135deg, #dbeafe, #bfdbfe );
-            color: #1d4ed8;
-            border-color: #dbeafe;
+        .post-profile .post-author strong {
+            display: block;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 750;
         }
 
-    .app-body:has(.admin-main) .nav-item:hover,
-    .app-body:has(.admin-main) .sidebar-item:hover {
+        .post-profile .post-author small {
+            display: block;
+            margin-top: 1px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+
+/* ---------- Legacy post profile button ----------
+   Safe to keep if an older dashboard.js still creates it.
+----------------------------------------------------- */
+
+.post-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+}
+
+
+/* ---------- Feed header ---------- */
+
+.feed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+    .feed-header h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .feed-header p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+
+/* ---------- Complaint form ---------- */
+
+.complaint-form {
+    padding: 22px;
+    margin-bottom: 20px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+    .complaint-form h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .complaint-form > p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+
+/* ---------- Form section titles ---------- */
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 4px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+    .form-section-title::before {
+        content: "";
+        width: 4px;
+        height: 17px;
+        border-radius: 99px;
+        background: var(--primary);
+    }
+
+
+/* ---------- Submit area ---------- */
+
+.submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 17px;
+    border-top: 1px solid var(--line);
+}
+
+    .submit-row .primary-btn {
+        min-width: 145px;
+    }
+
+
+/* ---------- Announcement badge ---------- */
+
+.announcement-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #ccfbf1;
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+
+/* ---------- Post type badges ---------- */
+
+.post-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+    .post-type.complaint {
+        background: #ecfdf5;
+        color: #0f766e;
+    }
+
+    .post-type.announcement {
         background: #eff6ff;
         color: #2563eb;
     }
 
-    .app-body:has(.admin-main) .nav-item.active,
-    .app-body:has(.admin-main) .sidebar-item.active {
-        background: linear-gradient( 90deg, #dbeafe, #eff6ff );
-        color: #1d4ed8;
-        box-shadow: inset 4px 0 0 #2563eb;
-    }
 
+/* ---------- Admin topbar ---------- */
 
-/* Admin page header */
-
-.admin-main .dashboard-heading {
-    padding-bottom: 28px;
-}
-
-    .admin-main .dashboard-heading .eyebrow {
-        color: #2563eb;
-    }
-
-    .admin-main .dashboard-heading h1 {
-        color: #0f172a;
-    }
-
-    .admin-main .dashboard-heading .muted {
-        color: #64748b;
-    }
-
-
-/* Admin stats */
-
-.admin-main .stats-grid {
-    gap: 18px;
-}
-
-.admin-main .stat {
-    position: relative;
-    min-height: 125px;
-    overflow: hidden;
-    border: 1px solid #dce5ef;
+.admin-body .topbar,
+.app-body.admin-body .topbar {
     background: #ffffff;
-    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.055);
 }
 
-    .admin-main .stat::before {
+.admin-body .top-brand span {
+    background: linear-gradient( 135deg, #0f172a, #1e293b );
+}
+
+.admin-body .sidebar {
+    border-top: 3px solid var(--primary);
+}
+
+
+/* ---------- Admin profile ---------- */
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .admin-profile strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .admin-profile small {
+        color: var(--muted);
+        font-size: 10px;
+    }
+
+
+/* ---------- Dashboard heading ---------- */
+
+.dashboard-heading {
+    position: relative;
+}
+
+    .dashboard-heading::after {
+        content: "";
+        display: block;
+        width: 55px;
+        height: 4px;
+        margin-top: 15px;
+        border-radius: 99px;
+        background: linear-gradient( 90deg, var(--primary), #2dd4bf );
+    }
+
+
+/* ---------- Admin stats ---------- */
+
+.stats-grid {
+    align-items: stretch;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+    .stat-card::before {
         content: "";
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
-        width: 5px;
+        width: 4px;
+        background: var(--primary);
+    }
+
+    .stat-card:nth-child(2)::before {
         background: #2563eb;
     }
 
-    .admin-main .stat:nth-child(2)::before {
-        background: #0d9488;
-    }
-
-    .admin-main .stat:nth-child(3)::before {
-        background: #7c3aed;
-    }
-
-    .admin-main .stat::after {
-        width: 110px;
-        height: 110px;
-        right: -35px;
-        bottom: -40px;
-        background: #eff6ff;
-    }
-
-    .admin-main .stat:nth-child(2)::after {
-        background: #ecfdf5;
-    }
-
-    .admin-main .stat:nth-child(3)::after {
-        background: #f5f3ff;
-    }
-
-    .admin-main .stat span {
-        color: #64748b;
-    }
-
-    .admin-main .stat strong {
-        color: #0f172a;
-    }
-
-
-/* Admin posts container */
-
-.admin-table-card {
-    background: #ffffff;
-    border: 1px solid #dbe4ed;
-    box-shadow: 0 7px 25px rgba(15, 23, 42, 0.055);
-}
-
-    .admin-table-card .table-head {
-        border-bottom-color: #e5eaf0;
-    }
-
-        .admin-table-card .table-head h2 {
-            color: #172033;
-        }
-
-        .admin-table-card .table-head p {
-            color: #64748b;
-        }
-
-
-/* Admin rows */
-
-.admin-row {
-    background: #ffffff;
-    border: 1px solid #e0e7ef;
-    box-shadow: 0 2px 8px rgba(15,23,42,.025);
-}
-
-    .admin-row:hover {
-        border-color: #bfdbfe;
-        box-shadow: 0 7px 20px rgba(37,99,235,.07);
-    }
-
-.admin-post-top strong {
-    color: #172033;
-}
-
-.admin-row-main > p {
-    color: #475569;
-}
-
-
-/* Admin complaint details */
-
-.complaint-details {
-    background: linear-gradient( 135deg, #f8fafc, #f8fbff );
-    border-color: #dce5ef;
-}
-
-.complaint-detail strong {
-    color: #1e293b;
-}
-
-
-/* Admin status select */
-
-.admin-row select {
-    border-color: #d4dde7;
-    background: #ffffff;
-}
-
-    .admin-row select:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37,99,235,.09);
-    }
-
-
-/* Admin buttons */
-
-.admin-main .primary-btn {
-    background: linear-gradient( 135deg, #2563eb, #1d4ed8 );
-    box-shadow: 0 6px 15px rgba(37,99,235,.20);
-}
-
-    .admin-main .primary-btn:hover {
-        background: linear-gradient( 135deg, #1d4ed8, #1e40af );
-    }
-
-.admin-main .secondary-btn:hover {
-    background: #eff6ff;
-    border-color: #bfdbfe;
-    color: #2563eb;
-}
-
-
-/* Admin comments */
-
-.admin-comment {
-    background: #f8fafc;
-    border-color: #e5eaf0;
-}
-
-.admin-comment-form button {
-    background: #2563eb;
-}
-
-    .admin-comment-form button:hover {
-        background: #1d4ed8;
-    }
-
-
-/* ---------------------------------------------------------
-   ANNOUNCEMENTS
-   --------------------------------------------------------- */
-
-.announcement-card {
-    border-left: 4px solid #0f766e;
-    background: linear-gradient( 135deg, #ffffff 0%, #f0fdfa 100% );
-}
-
-.announcement-label {
-    background: #ccfbf1;
-    color: #0f766e;
-}
-
-
-/* ---------------------------------------------------------
-   ADMIN ANNOUNCEMENTS
-   --------------------------------------------------------- */
-
-.app-body:has(.admin-main) .announcement-card {
-    border-left-color: #2563eb;
-    background: linear-gradient( 135deg, #ffffff, #eff6ff );
-}
-
-.app-body:has(.admin-main) .announcement-label {
-    background: #dbeafe;
-    color: #1d4ed8;
-}
-
-
-/* ---------------------------------------------------------
-   REPORT CARDS
-   --------------------------------------------------------- */
-
-.report-stat-card {
-    border-color: #dce5ed;
-    box-shadow: 0 5px 18px rgba(15,23,42,.05);
-}
-
-    .report-stat-card::before {
-        width: 5px;
-    }
-
-    .report-stat-card.pending::before {
-        background: #f59e0b;
-    }
-
-    .report-stat-card.progress::before {
-        background: #0891b2;
-    }
-
-    .report-stat-card.resolved::before {
+    .stat-card:nth-child(3)::before {
         background: #16a34a;
     }
 
-.report-stat-icon {
-    background: #ccfbf1;
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 15px;
+    border-radius: 11px;
+    background: #ecfdf5;
+    color: var(--primary);
+    font-size: 18px;
 }
 
-.report-stat-card.pending .report-stat-icon {
-    background: #fef3c7;
+.stat-card:nth-child(2) .stat-icon {
+    background: #eff6ff;
+    color: #2563eb;
 }
 
-.report-stat-card.progress .report-stat-icon {
-    background: #cffafe;
-}
-
-.report-stat-card.resolved .report-stat-icon {
-    background: #dcfce7;
-}
-
-
-/* ---------------------------------------------------------
-   CHART CARDS
-   --------------------------------------------------------- */
-
-.chart-card {
-    background: #ffffff;
-    border-color: #dce5ed;
-    box-shadow: 0 5px 18px rgba(15,23,42,.05);
-}
-
-.chart-card-header h2 {
-    color: #172033;
+.stat-card:nth-child(3) .stat-icon {
+    background: #f0fdf4;
+    color: #16a34a;
 }
 
 
-/* ---------------------------------------------------------
-   MODALS
-   --------------------------------------------------------- */
+/* ---------- Admin post list ---------- */
 
-.modal {
-    background: rgba(15, 23, 42, .58);
-    backdrop-filter: blur(3px);
+.admin-post-list {
+    min-height: 100px;
 }
+
+.admin-post {
+    position: relative;
+}
+
+    .admin-post:hover {
+        border-color: #b8deda;
+    }
+
+
+/* ---------- Admin post actions ---------- */
+
+.admin-post-actions,
+.admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+
+    .admin-post-actions button,
+    .admin-actions button {
+        min-height: 35px;
+        padding: 7px 11px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+        .admin-post-actions button:hover,
+        .admin-actions button:hover {
+            border-color: #99f6e4;
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+    .admin-post-actions .delete-btn,
+    .admin-actions .delete-btn {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: var(--danger);
+    }
+
+        .admin-post-actions .delete-btn:hover,
+        .admin-actions .delete-btn:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+
+/* ---------- Admin status select ---------- */
+
+.admin-status,
+.status-select,
+.admin-status-select {
+    width: auto;
+    min-width: 135px;
+    min-height: 36px;
+    padding: 7px 11px;
+    border-radius: 8px;
+    background: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ---------- Admin loading ---------- */
+
+#adminLoading {
+    padding: 45px 20px;
+    text-align: center;
+    color: var(--muted);
+}
+
+
+/* ---------- Modal polish ---------- */
 
 .modal-card {
-    border: 1px solid #dce5eb;
-    box-shadow: 0 25px 70px rgba(15,23,42,.22);
+    animation: modalIn .18s ease-out;
 }
 
-
-/* ---------------------------------------------------------
-   TOAST
-   --------------------------------------------------------- */
-
-.toast {
-    background: linear-gradient( 135deg, #0f172a, #1e293b );
-    border-left: 4px solid #14b8a6;
-}
-
-
-/* ---------------------------------------------------------
-   IMAGE UPLOAD
-   --------------------------------------------------------- */
-
-.image-upload-btn {
-    background: #f8fafc;
-    border-color: #d9e2e7;
-    color: #475569;
-}
-
-    .image-upload-btn:hover {
-        background: #f0fdfa;
-        border-color: #99f6e4;
-        color: #0f766e;
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
     }
 
-
-/* ---------------------------------------------------------
-   EMPTY / LOADING
-   --------------------------------------------------------- */
-
-.empty,
-.empty-state,
-.loading,
-.loading-state {
-    background: #ffffff;
-    border-color: #dce5e8;
-}
-
-.empty-icon {
-    color: #94a3b8;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 
-/* ---------------------------------------------------------
-   ADMIN LOADING / EMPTY
-   --------------------------------------------------------- */
+/* ---------- Buttons disabled ---------- */
 
-.admin-main .empty-state,
-.admin-main .loading-state {
-    background: #ffffff;
-    border-color: #dbe4ed;
-}
-
-.admin-main .empty-icon {
-    color: #93c5fd;
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none !important;
 }
 
 
-/* =========================================================
-   EXTRA VISUAL DETAILS
-   ========================================================= */
+/* ---------- Focus accessibility ---------- */
 
-/* Small colored line under active page */
-
-.nav-item.active::after,
-.sidebar-item.active::after {
-    content: "";
-    margin-left: auto;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid rgba(20, 184, 166, .20);
+    outline-offset: 2px;
 }
 
 
-/* Card transitions */
+/* ---------- Better scrollbar ---------- */
 
-.card,
-.stat,
-.stat-card,
-.report-stat-card,
-.chart-card,
-.admin-row,
-.announcement-card,
-.portal-card,
-.post,
-.post-card,
-.feed-card,
-.composer {
-    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
-
-/* Better selection color */
-
-::selection {
-    background: #99f6e4;
-    color: #134e4a;
-}
-
-
-/* Scrollbar */
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f5f7;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5dc;
-    border-radius: 10px;
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+    *::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
     }
 
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-/* =========================================================
-   RESPONSIVE COLOR PRESERVATION
-   ========================================================= */
+    *::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 99px;
+    }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+
+/* ---------- Mobile polish ---------- */
 
 @media (max-width: 850px) {
 
-    .sidebar {
-        box-shadow: 0 4px 15px rgba(15,23,42,.05);
+    .top-profile-info {
+        display: none;
     }
 
-    .nav-item.active,
-    .sidebar-item.active {
-        box-shadow: inset 0 -3px 0 currentColor;
+    .submit-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+        .submit-row .primary-btn {
+            width: 100%;
+        }
+
+    .admin-post-actions,
+    .admin-actions {
+        width: 100%;
+    }
+
+        .admin-post-actions button,
+        .admin-actions button {
+            flex: 1;
+        }
+}
+
+@media (max-width: 600px) {
+
+    .feed-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .complaint-form {
+        padding: 16px;
+    }
+
+    .complaint-form-grid {
+        gap: 12px;
+    }
+
+    .admin-table-card {
+        padding: 15px;
+    }
+
+    .table-head {
+        padding-bottom: 14px;
+    }
+
+    .dashboard-heading {
+        padding-top: 2px;
     }
 }
