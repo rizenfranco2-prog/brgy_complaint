@@ -1,287 +1,522 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Reports & Charts • Barangay Connect</title>
+    <title>Reports & Charts | Barangay Connect</title>
+
     <link rel="stylesheet" href="style.css">
 
-
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
+<body class="app-body">
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
 
     <header class="topbar">
 
-        <div class="topbar-inner">
+        <a href="admin-dashboard.html" class="top-brand">
 
-            <a href="dashboard.html" class="top-brand">
-                <div class="brand-logo">BC</div>
+            <span class="top-brand-logo">
+                BC
+            </span>
 
-                <div>
-                    <strong>Barangay Connect</strong>
-                    <span>Community Portal</span>
-                </div>
-            </a>
-
-            <div class="top-user">
-                <div class="avatar" id="topAvatar">A</div>
-
-                <div class="top-user-info">
-                    <strong id="topName">Admin</strong>
-                    <span>Administrator</span>
-                </div>
-
-                <button id="logoutBtn" class="logout-btn">
-                    Logout
-                </button>
+            <div class="top-brand-text">
+                <strong>Barangay Connect</strong>
+                <small>Administrator</small>
             </div>
+
+        </a>
+
+
+        <div class="top-search">
+            <input type="search"
+                   placeholder="Search..."
+                   aria-label="Search">
+        </div>
+
+
+        <div class="top-user">
+
+            <div class="top-user-info">
+                <strong id="topName">Administrator</strong>
+                <span>Admin</span>
+            </div>
+
+            <div class="avatar admin-avatar"
+                 id="topAvatar">
+                A
+            </div>
+
+            <button type="button"
+                    class="logout-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
 
         </div>
 
     </header>
 
 
-    <div class="dashboard-layout">
 
-        <!-- SIDEBAR -->
+    <!-- =====================================================
+         MAIN LAYOUT
+    ====================================================== -->
+
+    <div class="layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
 
         <aside class="sidebar">
 
             <div class="sidebar-title">
-                BARANGAY CONNECT
+                Administration
             </div>
 
-            <a href="admin-dashboard.html" class="sidebar-item">
-                <span>🏠</span>
-                Dashboard
-            </a>
 
-            <a href="announcement.html" class="sidebar-item">
-                <span>📢</span>
-                Announcements
-            </a>
+            <nav class="nav-list">
 
-            <a href="portal.html" class="sidebar-item">
-                <span>🌐</span>
-                Portal
-            </a>
+                <a href="admin-dashboard.html"
+                   class="nav-item">
 
-            <a href="dashboard.html" class="sidebar-item">
-                <span>💬</span>
-                Community Feed
-            </a>
+                    <span class="nav-icon">▦</span>
+                    <span>Dashboard</span>
 
-            <a href="reports.html" class="sidebar-item active">
-                <span>📊</span>
-                Reports & Charts
-            </a>
+                </a>
+
+
+                <a href="announcement.html"
+                   class="nav-item">
+
+                    <span class="nav-icon">📢</span>
+                    <span>Announcements</span>
+
+                </a>
+
+
+                <a href="portal.html"
+                   class="nav-item">
+
+                    <span class="nav-icon">▣</span>
+                    <span>Portal</span>
+
+                </a>
+
+
+                <a href="dashboard.html"
+                   class="nav-item">
+
+                    <span class="nav-icon">☰</span>
+                    <span>Community Feed</span>
+
+                </a>
+
+
+                <a href="reports.html"
+                   class="nav-item active">
+
+                    <span class="nav-icon">▥</span>
+                    <span>Reports & Charts</span>
+
+                </a>
+
+            </nav>
 
         </aside>
 
 
-        <!-- MAIN CONTENT -->
 
-        <main class="reports-main">
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
 
-            <div class="page-heading">
+        <main class="main-content">
 
-                <div>
-                    <span class="page-label">ADMINISTRATION</span>
-
-                    <h1>
-                        Reports & Charts
-                    </h1>
-
-                    <p>
-                        View complaint statistics and community activity.
-                    </p>
-                </div>
-
-            </div>
+            <section class="reports-main">
 
 
-            <!-- STAT CARDS -->
+                <!-- PAGE HEADER -->
 
-            <section class="report-stats">
-
-                <div class="report-stat-card">
-                    <div class="report-stat-icon">📋</div>
+                <div class="report-header">
 
                     <div>
-                        <span>Total Complaints</span>
-                        <strong id="totalComplaints">0</strong>
-                    </div>
-                </div>
 
-
-                <div class="report-stat-card">
-                    <div class="report-stat-icon">⏳</div>
-
-                    <div>
-                        <span>Pending</span>
-                        <strong id="pendingComplaints">0</strong>
-                    </div>
-                </div>
-
-
-                <div class="report-stat-card">
-                    <div class="report-stat-icon">🔄</div>
-
-                    <div>
-                        <span>In Progress</span>
-                        <strong id="progressComplaints">0</strong>
-                    </div>
-                </div>
-
-
-                <div class="report-stat-card">
-                    <div class="report-stat-icon">✓</div>
-
-                    <div>
-                        <span>Resolved</span>
-                        <strong id="resolvedComplaints">0</strong>
-                    </div>
-                </div>
-
-            </section>
-
-
-            <!-- CHART GRID -->
-
-            <section class="charts-grid">
-
-                <!-- MONTHLY CHART -->
-
-                <div class="chart-card chart-large">
-
-                    <div class="chart-card-header">
-
-                        <div>
-                            <h2>Complaints Overview</h2>
-
-                            <p>
-                                Number of complaints submitted each month.
-                            </p>
+                        <div class="page-label">
+                            BARANGAY CONNECT
                         </div>
 
+                        <h1>
+                            Reports & Charts
+                        </h1>
+
+                        <p>
+                            Monitor and analyze complaints submitted
+                            by residents.
+                        </p>
+
+                    </div>
+
+
+                    <div class="report-filter">
+
+                        <label for="yearFilter">
+                            Year
+                        </label>
+
                         <select id="yearFilter">
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
+
+                            <option value="2026">
+                                2026
+                            </option>
+
+                            <option value="2025">
+                                2025
+                            </option>
+
+                            <option value="2024">
+                                2024
+                            </option>
+
                         </select>
 
                     </div>
 
-                    <div class="chart-container">
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
-
                 </div>
 
 
-                <!-- CATEGORY CHART -->
 
-                <div class="chart-card">
+                <!-- =================================================
+                     STATISTICS
+                ================================================== -->
 
-                    <div class="chart-card-header">
+                <section class="report-stats">
+
+
+                    <article class="report-stat-card total">
+
+                        <div class="report-stat-icon">
+                            📋
+                        </div>
 
                         <div>
-                            <h2>Complaint Categories</h2>
+
+                            <span>
+                                Total Complaints
+                            </span>
+
+                            <strong id="totalComplaints">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <article class="report-stat-card pending">
+
+                        <div class="report-stat-icon">
+                            ⏳
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Pending
+                            </span>
+
+                            <strong id="pendingComplaints">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <article class="report-stat-card progress">
+
+                        <div class="report-stat-icon">
+                            🔄
+                        </div>
+
+                        <div>
+
+                            <span>
+                                In Progress
+                            </span>
+
+                            <strong id="progressComplaints">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <article class="report-stat-card resolved">
+
+                        <div class="report-stat-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Resolved
+                            </span>
+
+                            <strong id="resolvedComplaints">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     CHARTS
+                ================================================== -->
+
+                <section class="charts-grid">
+
+
+                    <!-- MONTHLY -->
+
+                    <article class="chart-card chart-large">
+
+                        <div class="chart-card-header">
+
+                            <div>
+
+                                <h2>
+                                    Complaints Overview
+                                </h2>
+
+                                <p>
+                                    Number of complaints submitted
+                                    each month.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-container">
+
+                            <canvas id="monthlyChart">
+                            </canvas>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- CATEGORY -->
+
+                    <article class="chart-card">
+
+                        <div class="chart-card-header">
+
+                            <div>
+
+                                <h2>
+                                    Complaints by Category
+                                </h2>
+
+                                <p>
+                                    Distribution of submitted
+                                    complaints.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-container pie-container">
+
+                            <canvas id="categoryChart">
+                            </canvas>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- STATUS -->
+
+                    <article class="chart-card">
+
+                        <div class="chart-card-header">
+
+                            <div>
+
+                                <h2>
+                                    Complaint Status
+                                </h2>
+
+                                <p>
+                                    Current status of complaints.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-container pie-container">
+
+                            <canvas id="statusChart">
+                            </canvas>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     SUMMARY
+                ================================================== -->
+
+                <section class="report-summary">
+
+                    <div class="summary-header">
+
+                        <div>
+
+                            <h2>
+                                Complaint Summary
+                            </h2>
 
                             <p>
-                                Distribution of reported concerns.
+                                Current breakdown of submitted
+                                complaints.
                             </p>
+
                         </div>
 
                     </div>
 
-                    <div class="chart-container pie-container">
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-
-                </div>
-
-
-                <!-- STATUS CHART -->
-
-                <div class="chart-card">
-
-                    <div class="chart-card-header">
-
-                        <div>
-                            <h2>Complaint Status</h2>
-
-                            <p>
-                                Current status of complaints.
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div class="chart-container pie-container">
-                        <canvas id="statusChart"></canvas>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- REPORT SUMMARY -->
-
-            <section class="report-summary">
-
-                <div class="summary-header">
-                    <div>
-                        <h2>Report Summary</h2>
-
-                        <p>
-                            Overview of barangay complaint activity.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="summary-table">
 
                     <div class="summary-row summary-heading">
-                        <span>Category</span>
-                        <span>Total</span>
-                        <span>Status</span>
+
+                        <span>
+                            Status
+                        </span>
+
+                        <span>
+                            Count
+                        </span>
+
+                        <span>
+                            Percentage
+                        </span>
+
                     </div>
 
-                    <div class="summary-row">
-                        <span>Road & Infrastructure</span>
-                        <strong>24</strong>
-                        <span class="status-badge pending">
-                            Pending
-                        </span>
-                    </div>
 
                     <div class="summary-row">
-                        <span>Waste Management</span>
-                        <strong>18</strong>
-                        <span class="status-badge progress">
-                            In Progress
+
+                        <span>
+                            <span class="status-badge pending">
+                                Pending
+                            </span>
                         </span>
+
+                        <strong class="summary-count">
+                            0
+                        </strong>
+
+                        <span>
+                            0%
+                        </span>
+
                     </div>
 
-                    <div class="summary-row">
-                        <span>Peace & Order</span>
-                        <strong>15</strong>
-                        <span class="status-badge resolved">
-                            Resolved
-                        </span>
-                    </div>
 
                     <div class="summary-row">
-                        <span>Other Concerns</span>
-                        <strong>9</strong>
-                        <span class="status-badge resolved">
-                            Resolved
+
+                        <span>
+                            <span class="status-badge progress">
+                                In Progress
+                            </span>
                         </span>
+
+                        <strong class="summary-count">
+                            0
+                        </strong>
+
+                        <span>
+                            0%
+                        </span>
+
                     </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            <span class="status-badge resolved">
+                                Resolved
+                            </span>
+                        </span>
+
+                        <strong class="summary-count">
+                            0
+                        </strong>
+
+                        <span>
+                            0%
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- EMPTY MESSAGE -->
+
+                <div id="noReportsMessage"
+                     class="no-reports-message">
+
+                    <div class="no-reports-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        No complaints yet
+                    </h3>
+
+                    <p>
+                        Reports and charts will appear here
+                        once residents submit complaints.
+                    </p>
 
                 </div>
 
@@ -292,7 +527,13 @@
     </div>
 
 
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="config.js"></script>
     <script src="report.js"></script>
 
 </body>
+
 </html>
