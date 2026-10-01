@@ -1,36 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin • Barangay Connect</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="auth-page">
-  <main class="auth-shell admin-auth">
-    <section class="brand-panel admin-brand">
-      <div class="brand-mark">BC</div>
-      <p class="eyebrow">BARANGAY CONNECT</p>
-      <h1>Administrator<br>Portal</h1>
-      <p class="brand-copy">Manage community posts, announcements and comments from one secure dashboard.</p>
-    </section>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <section class="auth-card">
-      <div class="admin-badge">ADMIN ACCESS</div>
-      <h2>Administrator sign in</h2>
-      <p class="muted">This portal has no public admin registration.</p>
-      <form id="adminLoginForm">
-        <label>Username</label>
-        <input id="adminUsername" required autocomplete="username" placeholder="Admin username">
-        <label>Password</label>
-        <input id="adminPassword" type="password" required autocomplete="current-password" placeholder="Admin password">
-        <button class="primary-btn" type="submit">Sign in to dashboard</button>
-        <p class="form-message" id="adminMessage"></p>
-      </form>
-      <a class="admin-link" href="index.html">← Back to user login</a>
-    </section>
-  </main>
-  <script src="config.js"></script>
-  <script src="auth.js"></script>
+    <title>Admin • Barangay Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page admin-login-page">
+
+    <main class="auth-shell admin-auth">
+
+        <!-- =====================================================
+             BRAND PANEL
+        ====================================================== -->
+
+        <section class="brand-panel admin-brand">
+
+            <div class="brand-mark">BC</div>
+
+            <p class="eyebrow">
+                BARANGAY CONNECT
+            </p>
+
+            <h1>
+                Administrator<br>
+                Portal
+            </h1>
+
+            <p class="brand-copy">
+                Manage community complaints, announcements,
+                posts, and comments from one secure dashboard.
+            </p>
+
+            <div class="admin-features">
+
+                <div class="admin-feature">
+                    <span class="feature-icon">✓</span>
+                    <div>
+                        <strong>Complaint Monitoring</strong>
+                        <small>Track community concerns</small>
+                    </div>
+                </div>
+
+                <div class="admin-feature">
+                    <span class="feature-icon">✓</span>
+                    <div>
+                        <strong>Community Updates</strong>
+                        <small>Publish important announcements</small>
+                    </div>
+                </div>
+
+                <div class="admin-feature">
+                    <span class="feature-icon">✓</span>
+                    <div>
+                        <strong>Secure Administration</strong>
+                        <small>Authorized access only</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             LOGIN CARD
+        ====================================================== -->
+
+        <section class="auth-card admin-login-card">
+
+            <div class="admin-badge">
+                ADMIN ACCESS
+            </div>
+
+            <h2>
+                Administrator sign in
+            </h2>
+
+            <p class="muted">
+                Sign in using your administrator credentials.
+            </p>
+
+
+            <form id="adminLoginForm">
+
+                <!-- Username -->
+
+                <div class="auth-field">
+
+                    <label for="adminUsername">
+                        Username
+                    </label>
+
+                    <input
+                        id="adminUsername"
+                        type="text"
+                        required
+                        autocomplete="username"
+                        placeholder="Enter admin username"
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="auth-field">
+
+                    <label for="adminPassword">
+                        Password
+                    </label>
+
+                    <input
+                        id="adminPassword"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        placeholder="Enter admin password"
+                    >
+
+                </div>
+
+
+                <!-- Login button -->
+
+                <button
+                    class="primary-btn admin-login-btn"
+                    type="submit"
+                >
+                    Sign in to dashboard
+                </button>
+
+
+                <!-- Message -->
+
+                <p
+                    class="form-message"
+                    id="adminMessage"
+                ></p>
+
+            </form>
+
+
+            <!-- Back -->
+
+            <a
+                class="admin-link"
+                href="index.html"
+            >
+                ← Back to user login
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+
 </body>
 </html>
