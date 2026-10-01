@@ -2121,7 +2121,9 @@ textarea {
         width: auto;
         flex: 0 0 auto;
         white-space: nowrap;
+
     }
+
 
     .page-header,
     .report-header {
@@ -2512,7 +2514,7 @@ textarea {
 
 .nav-item,
 .sidebar-item {
-    color: #475569;
+    color: #ffffff;
 }
 
     .nav-item:hover,
@@ -2524,7 +2526,7 @@ textarea {
     .nav-item.active,
     .sidebar-item.active {
         background: linear-gradient( 90deg, #ccfbf1 0%, #ecfdf5 100% );
-        color: #0f766e;
+        color: #ffffff;
         box-shadow: inset 4px 0 0 #0f766e;
     }
 
