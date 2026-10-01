@@ -148,7 +148,7 @@ function render(list = adminPosts) {
                         ${esc(p.content).replace(/\n/g, "<br>")}
                     </p>
 
-                    <!-- COMPLAINT DETAILS - ADMIN ONLY -->
+                    <!-- COMPLAINT DETAILS -->
 
 ${p.type === "complaint" ||
                 p.category ||
@@ -156,6 +156,7 @@ ${p.type === "complaint" ||
                 p.age ||
                 p.gender ||
                 p.contactNumber ? `
+    
     <div class="complaint-details">
 
         <div class="complaint-detail">
@@ -185,14 +186,17 @@ ${p.type === "complaint" ||
 
         <div class="complaint-detail">
             <span class="detail-label">Status</span>
+
             <span class="status-badge ${String(p.status || "Pending")
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}">
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+            }">
                 ${esc(p.status || "Pending")}
             </span>
         </div>
 
     </div>
+
 ` : ""}
 
                     <!-- COMPLAINT IMAGE -->
