@@ -3539,20 +3539,30 @@ body.app-body {
         background: #2563EB;
     }
 
+/* =========================================================
+   PROFILE — LIGHT TEXT FOR NAVY BACKGROUND
+   ========================================================= */
 
-/* ADMIN PROFILE — LIGHT TEXT */
-
-.app-body .profile-mini strong {
-    color: #EAF4FF !important;
-    font-weight: 700;
+.app-body .profile-mini {
+    background: #102A47 !important;
+    border: 1px solid #315579 !important;
 }
 
-.app-body .profile-mini small {
-    color: #BFD7EE !important;
-}
+    /* Administrator */
+    .app-body .profile-mini strong {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+    }
 
-.app-body .profile-mini .avatar {
-    background: #DCEBFF !important;
-    color: #2563EB !important;
-    border: 3px solid #B8D5FF !important;
-}
+    /* System administrator */
+    .app-body .profile-mini small {
+        color: #D6E9FA !important;
+        font-weight: 500 !important;
+    }
+
+    /* Avatar */
+    .app-body .profile-mini .avatar {
+        background: #DCEBFF !important;
+        color: #1D4ED8 !important;
+        border: 3px solid #AFCFFF !important;
+    }
