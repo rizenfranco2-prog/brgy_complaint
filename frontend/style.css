@@ -7,28 +7,29 @@
 :root {
     --primary: #111111;
     --primary-dark: #000000;
-    --primary-light: #f3f3f3;
-    --primary-soft: #f7f7f7;
-    --navy: #0a0a0a;
-    --navy-light: #1a1a1a;
-    --navy-soft: #2b2b2b;
-    --success: #166534;
-    --warning: #92400e;
-    --danger: #b91c1c;
-    --bg: #f4f4f5;
-    --card: #ffffff;
-    --ink: #111111;
-    --text: #333333;
-    --muted: #737373;
-    --line: #e4e4e7;
-    --soft: #fafafa;
+    --primary-light: #2a2a2a;
+    --primary-soft: #222222;
+    --navy: #080808;
+    --navy-light: #151515;
+    --navy-soft: #242424;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    /* DARK BACKGROUND */
+    --bg: #121212;
+    --card: #1e1e1e;
+    --ink: #f5f5f5;
+    --text: #d4d4d4;
+    --muted: #929292;
+    --line: #303030;
+    --soft: #181818;
     --radius: 14px;
     --radius-small: 9px;
     --sidebar-width: 240px;
     --topbar-height: 68px;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.12);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.45);
 }
 
 
