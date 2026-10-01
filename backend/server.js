@@ -289,46 +289,87 @@ app.put("/api/auth/change-password", auth, async (req, res) => {
 
 // POSTS
 app.get("/api/posts", auth, async (req, res) => {
-  try {
-    const q = String(req.query.search || "").trim();
-    const filter = {
-    archived: false
-};
+    try {
+        const q = String(req.query.search || "").trim();
 
-if (q) {
-    filter.$or = [
-        { content: { $regex: q, $options: "i" } },
-        { authorName: { $regex: q, $options: "i" } },
-        { category: { $regex: q, $options: "i" } },
-        { address: { $regex: q, $options: "i" } }
-    ];
-}
-      : {};
+        const filter = {
+            $or: [
+                { archived: false },
+                { archived: { $exists: false } }
+            ]
+        };
 
-      const posts = await Post.find(filter)
-          .sort({ createdAt: -1 })
-          .limit(100)
-          .lean();
+        if (q) {
+            filter.$and = [
+                {
+                    $or: [
+                        { content: { $regex: q, $options: "i" } },
+                        { authorName: { $regex: q, $options: "i" } },
+                        { category: { $regex: q, $options: "i" } },
+                        { address: { $regex: q, $options: "i" } }
+                    ]
+                }
+            ];
+        }
 
-    const ids = posts.map(p => p._id);
-    const comments = await Comment.find({ postId: { $in: ids } }).sort({ createdAt: 1 }).lean();
+        const posts = await Post.find(filter)
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .lean();
 
-    const commentMap = {};
-    for (const c of comments) {
-      const key = c.postId.toString();
-      if (!commentMap[key]) commentMap[key] = [];
-      commentMap[key].push(c);
+        const ids = posts.map(p => p._id);
+
+        const comments = await Comment.find({
+            postId: { $in: ids }
+        })
+            .sort({ createdAt: 1 })
+            .lean();
+
+        const commentMap = {};
+
+        for (const c of comments) {
+            const key = c.postId.toString();
+
+            if (!commentMap[key]) {
+                commentMap[key] = [];
+            }
+
+            commentMap[key].push(c);
+        }
+
+        const result = posts.map(p => ({
+            ...p,
+            comments: commentMap[p._id.toString()] || []
+        }));
+
+        // ADMIN CAN SEE FULL COMPLAINT DETAILS
+        if (req.auth.role === "admin") {
+            return res.json(result);
+        }
+
+        // RESIDENTS DO NOT RECEIVE SENSITIVE INFORMATION
+        const safeResult = result.map(post => {
+            const {
+                address,
+                age,
+                gender,
+                contactNumber,
+                ...safePost
+            } = post;
+
+            return safePost;
+        });
+
+        res.json(safeResult);
+
+    } catch (err) {
+        console.error("GET POSTS ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not load posts."
+        });
     }
-
-    res.json(posts.map(p => ({
-      ...p,
-      comments: commentMap[p._id.toString()] || []
-    })));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Could not load posts." });
-  }
-});
+});s
 
 app.post("/api/posts", auth, async (req, res) => {
     try {
