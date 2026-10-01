@@ -31,7 +31,8 @@ const adminSchema = new mongoose.Schema({
 const postSchema = new mongoose.Schema({
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: "User"
     },
 
     authorName: {
@@ -39,6 +40,7 @@ const postSchema = new mongoose.Schema({
         required: true
     },
 
+    // complaint or announcement
     type: {
         type: String,
         enum: ["complaint", "announcement"],
@@ -47,9 +49,12 @@ const postSchema = new mongoose.Schema({
 
     content: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        maxlength: 5000
     },
 
+    // Complaint information
     category: {
         type: String,
         default: ""
@@ -57,12 +62,14 @@ const postSchema = new mongoose.Schema({
 
     address: {
         type: String,
-        default: ""
+        default: "",
+        maxlength: 300
     },
 
     age: {
         type: Number,
-        default: null
+        min: 1,
+        max: 120
     },
 
     gender: {
@@ -73,15 +80,19 @@ const postSchema = new mongoose.Schema({
 
     contactNumber: {
         type: String,
-        default: ""
+        default: "",
+        maxlength: 30
     },
 
+    // Complaint status
     status: {
         type: String,
         enum: ["Pending", "In Progress", "Resolved"],
         default: "Pending"
     },
 
+    // Resolved complaints are archived,
+    // but NOT deleted from MongoDB.
     archived: {
         type: Boolean,
         default: false
@@ -280,18 +291,18 @@ app.put("/api/auth/change-password", auth, async (req, res) => {
 app.get("/api/posts", auth, async (req, res) => {
   try {
     const q = String(req.query.search || "").trim();
-      const filter = {
-          archived: false
-      };
+    const filter = {
+    archived: false
+};
 
-      if (q) {
-          filter.$or = [
-              { content: { $regex: q, $options: "i" } },
-              { authorName: { $regex: q, $options: "i" } },
-              { category: { $regex: q, $options: "i" } },
-              { address: { $regex: q, $options: "i" } }
-          ];
-      }
+if (q) {
+    filter.$or = [
+        { content: { $regex: q, $options: "i" } },
+        { authorName: { $regex: q, $options: "i" } },
+        { category: { $regex: q, $options: "i" } },
+        { address: { $regex: q, $options: "i" } }
+    ];
+}
       : {};
 
       const posts = await Post.find(filter)
@@ -321,107 +332,54 @@ app.get("/api/posts", auth, async (req, res) => {
 
 app.post("/api/posts", auth, async (req, res) => {
     try {
+        const content = String(req.body.content || "").trim();
+        const image = String(req.body.image || "").trim();
 
-        const {
-            content,
-            category,
-            address,
-            age,
-            gender,
-            contactNumber,
-            image
-        } = req.body;
+        const type = String(req.body.type || "complaint").trim();
 
+        const category = String(req.body.category || "").trim();
+        const address = String(req.body.address || "").trim();
+        const gender = String(req.body.gender || "").trim();
+        const contactNumber = String(req.body.contactNumber || "").trim();
 
-        if (!content || !content.trim()) {
+        const age = Number(req.body.age);
+
+        if (!content) {
             return res.status(400).json({
                 message: "Complaint description is required."
             });
         }
 
-
-        // =========================================
-        // ADMIN POST
-        // =========================================
-
+        // --------------------------------
+        // ADMIN ANNOUNCEMENT
+        // --------------------------------
         if (req.auth.role === "admin") {
 
+            const admin = await Admin.findById(req.auth.id);
+
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Admin account not found."
+                });
+            }
+
             const post = await Post.create({
-
-                authorId: req.auth.id,
-
-                authorName:
-                    `${req.auth.username || "Administrator"} (Admin)`,
+                authorId: admin._id,
+                authorName: `${admin.username} (Admin)`,
 
                 type: "announcement",
 
-                content: content.trim(),
+                content,
+                image,
 
                 isAnnouncement: true,
 
-                status: "Pending",
-
+                // Announcements don't enter complaint workflow
                 archived: false
-
             });
 
             return res.status(201).json(post);
         }
-
-
-        // =========================================
-        // RESIDENT COMPLAINT
-        // =========================================
-
-        const post = await Post.create({
-
-            authorId: req.auth.id,
-
-            authorName:
-                req.auth.name || "Resident",
-
-            type: "complaint",
-
-            content: content.trim(),
-
-            category:
-                String(category || "").trim(),
-
-            address:
-                String(address || "").trim(),
-
-            age:
-                age ? Number(age) : null,
-
-            gender:
-                String(gender || "").trim(),
-
-            contactNumber:
-                String(contactNumber || "").trim(),
-
-            image:
-                String(image || "").trim(),
-
-            status: "Pending",
-
-            archived: false,
-
-            isAnnouncement: false
-
-        });
-
-
-        return res.status(201).json(post);
-
-    } catch (error) {
-
-        console.error("CREATE POST ERROR:", error);
-
-        return res.status(500).json({
-            message: error.message
-        });
-    }
-});
 
         // --------------------------------
         // RESIDENT COMPLAINT
@@ -634,28 +592,6 @@ app.put("/api/posts/:id/resolve", auth, adminOnly, async (req, res) => {
 
         res.status(500).json({
             message: "Could not resolve complaint."
-        });
-    }
-});
-
-
-app.get("/api/reports/complaints", auth, adminOnly, async (req, res) => {
-    try {
-
-        const complaints = await Post.find({
-            type: "complaint"
-        })
-            .sort({ createdAt: 1 })
-            .lean();
-
-        res.json(complaints);
-
-    } catch (err) {
-
-        console.error("GET REPORT COMPLAINTS ERROR:", err);
-
-        res.status(500).json({
-            message: "Could not load complaint reports."
         });
     }
 });
