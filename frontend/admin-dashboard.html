@@ -101,6 +101,18 @@
                     <span>Reports & Charts</span>
                 </a>
 
+                <button id="adminNotesNavBtn" class="nav-link" type="button">
+                    📝 <span>Admin Notes</span>
+                </button>
+
+                <button id="dateFilterNavBtn" class="nav-link" type="button">
+                    📅 <span>Date Filter</span>
+                </button>
+
+                <button id="musicNavBtn" class="nav-link" type="button">
+                    🎵 <span>Music</span>
+                </button>
+
 
                 <a class="nav-item"
                    href="dashboard.html">
@@ -205,6 +217,30 @@
                         </p>
 
                     </div>
+
+                </div>
+
+                <!-- DATE FILTER -->
+
+                <div class="admin-date-filter" id="dateFilterPanel">
+
+                    <div>
+                        <label for="dateFrom">From</label>
+                        <input type="date" id="dateFrom">
+                    </div>
+
+                    <div>
+                        <label for="dateTo">To</label>
+                        <input type="date" id="dateTo">
+                    </div>
+
+                    <button type="button" id="applyDateFilter">
+                        Apply Filter
+                    </button>
+
+                    <button type="button" id="clearDateFilter">
+                        Clear
+                    </button>
 
                 </div>
 
@@ -335,6 +371,29 @@
             </form>
 
         </div>
+
+    </div>
+
+    <!-- MUSIC PLAYER -->
+
+    <div class="music-player" id="musicPlayer">
+
+        <div class="music-title">
+            🎵 Barangay Music
+        </div>
+
+        <audio id="adminMusic" loop>
+            <source src="music/barangay-music.mp3" type="audio/mpeg">
+            Your browser does not support audio.
+        </audio>
+
+        <button type="button" id="musicPlayBtn">
+            ▶ Play Music
+        </button>
+
+        <button type="button" id="musicStopBtn">
+            ■ Stop
+        </button>
 
     </div>
 

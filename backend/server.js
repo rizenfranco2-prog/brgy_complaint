@@ -25,6 +25,141 @@ app.use(express.json({ limit: "2mb" }));
 
 
 /* =========================================================
+   ADMIN NOTES
+   ========================================================= */
+
+/* GET NOTES */
+
+app.get("/api/posts/:id/admin-notes", adminOnly, async (req, res) => {
+
+    try {
+
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Complaint not found."
+            });
+        }
+
+        res.json({
+            notes: post.adminNotes || []
+        });
+
+    } catch (error) {
+
+        console.error("Get admin notes error:", error);
+
+        res.status(500).json({
+            message: "Failed to load admin notes."
+        });
+
+    }
+
+});
+
+
+/* ADD NOTE */
+
+app.post("/api/posts/:id/admin-notes", adminOnly, async (req, res) => {
+
+    try {
+
+        const content = String(req.body.content || "").trim();
+
+        if (!content) {
+            return res.status(400).json({
+                message: "Note cannot be empty."
+            });
+        }
+
+        if (content.length > 2000) {
+            return res.status(400).json({
+                message: "Note cannot exceed 2000 characters."
+            });
+        }
+
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Complaint not found."
+            });
+        }
+
+        if (!post.adminNotes) {
+            post.adminNotes = [];
+        }
+
+        post.adminNotes.push({
+            content,
+            adminId: req.auth.id,
+            adminName: req.auth.name || req.auth.username || "Administrator",
+            createdAt: new Date()
+        });
+
+        await post.save();
+
+        res.status(201).json({
+            message: "Admin note added.",
+            notes: post.adminNotes
+        });
+
+    } catch (error) {
+
+        console.error("Add admin note error:", error);
+
+        res.status(500).json({
+            message: "Failed to add admin note."
+        });
+
+    }
+
+});
+
+
+/* DELETE NOTE */
+
+app.delete(
+    "/api/posts/:id/admin-notes/:noteId",
+    adminOnly,
+    async (req, res) => {
+
+        try {
+
+            const post = await Post.findById(req.params.id);
+
+            if (!post) {
+                return res.status(404).json({
+                    message: "Complaint not found."
+                });
+            }
+
+            post.adminNotes = (post.adminNotes || []).filter(
+                note => String(note._id) !== String(req.params.noteId)
+            );
+
+            await post.save();
+
+            res.json({
+                message: "Admin note deleted."
+            });
+
+        } catch (error) {
+
+            console.error("Delete admin note error:", error);
+
+            res.status(500).json({
+                message: "Failed to delete admin note."
+            });
+
+        }
+
+    }
+);
+
+
+/* =========================================================
    USER SCHEMA
 ========================================================= */
 
@@ -195,6 +330,28 @@ const postSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+
+    adminNotes: [
+        {
+            content: {
+                type: String,
+                required: true,
+                maxlength: 2000
+            },
+            adminId: {
+                type: String,
+                required: true
+            },
+            adminName: {
+                type: String,
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
 });
 
 
