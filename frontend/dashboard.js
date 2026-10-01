@@ -1,11 +1,18 @@
 let posts = [];
 let currentUser = null;
 let selectedImage = "";
+
+
+/* ================================================= */
+/* AUTH / API */
+/* ================================================= */
+
 function token() {
     return localStorage.getItem("barangay_token");
 }
 
 async function api(path, options = {}) {
+
     const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {})
@@ -29,26 +36,38 @@ async function api(path, options = {}) {
     return data;
 }
 
+
+/* ================================================= */
+/* HELPERS */
+/* ================================================= */
+
 function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, ch => ({
+
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
         "'": "&#039;"
     }[ch]));
+
 }
 
+
 function initials(name) {
+
     return String(name || "U")
         .split(/\s+/)
         .slice(0, 2)
         .map(x => x[0])
         .join("")
         .toUpperCase();
+
 }
 
+
 function timeAgo(date) {
+
     const seconds = Math.floor(
         (Date.now() - new Date(date).getTime()) / 1000
     );
@@ -59,17 +78,24 @@ function timeAgo(date) {
     if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`;
 
     return new Date(date).toLocaleDateString();
+
 }
 
+
 function toast(message) {
+
     const el = document.getElementById("toast");
 
+    if (!el) return;
+
     el.textContent = message;
+
     el.classList.add("show");
 
     setTimeout(() => {
         el.classList.remove("show");
     }, 2500);
+
 }
 
 
@@ -80,18 +106,29 @@ function toast(message) {
 function renderPosts(list = posts) {
 
     const container = document.getElementById("feedList");
+    const loading = document.getElementById("loading");
 
-    document.getElementById("loading").style.display = "none";
+    if (loading) {
+        loading.style.display = "none";
+    }
+
+    if (!container) return;
+
 
     if (!list.length) {
 
         container.innerHTML = `
-      <div class="empty card">
-        <div class="empty-icon">◎</div>
-        <h3>No posts found</h3>
-        <p>Try another search or publish the first community post.</p>
-      </div>
-    `;
+            <div class="empty card">
+                <div class="empty-icon">◎</div>
+
+                <h3>No posts found</h3>
+
+                <p>
+                    Try another search or publish the first
+                    community post.
+                </p>
+            </div>
+        `;
 
         return;
     }
@@ -100,273 +137,343 @@ function renderPosts(list = posts) {
     container.innerHTML = list.map(post => {
 
         const own =
+            currentUser &&
             String(post.authorId) === String(currentUser._id);
 
+        const comments = post.comments || [];
+
+        const status = post.status || "Pending";
+
         return `
-      <article class="post card">
+            <article class="post card">
 
-        <div class="post-head">
+                <div class="post-head">
 
-          <!-- CLICKABLE USER PROFILE -->
-          <button
-            class="post-profile-btn"
-            data-user-id="${post.authorId}"
-            data-user-name="${escapeHTML(post.authorName)}"
-            type="button"
-          >
+                    <button
+                        class="post-profile-btn"
+                        data-user-id="${escapeHTML(post.authorId)}"
+                        data-user-name="${escapeHTML(post.authorName)}"
+                        type="button"
+                    >
 
-            <span class="avatar">
-              ${escapeHTML(initials(post.authorName))}
-            </span>
+                        <span class="avatar">
+                            ${escapeHTML(
+            initials(post.authorName)
+        )}
+                        </span>
 
-            <div class="post-author">
-              <strong>
-                ${escapeHTML(post.authorName)}
-              </strong>
+                        <div class="post-author">
 
-              <small>
-                ${timeAgo(post.createdAt)}
-              </small>
-            </div>
+                            <strong>
+                                ${escapeHTML(post.authorName)}
+                            </strong>
 
-          </button>
+                            <small>
+                                ${timeAgo(post.createdAt)}
+                            </small>
+
+                        </div>
+
+                    </button>
 
 
-          ${own
+                    ${own
                 ? `
-                <button
-                  class="more-btn"
-                  data-delete-post="${post._id}"
-                  title="Delete post"
-                >
-                  ⋯
-                </button>
-              `
+                                <button
+                                    class="more-btn"
+                                    data-delete-post="${post._id}"
+                                    title="Delete post"
+                                >
+                                    ⋯
+                                </button>
+                              `
                 : ""
             }
-
-        </div>
-
-
-        <div class="post-content">
-  ${escapeHTML(post.content).replace(/\n/g, "<br>")}
-</div>
-
-${post.image ? `
-  <div class="post-image-container">
-    <img
-      src="${escapeHTML(post.image)}"
-      class="post-image"
-      alt="Complaint picture"
-      loading="lazy"
-    >
-  </div>
-` : ""}
-
-
-        <div class="post-meta">
-          <span>
-            ${post.comments.length}
-            comment${post.comments.length === 1 ? "" : "s"}
-          </span>
-        </div>
-
-
-        <div class="comments">
-
-          ${post.comments.map(c => `
-              <div class="comment">
-
-                <span class="avatar tiny">
-                  ${escapeHTML(initials(c.authorName))}
-                </span>
-
-                <div class="comment-body">
-
-                  <strong>
-                    ${escapeHTML(c.authorName)}
-                  </strong>
-
-                  <p>
-                    ${escapeHTML(c.content)}
-                  </p>
-
-                  <small>
-                    ${timeAgo(c.createdAt)}
-                  </small>
 
                 </div>
 
 
-                ${String(c.authorId) === String(currentUser._id)
-                    ? `
-                      <button
-                        class="delete-comment"
-                        data-delete-comment="${c._id}"
-                      >
-                        ×
-                      </button>
-                    `
-                    : ""
-                }
-
-              </div>
-            `).join("")
+                ${post.category
+                ? `
+                            <div class="post-category">
+                                ${escapeHTML(post.category)}
+                            </div>
+                          `
+                : ""
             }
 
 
-          <form
-            class="comment-form"
-            data-post-id="${post._id}"
-          >
+                <div class="post-content">
+                    ${escapeHTML(post.content)
+                .replace(/\n/g, "<br>")}
+                </div>
 
-            <span class="avatar tiny">
-              ${escapeHTML(initials(currentUser.name))}
-            </span>
 
-            <input
-              maxlength="1000"
-              placeholder="Write a comment..."
-              required
-            >
+                ${post.image
+                ? `
+                            <div class="post-image-container">
 
-            <button type="submit">
-              Post
-            </button>
+                                <img
+                                    src="${escapeHTML(post.image)}"
+                                    class="post-image"
+                                    alt="Complaint picture"
+                                    loading="lazy"
+                                >
 
-          </form>
+                            </div>
+                          `
+                : ""
+            }
 
-        </div>
 
-      </article>
-    `;
+                <div class="post-status">
+
+                    <span class="status-badge ${status
+                .toLowerCase()
+                .replace(/\s+/g, "-")}">
+
+                        ${escapeHTML(status)}
+
+                    </span>
+
+                </div>
+
+
+                <div class="post-meta">
+
+                    <span>
+                        ${comments.length}
+                        comment${comments.length === 1 ? "" : "s"}
+                    </span>
+
+                </div>
+
+
+                <div class="comments">
+
+                    ${comments.map(c => `
+
+                        <div class="comment">
+
+                            <span class="avatar tiny">
+                                ${escapeHTML(
+                    initials(c.authorName)
+                )}
+                            </span>
+
+
+                            <div class="comment-body">
+
+                                <strong>
+                                    ${escapeHTML(c.authorName)}
+                                </strong>
+
+                                <p>
+                                    ${escapeHTML(c.content)}
+                                </p>
+
+                                <small>
+                                    ${timeAgo(c.createdAt)}
+                                </small>
+
+                            </div>
+
+
+                            ${currentUser &&
+                        String(c.authorId) ===
+                        String(currentUser._id)
+                        ? `
+                                        <button
+                                            class="delete-comment"
+                                            data-delete-comment="${c._id}"
+                                        >
+                                            ×
+                                        </button>
+                                      `
+                        : ""
+                    }
+
+                        </div>
+
+                    `).join("")}
+
+
+                    <form
+                        class="comment-form"
+                        data-post-id="${post._id}"
+                    >
+
+                        <span class="avatar tiny">
+                            ${escapeHTML(
+                        initials(currentUser?.name)
+                    )}
+                        </span>
+
+
+                        <input
+                            type="text"
+                            maxlength="1000"
+                            placeholder="Write a comment..."
+                            required
+                        >
+
+
+                        <button type="submit">
+                            Post
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+        `;
 
     }).join("");
 
 
     /* ================================================= */
-    /* CLICK USER PROFILE */
+    /* USER PROFILE */
     /* ================================================= */
 
-    container.querySelectorAll(".post-profile-btn").forEach(btn => {
+    container
+        .querySelectorAll(".post-profile-btn")
+        .forEach(btn => {
 
-        btn.onclick = () => {
+            btn.onclick = () => {
 
-            const userId = btn.dataset.userId;
-            const userName = btn.dataset.userName;
+                openUserProfile(
+                    btn.dataset.userId,
+                    btn.dataset.userName
+                );
 
-            openUserProfile(userId, userName);
+            };
 
-        };
-
-    });
+        });
 
 
     /* ================================================= */
     /* DELETE POST */
     /* ================================================= */
 
-    container.querySelectorAll("[data-delete-post]").forEach(btn => {
+    container
+        .querySelectorAll("[data-delete-post]")
+        .forEach(btn => {
 
-        btn.onclick = async () => {
+            btn.onclick = async () => {
 
-            if (!confirm("Delete this post?")) return;
+                if (!confirm("Delete this post?")) {
+                    return;
+                }
 
-            try {
+                try {
 
-                await api(
-                    `/api/posts/${btn.dataset.deletePost}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
+                    await api(
+                        `/api/posts/${btn.dataset.deletePost}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
 
-                toast("Post deleted.");
+                    toast("Post deleted.");
 
-                loadPosts();
+                    await loadPosts();
 
-            } catch (e) {
+                } catch (e) {
 
-                toast(e.message);
+                    toast(e.message);
 
-            }
+                }
 
-        };
+            };
 
-    });
+        });
 
 
     /* ================================================= */
     /* DELETE COMMENT */
     /* ================================================= */
 
-    container.querySelectorAll("[data-delete-comment]").forEach(btn => {
+    container
+        .querySelectorAll("[data-delete-comment]")
+        .forEach(btn => {
 
-        btn.onclick = async () => {
+            btn.onclick = async () => {
 
-            if (!confirm("Delete this comment?")) return;
+                if (!confirm("Delete this comment?")) {
+                    return;
+                }
 
-            try {
+                try {
 
-                await api(
-                    `/api/comments/${btn.dataset.deleteComment}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
+                    await api(
+                        `/api/comments/${btn.dataset.deleteComment}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
 
-                toast("Comment deleted.");
+                    toast("Comment deleted.");
 
-                loadPosts();
+                    await loadPosts();
 
-            } catch (e) {
+                } catch (e) {
 
-                toast(e.message);
+                    toast(e.message);
 
-            }
+                }
 
-        };
+            };
 
-    });
+        });
 
 
     /* ================================================= */
     /* ADD COMMENT */
     /* ================================================= */
 
-    container.querySelectorAll(".comment-form").forEach(form => {
+    container
+        .querySelectorAll(".comment-form")
+        .forEach(form => {
 
-        form.onsubmit = async e => {
+            form.onsubmit = async e => {
 
-            e.preventDefault();
+                e.preventDefault();
 
-            const input = form.querySelector("input");
+                const input =
+                    form.querySelector("input");
 
-            try {
+                const content =
+                    input.value.trim();
 
-                await api(
-                    `/api/posts/${form.dataset.postId}/comments`,
-                    {
-                        method: "POST",
-                        body: JSON.stringify({
-                            content: input.value
-                        })
-                    }
-                );
+                if (!content) return;
 
-                input.value = "";
+                try {
 
-                loadPosts();
+                    await api(
+                        `/api/posts/${form.dataset.postId}/comments`,
+                        {
+                            method: "POST",
 
-            } catch (err) {
+                            body: JSON.stringify({
+                                content
+                            })
+                        }
+                    );
 
-                toast(err.message);
+                    input.value = "";
 
-            }
+                    await loadPosts();
 
-        };
+                } catch (err) {
 
-    });
+                    toast(err.message);
+
+                }
+
+            };
+
+        });
 
 }
 
@@ -377,18 +484,43 @@ ${post.image ? `
 
 async function loadPosts(search = "") {
 
+    const loading =
+        document.getElementById("loading");
+
     try {
 
-        posts = await api(
+        if (loading) {
+            loading.style.display = "block";
+            loading.textContent = "Loading posts...";
+        }
+
+
+        const data = await api(
             `/api/posts?search=${encodeURIComponent(search)}`
         );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Server returns:
+         *
+         * {
+         *     posts: [...]
+         * }
+         */
+
+        posts = data.posts || [];
+
 
         renderPosts(posts);
 
     } catch (e) {
 
-        document.getElementById("loading").textContent =
-            e.message;
+        if (loading) {
+            loading.style.display = "block";
+            loading.textContent = e.message;
+        }
 
     }
 
@@ -401,7 +533,8 @@ async function loadPosts(search = "") {
 
 async function openUserProfile(userId, userName) {
 
-    const modal = document.getElementById("profileModal");
+    const modal =
+        document.getElementById("profileModal");
 
     const nameElement =
         document.getElementById("viewProfileName");
@@ -416,16 +549,25 @@ async function openUserProfile(userId, userName) {
         document.getElementById("userPosts");
 
 
-    /* Show basic profile information */
+    if (!modal || !nameElement || !postsElement) {
+        return;
+    }
+
 
     nameElement.textContent = userName;
 
-    avatarElement.textContent = initials(userName);
+    avatarElement.textContent =
+        initials(userName);
 
 
-    /* Only show email when viewing your own profile */
+    /*
+     * Email is shown only for own profile.
+     */
 
-    if (String(userId) === String(currentUser._id)) {
+    if (
+        currentUser &&
+        String(userId) === String(currentUser._id)
+    ) {
 
         emailElement.textContent =
             currentUser.email;
@@ -438,18 +580,14 @@ async function openUserProfile(userId, userName) {
     }
 
 
-    /* Open modal */
-
     modal.classList.remove("hidden");
 
 
-    /* Loading message */
-
     postsElement.innerHTML = `
-    <p class="muted">
-      Loading posts...
-    </p>
-  `;
+        <p class="muted">
+            Loading posts...
+        </p>
+    `;
 
 
     try {
@@ -457,63 +595,100 @@ async function openUserProfile(userId, userName) {
         const data =
             await api(`/api/users/${userId}/posts`);
 
+
         const userPosts =
             data.posts || [];
 
 
-        /* No posts */
-
         if (!userPosts.length) {
 
             postsElement.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">◎</div>
 
-          <h3>No posts yet</h3>
+                <div class="empty">
 
-          <p class="muted">
-            ${escapeHTML(userName)} has not published any posts.
-          </p>
-        </div>
-      `;
+                    <div class="empty-icon">
+                        ◎
+                    </div>
+
+                    <h3>
+                        No posts yet
+                    </h3>
+
+                    <p class="muted">
+                        ${escapeHTML(userName)}
+                        has not published any posts.
+                    </p>
+
+                </div>
+
+            `;
 
             return;
         }
 
 
-        /* Display ONLY this user's posts */
+        postsElement.innerHTML =
+            userPosts.map(post => {
 
-        postsElement.innerHTML = userPosts.map(post => {
+                return `
 
-            return `
-        <article class="profile-post">
+                    <article class="profile-post">
 
-          <div class="profile-post-date">
-            ${timeAgo(post.createdAt)}
-          </div>
-<div class="profile-post-content">
-  ${escapeHTML(post.content).replace(/\n/g, "<br>")}
-</div>
+                        <div class="profile-post-date">
+                            ${timeAgo(post.createdAt)}
+                        </div>
 
-${post.image ? `
-  <div class="profile-post-image">
-    <img
-      src="${escapeHTML(post.image)}"
-      alt="Complaint picture"
-      loading="lazy"
-    >
-  </div>
-` : ""}
 
-          <div class="profile-post-comments">
-            ${post.comments?.length || 0}
-            comment${(post.comments?.length || 0) === 1 ? "" : "s"}
-          </div>
+                        ${post.category
+                        ? `
+                                    <div class="profile-post-category">
+                                        ${escapeHTML(post.category)}
+                                    </div>
+                                  `
+                        : ""
+                    }
 
-        </article>
-      `;
 
-        }).join("");
+                        <div class="profile-post-content">
+
+                            ${escapeHTML(post.content)
+                        .replace(/\n/g, "<br>")}
+
+                        </div>
+
+
+                        ${post.image
+                        ? `
+                                    <div class="profile-post-image">
+
+                                        <img
+                                            src="${escapeHTML(post.image)}"
+                                            alt="Complaint picture"
+                                            loading="lazy"
+                                        >
+
+                                    </div>
+                                  `
+                        : ""
+                    }
+
+
+                        <div class="profile-post-comments">
+
+                            ${post.comments?.length || 0}
+
+                            comment${(post.comments?.length || 0) === 1
+                        ? ""
+                        : "s"
+                    }
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }).join("");
 
 
     } catch (error) {
@@ -521,12 +696,136 @@ ${post.image ? `
         console.error(error);
 
         postsElement.innerHTML = `
-      <p class="form-message error">
-        ${escapeHTML(error.message)}
-      </p>
-    `;
+
+            <p class="form-message error">
+                ${escapeHTML(error.message)}
+            </p>
+
+        `;
 
     }
+
+}
+
+
+/* ================================================= */
+/* IMAGE COMPRESSION */
+/* ================================================= */
+
+async function compressImage(file) {
+
+    if (!file.type.startsWith("image/")) {
+        throw new Error("Please select an image file.");
+    }
+
+
+    if (file.size > 8 * 1024 * 1024) {
+        throw new Error(
+            "Image must be smaller than 8MB."
+        );
+    }
+
+
+    const image = new Image();
+
+    const objectUrl =
+        URL.createObjectURL(file);
+
+    image.src = objectUrl;
+
+
+    await new Promise((resolve, reject) => {
+
+        image.onload = resolve;
+        image.onerror = reject;
+
+    });
+
+
+    const maxSize = 1200;
+
+    let width = image.width;
+    let height = image.height;
+
+
+    if (
+        width > maxSize ||
+        height > maxSize
+    ) {
+
+        const scale =
+            Math.min(
+                maxSize / width,
+                maxSize / height
+            );
+
+        width =
+            Math.round(width * scale);
+
+        height =
+            Math.round(height * scale);
+
+    }
+
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    URL.revokeObjectURL(objectUrl);
+
+
+    let quality = 0.8;
+
+    let dataUrl =
+        canvas.toDataURL(
+            "image/jpeg",
+            quality
+        );
+
+
+    while (
+        dataUrl.length > 1200000 &&
+        quality > 0.4
+    ) {
+
+        quality -= 0.1;
+
+        dataUrl =
+            canvas.toDataURL(
+                "image/jpeg",
+                quality
+            );
+
+    }
+
+
+    if (dataUrl.length > 1200000) {
+
+        throw new Error(
+            "The picture is still too large. Please choose a smaller image."
+        );
+
+    }
+
+
+    return dataUrl;
 
 }
 
@@ -535,476 +834,788 @@ ${post.image ? `
 /* DOM LOADED */
 /* ================================================= */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    if (!token()) {
+        /* ============================================= */
+        /* CHECK LOGIN */
+        /* ============================================= */
 
-        location.href = "index.html";
+        if (!token()) {
 
-        return;
-    }
-
-
-    try {
-
-        const me =
-            await api("/api/auth/me");
-
-
-        if (me.role !== "user") {
-
-            location.href =
-                "admin-dashboard.html";
+            location.href = "index.html";
 
             return;
+
         }
 
-
-        currentUser =
-            me.account;
-
-
-        const displayName =
-            currentUser.name;
-
-
-        document.getElementById("topName")
-            .textContent = displayName;
-
-        document.getElementById("profileName")
-            .textContent = displayName;
-
-        document.getElementById("profileEmail")
-            .textContent = currentUser.email;
-
-        document.getElementById("composerName")
-            .textContent = displayName;
-
-
-        [
-            "topAvatar",
-            "profileAvatar",
-            "composerAvatar"
-        ].forEach(id => {
-
-            document.getElementById(id)
-                .textContent = initials(displayName);
-
-        });
-
-
-        /* ============================================= */
-        /* YOUR OWN PROFILE */
-        /* ============================================= */
-
-        document.getElementById("topProfileBtn").onclick =
-            () => {
-
-                openUserProfile(
-                    currentUser._id,
-                    currentUser.name
-                );
-
-            };
-
-
-        document.getElementById("sidebarProfileBtn").onclick =
-            () => {
-
-                openUserProfile(
-                    currentUser._id,
-                    currentUser.name
-                );
-
-            };
-
-
-        loadPosts();
-
-
-    } catch {
-
-        localStorage.removeItem("barangay_token");
-
-        location.href = "index.html";
-
-        return;
-
-    }
-
-
-    /* ================================================= */
-    /* LOGOUT */
-    /* ================================================= */
-
-    document.getElementById("logoutBtn").onclick = () => {
-
-        localStorage.clear();
-
-        location.href = "index.html";
-
-    };
-
-
-    /* ================================================= */
-    /* CHARACTER COUNTER */
-    /* ================================================= */
-
-    const textarea =
-        document.getElementById("postContent");
-
-
-    textarea.oninput = () => {
-
-        document.getElementById("charCount")
-            .textContent =
-            `${textarea.value.length} / 5000`;
-
-    };
-
-    /* ================================================= */
-    /* COMPLAINT IMAGE */
-    /* ================================================= */
-
-    const imageInput =
-        document.getElementById("postImage");
-
-    const imagePreview =
-        document.getElementById("imagePreview");
-
-    const imagePreviewContainer =
-        document.getElementById("imagePreviewContainer");
-
-    const removeImageBtn =
-        document.getElementById("removeImageBtn");
-
-
-    async function compressImage(file) {
-
-        if (!file.type.startsWith("image/")) {
-            throw new Error("Please select an image file.");
-        }
-
-        if (file.size > 8 * 1024 * 1024) {
-            throw new Error("Image must be smaller than 8MB.");
-        }
-
-        const image = new Image();
-
-        const objectUrl =
-            URL.createObjectURL(file);
-
-        image.src = objectUrl;
-
-        await new Promise((resolve, reject) => {
-
-            image.onload = resolve;
-            image.onerror = reject;
-
-        });
-
-        const maxSize = 1200;
-
-        let width = image.width;
-        let height = image.height;
-
-        if (width > maxSize || height > maxSize) {
-
-            const scale =
-                Math.min(
-                    maxSize / width,
-                    maxSize / height
-                );
-
-            width =
-                Math.round(width * scale);
-
-            height =
-                Math.round(height * scale);
-        }
-
-        const canvas =
-            document.createElement("canvas");
-
-        canvas.width = width;
-        canvas.height = height;
-
-        const ctx =
-            canvas.getContext("2d");
-
-        ctx.drawImage(
-            image,
-            0,
-            0,
-            width,
-            height
-        );
-
-        URL.revokeObjectURL(objectUrl);
-
-        let quality = 0.8;
-
-        let dataUrl =
-            canvas.toDataURL(
-                "image/jpeg",
-                quality
-            );
-
-        // Keep the stored image reasonably small
-        while (
-            dataUrl.length > 1200000 &&
-            quality > 0.4
-        ) {
-
-            quality -= 0.1;
-
-            dataUrl =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    quality
-                );
-        }
-
-        if (dataUrl.length > 1200000) {
-            throw new Error(
-                "The picture is still too large. Please choose a smaller image."
-            );
-        }
-
-        return dataUrl;
-    }
-
-
-    imageInput.onchange = async () => {
-
-        const file =
-            imageInput.files[0];
-
-        if (!file) return;
 
         try {
 
-            selectedImage =
-                await compressImage(file);
+            const me =
+                await api("/api/auth/me");
 
-            imagePreview.src =
-                selectedImage;
 
-            imagePreviewContainer
-                .classList.remove("hidden");
+            if (me.role !== "user") {
+
+                location.href =
+                    "admin-dashboard.html";
+
+                return;
+
+            }
+
+
+            currentUser =
+                me.account;
+
+
+            const displayName =
+                currentUser.name;
+
+
+            /* ========================================= */
+            /* PROFILE INFORMATION */
+            /* ========================================= */
+
+            const topName =
+                document.getElementById("topName");
+
+            const profileName =
+                document.getElementById("profileName");
+
+            const profileEmail =
+                document.getElementById("profileEmail");
+
+            const composerName =
+                document.getElementById("composerName");
+
+
+            if (topName) {
+                topName.textContent =
+                    displayName;
+            }
+
+            if (profileName) {
+                profileName.textContent =
+                    displayName;
+            }
+
+            if (profileEmail) {
+                profileEmail.textContent =
+                    currentUser.email;
+            }
+
+            if (composerName) {
+                composerName.textContent =
+                    displayName;
+            }
+
+
+            [
+                "topAvatar",
+                "profileAvatar",
+                "composerAvatar"
+            ].forEach(id => {
+
+                const element =
+                    document.getElementById(id);
+
+                if (element) {
+
+                    element.textContent =
+                        initials(displayName);
+
+                }
+
+            });
+
+
+            /* ========================================= */
+            /* OWN PROFILE */
+            /* ========================================= */
+
+            const topProfileBtn =
+                document.getElementById(
+                    "topProfileBtn"
+                );
+
+            if (topProfileBtn) {
+
+                topProfileBtn.onclick =
+                    () => {
+
+                        openUserProfile(
+                            currentUser._id,
+                            currentUser.name
+                        );
+
+                    };
+
+            }
+
+
+            const sidebarProfileBtn =
+                document.getElementById(
+                    "sidebarProfileBtn"
+                );
+
+            if (sidebarProfileBtn) {
+
+                sidebarProfileBtn.onclick =
+                    () => {
+
+                        openUserProfile(
+                            currentUser._id,
+                            currentUser.name
+                        );
+
+                    };
+
+            }
+
+
+            /* ========================================= */
+            /* LOAD POSTS */
+            /* ========================================= */
+
+            await loadPosts();
+
 
         } catch (error) {
 
-            selectedImage = "";
+            console.error(error);
 
-            imageInput.value = "";
+            localStorage.removeItem(
+                "barangay_token"
+            );
 
-            imagePreviewContainer
-                .classList.add("hidden");
+            localStorage.removeItem(
+                "barangay_role"
+            );
 
-            toast(error.message);
+            location.href =
+                "index.html";
+
+            return;
+
         }
-    };
 
 
-    removeImageBtn.onclick = () => {
+        /* ================================================= */
+        /* LOGOUT */
+        /* ================================================= */
 
-        selectedImage = "";
+        const logoutBtn =
+            document.getElementById("logoutBtn");
 
-        imageInput.value = "";
+        if (logoutBtn) {
 
-        imagePreview.src = "";
+            logoutBtn.onclick = () => {
 
-        imagePreviewContainer
-            .classList.add("hidden");
-    };
-
-
-    /* ================================================= */
-    /* CREATE POST */
-    /* ================================================= */
-    document.getElementById("postBtn").onclick =
-        async () => {
-
-            try {
-
-                if (!textarea.value.trim()) {
-                    return toast("Write something first.");
-                }
-
-                await api(
-                    "/api/posts",
-                    {
-                        method: "POST",
-
-                        body: JSON.stringify({
-                            content: textarea.value,
-                            image: selectedImage
-                        })
-                    }
+                localStorage.removeItem(
+                    "barangay_token"
                 );
 
-
-                textarea.value = "";
-
-                document.getElementById("charCount")
-                    .textContent = "0 / 5000";
-
-
-                // Clear selected picture
-                selectedImage = "";
-
-                imageInput.value = "";
-
-                imagePreview.src = "";
-
-                imagePreviewContainer
-                    .classList.add("hidden");
-
-
-                toast("Post published.");
-
-                loadPosts();
-
-
-            } catch (e) {
-
-                toast(e.message);
-
-            }
-
-        };
-
-
-    /* ================================================= */
-    /* SEARCH */
-    /* ================================================= */
-
-    let searchTimer;
-
-
-    document.getElementById("searchInput").oninput =
-        e => {
-
-            clearTimeout(searchTimer);
-
-            searchTimer =
-                setTimeout(
-                    () => loadPosts(e.target.value),
-                    300
+                localStorage.removeItem(
+                    "barangay_role"
                 );
 
-        };
-
-
-    /* ================================================= */
-    /* CHANGE PASSWORD */
-    /* ================================================= */
-
-    document.getElementById("passwordBtn").onclick =
-        () => {
-
-            document
-                .getElementById("passwordModal")
-                .classList.remove("hidden");
-
-        };
-
-
-    /* ================================================= */
-    /* CLOSE MODALS */
-    /* ================================================= */
-
-    document.querySelectorAll("[data-close]")
-        .forEach(btn => {
-
-            btn.onclick = () => {
-
-                document
-                    .getElementById(btn.dataset.close)
-                    .classList.add("hidden");
+                location.href =
+                    "index.html";
 
             };
 
-        });
+        }
 
 
-    /* ================================================= */
-    /* CHANGE PASSWORD FORM */
-    /* ================================================= */
+        /* ================================================= */
+        /* COMPLAINT TEXTAREA */
+        /* ================================================= */
 
-    document.getElementById("passwordForm")
-        .onsubmit = async e => {
-
-            e.preventDefault();
+        const textarea =
+            document.getElementById("postContent");
 
 
-            const currentPassword =
-                document.getElementById("currentPassword");
+        if (textarea) {
 
-            const newPassword =
-                document.getElementById("newPassword");
+            textarea.oninput = () => {
 
-            const confirmPassword =
-                document.getElementById("confirmPassword");
+                const counter =
+                    document.getElementById(
+                        "charCount"
+                    );
 
+                if (counter) {
 
-            if (
-                newPassword.value !==
-                confirmPassword.value
-            ) {
+                    counter.textContent =
+                        `${textarea.value.length} / 5000`;
 
-                showMessage(
-                    "passwordMessage",
-                    "New passwords do not match."
-                );
+                }
 
-                return;
-            }
+            };
+
+        }
 
 
-            try {
+        /* ================================================= */
+        /* IMAGE ELEMENTS */
+        /* ================================================= */
 
-                await api(
-                    "/api/auth/change-password",
-                    {
-                        method: "PUT",
+        const imageInput =
+            document.getElementById("postImage");
 
-                        body: JSON.stringify({
+        const imagePreview =
+            document.getElementById("imagePreview");
 
-                            currentPassword:
-                                currentPassword.value,
+        const imagePreviewContainer =
+            document.getElementById(
+                "imagePreviewContainer"
+            );
 
-                            newPassword:
-                                newPassword.value
+        const removeImageBtn =
+            document.getElementById(
+                "removeImageBtn"
+            );
 
-                        })
+
+        /* ================================================= */
+        /* IMAGE SELECT */
+        /* ================================================= */
+
+        if (imageInput) {
+
+            imageInput.onchange =
+                async () => {
+
+                    const file =
+                        imageInput.files[0];
+
+                    if (!file) return;
+
+
+                    try {
+
+                        selectedImage =
+                            await compressImage(file);
+
+
+                        if (imagePreview) {
+
+                            imagePreview.src =
+                                selectedImage;
+
+                        }
+
+
+                        if (
+                            imagePreviewContainer
+                        ) {
+
+                            imagePreviewContainer
+                                .classList
+                                .remove("hidden");
+
+                        }
+
+
+                    } catch (error) {
+
+                        selectedImage = "";
+
+                        imageInput.value = "";
+
+
+                        if (imagePreview) {
+                            imagePreview.src = "";
+                        }
+
+
+                        if (
+                            imagePreviewContainer
+                        ) {
+
+                            imagePreviewContainer
+                                .classList
+                                .add("hidden");
+
+                        }
+
+
+                        toast(error.message);
+
                     }
-                );
+
+                };
+
+        }
 
 
-                showMessage(
-                    "passwordMessage",
-                    "Password changed successfully.",
-                    false
-                );
+        /* ================================================= */
+        /* REMOVE IMAGE */
+        /* ================================================= */
+
+        if (removeImageBtn) {
+
+            removeImageBtn.onclick = () => {
+
+                selectedImage = "";
+
+                if (imageInput) {
+                    imageInput.value = "";
+                }
+
+                if (imagePreview) {
+                    imagePreview.src = "";
+                }
+
+                if (imagePreviewContainer) {
+
+                    imagePreviewContainer
+                        .classList
+                        .add("hidden");
+
+                }
+
+            };
+
+        }
 
 
-                e.target.reset();
+        /* ================================================= */
+        /* CREATE COMPLAINT */
+        /* ================================================= */
+
+        const postBtn =
+            document.getElementById("postBtn");
 
 
-            } catch (err) {
+        if (postBtn) {
 
-                showMessage(
-                    "passwordMessage",
-                    err.message
-                );
+            postBtn.onclick =
+                async () => {
 
-            }
+                    try {
 
-        };
+                        const content =
+                            textarea.value.trim();
 
-});
+
+                        const category =
+                            document.getElementById(
+                                "complaintCategory"
+                            ).value;
+
+
+                        const address =
+                            document.getElementById(
+                                "complaintAddress"
+                            ).value.trim();
+
+
+                        const age =
+                            document.getElementById(
+                                "complaintAge"
+                            ).value;
+
+
+                        const gender =
+                            document.getElementById(
+                                "complaintGender"
+                            ).value;
+
+
+                        const contactNumber =
+                            document.getElementById(
+                                "complaintContact"
+                            ).value.trim();
+
+
+                        /* ================================= */
+                        /* VALIDATION */
+                        /* ================================= */
+
+                        if (!content) {
+
+                            toast(
+                                "Please describe your complaint."
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!category) {
+
+                            toast(
+                                "Please select a complaint category."
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!address) {
+
+                            toast(
+                                "Please enter the complaint address."
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!age) {
+
+                            toast(
+                                "Please enter your age."
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!gender) {
+
+                            toast(
+                                "Please select your gender."
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!contactNumber) {
+
+                            toast(
+                                "Please enter your contact number."
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* ================================= */
+                        /* SEND TO SERVER */
+                        /* ================================= */
+
+                        await api(
+                            "/api/posts",
+                            {
+                                method: "POST",
+
+                                body: JSON.stringify({
+
+                                    content,
+
+                                    category,
+
+                                    address,
+
+                                    age: Number(age),
+
+                                    gender,
+
+                                    contactNumber,
+
+                                    image:
+                                        selectedImage
+
+                                })
+
+                            }
+                        );
+
+
+                        /* ================================= */
+                        /* CLEAR COMPLAINT FORM */
+                        /* ================================= */
+
+                        textarea.value = "";
+
+
+                        const charCount =
+                            document.getElementById(
+                                "charCount"
+                            );
+
+                        if (charCount) {
+
+                            charCount.textContent =
+                                "0 / 5000";
+
+                        }
+
+
+                        document.getElementById(
+                            "complaintCategory"
+                        ).value = "";
+
+
+                        document.getElementById(
+                            "complaintAddress"
+                        ).value = "";
+
+
+                        document.getElementById(
+                            "complaintAge"
+                        ).value = "";
+
+
+                        document.getElementById(
+                            "complaintGender"
+                        ).value = "";
+
+
+                        document.getElementById(
+                            "complaintContact"
+                        ).value = "";
+
+
+                        /* ================================= */
+                        /* CLEAR IMAGE */
+                        /* ================================= */
+
+                        selectedImage = "";
+
+
+                        if (imageInput) {
+                            imageInput.value = "";
+                        }
+
+
+                        if (imagePreview) {
+                            imagePreview.src = "";
+                        }
+
+
+                        if (
+                            imagePreviewContainer
+                        ) {
+
+                            imagePreviewContainer
+                                .classList
+                                .add("hidden");
+
+                        }
+
+
+                        toast(
+                            "Complaint submitted successfully."
+                        );
+
+
+                        await loadPosts();
+
+
+                    } catch (e) {
+
+                        console.error(e);
+
+                        toast(e.message);
+
+                    }
+
+                };
+
+        }
+
+
+        /* ================================================= */
+        /* SEARCH */
+        /* ================================================= */
+
+        let searchTimer;
+
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+
+        if (searchInput) {
+
+            searchInput.oninput =
+                e => {
+
+                    clearTimeout(
+                        searchTimer
+                    );
+
+
+                    searchTimer =
+                        setTimeout(
+                            () =>
+                                loadPosts(
+                                    e.target.value
+                                ),
+                            300
+                        );
+
+                };
+
+        }
+
+
+        /* ================================================= */
+        /* CHANGE PASSWORD */
+        /* ================================================= */
+
+        const passwordBtn =
+            document.getElementById(
+                "passwordBtn"
+            );
+
+
+        if (passwordBtn) {
+
+            passwordBtn.onclick = () => {
+
+                document
+                    .getElementById(
+                        "passwordModal"
+                    )
+                    .classList
+                    .remove("hidden");
+
+            };
+
+        }
+
+
+        /* ================================================= */
+        /* CLOSE MODALS */
+        /* ================================================= */
+
+        document
+            .querySelectorAll("[data-close]")
+            .forEach(btn => {
+
+                btn.onclick = () => {
+
+                    const modal =
+                        document.getElementById(
+                            btn.dataset.close
+                        );
+
+                    if (modal) {
+
+                        modal.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
+                };
+
+            });
+
+
+        /* ================================================= */
+        /* CHANGE PASSWORD */
+        /* ================================================= */
+
+        const passwordForm =
+            document.getElementById(
+                "passwordForm"
+            );
+
+
+        if (passwordForm) {
+
+            passwordForm.onsubmit =
+                async e => {
+
+                    e.preventDefault();
+
+
+                    const currentPassword =
+                        document.getElementById(
+                            "currentPassword"
+                        );
+
+
+                    const newPassword =
+                        document.getElementById(
+                            "newPassword"
+                        );
+
+
+                    const confirmPassword =
+                        document.getElementById(
+                            "confirmPassword"
+                        );
+
+
+                    if (
+                        newPassword.value !==
+                        confirmPassword.value
+                    ) {
+
+                        showMessage(
+                            "passwordMessage",
+                            "New passwords do not match."
+                        );
+
+                        return;
+
+                    }
+
+
+                    try {
+
+                        await api(
+                            "/api/auth/change-password",
+                            {
+                                method: "PUT",
+
+                                body: JSON.stringify({
+
+                                    currentPassword:
+                                        currentPassword.value,
+
+                                    newPassword:
+                                        newPassword.value
+
+                                })
+
+                            }
+                        );
+
+
+                        showMessage(
+                            "passwordMessage",
+                            "Password changed successfully.",
+                            false
+                        );
+
+
+                        passwordForm.reset();
+
+
+                    } catch (err) {
+
+                        showMessage(
+                            "passwordMessage",
+                            err.message
+                        );
+
+                    }
+
+                };
+
+        }
+
+    }
+);
 
 
 /* ================================================= */
@@ -1020,9 +1631,12 @@ function showMessage(
     const el =
         document.getElementById(id);
 
+    if (!el) return;
+
     el.textContent = message;
 
     el.className =
-        `form-message ${error ? "error" : "success"}`;
+        `form-message ${error ? "error" : "success"
+        }`;
 
 }
