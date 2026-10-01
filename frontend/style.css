@@ -3430,3 +3430,27 @@ body.app-body {
 
 
 
+/* Sidebar menu text */
+.app-body .sidebar .nav-link {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+    /* Icons */
+    .app-body .sidebar .nav-link i,
+    .app-body .sidebar .nav-link svg,
+    .app-body .sidebar .nav-link span {
+        color: #FFFFFF !important;
+    }
+
+    /* Hover */
+    .app-body .sidebar .nav-link:hover {
+        color: #D9FAFA !important;
+        background: rgba(255,255,255,0.12) !important;
+    }
+
+        .app-body .sidebar .nav-link:hover i,
+        .app-body .sidebar .nav-link:hover svg,
+        .app-body .sidebar .nav-link:hover span {
+            color: #D9FAFA !important;
+        }
