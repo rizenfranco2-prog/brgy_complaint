@@ -105,51 +105,229 @@ function toast(message) {
 
 function renderPosts(list = posts) {
 
-    const authorName = escapeHTML(post.authorName || "Resident");
-    const authorInitials = initials(post.authorName || "Resident");
+    const container = document.getElementById("feedList");
+    const loading = document.getElementById("loading");
 
-    html += `
-    <article class="post-card card">
+    if (loading) {
+        loading.style.display = "none";
+    }
 
-        <div class="post-header">
+    if (!container) return;
 
-            <div class="post-author">
 
-                <span class="avatar">
-                    ${authorInitials}
-                </span>
+    if (!list.length) {
 
-                <div class="post-author-info">
-                    <strong>${authorName}</strong>
-                    <small>${timeAgo(post.createdAt)}</small>
+        container.innerHTML = `
+            <div class="empty card">
+                <div class="empty-icon">◎</div>
+
+                <h3>No posts found</h3>
+
+                <p>
+                    Try another search or publish the first
+                    community post.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML = list.map(post => {
+
+        const own =
+            currentUser &&
+            String(post.authorId) === String(currentUser._id);
+
+        const comments = post.comments || [];
+
+        const status = post.status || "Pending";
+
+        return `
+            <article class="post card">
+
+                <div class="post-head">
+
+                    <button
+                        class="post-profile-btn"
+                        data-user-id="${escapeHTML(post.authorId)}"
+                        data-user-name="${escapeHTML(post.authorName)}"
+                        type="button"
+                    >
+
+                        <span class="avatar">
+                            ${escapeHTML(
+            initials(post.authorName)
+        )}
+                        </span>
+
+                        <div class="post-author">
+
+                            <strong>
+                                ${escapeHTML(post.authorName)}
+                            </strong>
+
+                            <small>
+                                ${timeAgo(post.createdAt)}
+                            </small>
+
+                        </div>
+
+                    </button>
+
+
+                    ${own
+                ? `
+                                <button
+                                    class="more-btn"
+                                    data-delete-post="${post._id}"
+                                    title="Delete post"
+                                >
+                                    ⋯
+                                </button>
+                              `
+                : ""
+            }
+
                 </div>
 
-            </div>
 
-            ${post.authorId === currentUserId ? `
-                <button
-                    class="post-delete-btn"
-                    data-delete-post="${post._id}">
-                    Delete
-                </button>
-            ` : ""}
+                ${post.category
+                ? `
+                            <div class="post-category">
+                                ${escapeHTML(post.category)}
+                            </div>
+                          `
+                : ""
+            }
 
-        </div>
 
-        <div class="post-content">
-            ${escapeHTML(post.content)}
-        </div>
+                <div class="post-content">
+                    ${escapeHTML(post.content)
+                .replace(/\n/g, "<br>")}
+                </div>
 
-        ${post.image ? `
-            <img
-                class="post-image"
-                src="${post.image}"
-                alt="Complaint image">
-        ` : ""}
 
-        ...
-    </article>
-`;
+                ${post.image
+                ? `
+                            <div class="post-image-container">
+
+                                <img
+                                    src="${escapeHTML(post.image)}"
+                                    class="post-image"
+                                    alt="Complaint picture"
+                                    loading="lazy"
+                                >
+
+                            </div>
+                          `
+                : ""
+            }
+
+
+                <div class="post-status">
+
+                    <span class="status-badge ${status
+                .toLowerCase()
+                .replace(/\s+/g, "-")}">
+
+                        ${escapeHTML(status)}
+
+                    </span>
+
+                </div>
+
+
+                <div class="post-meta">
+
+                    <span>
+                        ${comments.length}
+                        comment${comments.length === 1 ? "" : "s"}
+                    </span>
+
+                </div>
+
+
+                <div class="comments">
+
+                    ${comments.map(c => `
+
+                        <div class="comment">
+
+                            <span class="avatar tiny">
+                                ${escapeHTML(
+                    initials(c.authorName)
+                )}
+                            </span>
+
+
+                            <div class="comment-body">
+
+                                <strong>
+                                    ${escapeHTML(c.authorName)}
+                                </strong>
+
+                                <p>
+                                    ${escapeHTML(c.content)}
+                                </p>
+
+                                <small>
+                                    ${timeAgo(c.createdAt)}
+                                </small>
+
+                            </div>
+
+
+                            ${currentUser &&
+                        String(c.authorId) ===
+                        String(currentUser._id)
+                        ? `
+                                        <button
+                                            class="delete-comment"
+                                            data-delete-comment="${c._id}"
+                                        >
+                                            ×
+                                        </button>
+                                      `
+                        : ""
+                    }
+
+                        </div>
+
+                    `).join("")}
+
+
+                    <form
+                        class="comment-form"
+                        data-post-id="${post._id}"
+                    >
+
+                        <span class="avatar tiny">
+                            ${escapeHTML(
+                        initials(currentUser?.name)
+                    )}
+                        </span>
+
+
+                        <input
+                            type="text"
+                            maxlength="1000"
+                            placeholder="Write a comment..."
+                            required
+                        >
+
+
+                        <button type="submit">
+                            Post
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+        `;
 
     }).join("");
 
