@@ -40,11 +40,67 @@ const postSchema = new mongoose.Schema({
         required: true
     },
 
+    // complaint or announcement
+    type: {
+        type: String,
+        enum: ["complaint", "announcement"],
+        default: "complaint"
+    },
+
     content: {
         type: String,
         required: true,
         trim: true,
         maxlength: 5000
+    },
+
+    // Complaint information
+    category: {
+        type: String,
+        default: ""
+    },
+
+    address: {
+        type: String,
+        default: "",
+        maxlength: 300
+    },
+
+    age: {
+        type: Number,
+        min: 1,
+        max: 120
+    },
+
+    gender: {
+        type: String,
+        enum: ["Male", "Female", "Other", ""],
+        default: ""
+    },
+
+    contactNumber: {
+        type: String,
+        default: "",
+        maxlength: 30
+    },
+
+    // Complaint status
+    status: {
+        type: String,
+        enum: ["Pending", "In Progress", "Resolved"],
+        default: "Pending"
+    },
+
+    // Resolved complaints are archived,
+    // but NOT deleted from MongoDB.
+    archived: {
+        type: Boolean,
+        default: false
+    },
+
+    resolvedAt: {
+        type: Date,
+        default: null
     },
 
     image: {
@@ -235,14 +291,24 @@ app.put("/api/auth/change-password", auth, async (req, res) => {
 app.get("/api/posts", auth, async (req, res) => {
   try {
     const q = String(req.query.search || "").trim();
-    const filter = q
-      ? { $or: [
-          { content: { $regex: q, $options: "i" } },
-          { authorName: { $regex: q, $options: "i" } }
-        ] }
+      const filter = {
+          archived: false
+      };
+
+      if (q) {
+          filter.$or = [
+              { content: { $regex: q, $options: "i" } },
+              { authorName: { $regex: q, $options: "i" } },
+              { category: { $regex: q, $options: "i" } },
+              { address: { $regex: q, $options: "i" } }
+          ];
+      }
       : {};
 
-    const posts = await Post.find(filter).sort({ createdAt: -1 }).limit(100).lean();
+      const posts = await Post.find(filter)
+          .sort({ createdAt: -1 })
+          .limit(100)
+          .lean();
 
     const ids = posts.map(p => p._id);
     const comments = await Comment.find({ postId: { $in: ids } }).sort({ createdAt: 1 }).lean();
@@ -269,9 +335,91 @@ app.post("/api/posts", auth, async (req, res) => {
         const content = String(req.body.content || "").trim();
         const image = String(req.body.image || "").trim();
 
+        const type = String(req.body.type || "complaint").trim();
+
+        const category = String(req.body.category || "").trim();
+        const address = String(req.body.address || "").trim();
+        const gender = String(req.body.gender || "").trim();
+        const contactNumber = String(req.body.contactNumber || "").trim();
+
+        const age = Number(req.body.age);
+
         if (!content) {
             return res.status(400).json({
-                message: "Post content is required."
+                message: "Complaint description is required."
+            });
+        }
+
+        // --------------------------------
+        // ADMIN ANNOUNCEMENT
+        // --------------------------------
+        if (req.auth.role === "admin") {
+
+            const admin = await Admin.findById(req.auth.id);
+
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Admin account not found."
+                });
+            }
+
+            const post = await Post.create({
+                authorId: admin._id,
+                authorName: `${admin.username} (Admin)`,
+
+                type: "announcement",
+
+                content,
+                image,
+
+                isAnnouncement: true,
+
+                // Announcements don't enter complaint workflow
+                archived: false
+            });
+
+            return res.status(201).json(post);
+        }
+
+        // --------------------------------
+        // RESIDENT COMPLAINT
+        // --------------------------------
+        const user = await User.findById(req.auth.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User account not found."
+            });
+        }
+
+        // Validate complaint information
+        if (!category) {
+            return res.status(400).json({
+                message: "Complaint category is required."
+            });
+        }
+
+        if (!address) {
+            return res.status(400).json({
+                message: "Address is required."
+            });
+        }
+
+        if (!Number.isInteger(age) || age < 1 || age > 120) {
+            return res.status(400).json({
+                message: "Please enter a valid age."
+            });
+        }
+
+        if (!["Male", "Female", "Other"].includes(gender)) {
+            return res.status(400).json({
+                message: "Please select a valid gender."
+            });
+        }
+
+        if (!contactNumber) {
+            return res.status(400).json({
+                message: "Contact number is required."
             });
         }
 
@@ -293,50 +441,38 @@ app.post("/api/posts", auth, async (req, res) => {
             }
         }
 
-        // ADMIN POST
-        if (req.auth.role === "admin") {
-            const admin = await Admin.findById(req.auth.id);
-
-            if (!admin) {
-                return res.status(404).json({
-                    message: "Admin account not found."
-                });
-            }
-
-            const post = await Post.create({
-                authorId: admin._id,
-                authorName: `${admin.username} (Admin)`,
-                content,
-                image,
-                isAnnouncement: true
-            });
-
-            return res.status(201).json(post);
-        }
-
-        // USER POST
-        const user = await User.findById(req.auth.id);
-
-        if (!user) {
-            return res.status(404).json({
-                message: "User account not found."
-            });
-        }
-
         const post = await Post.create({
             authorId: user._id,
             authorName: user.name,
+
+            type: "complaint",
+
             content,
-            image
+            image,
+
+            category,
+            address,
+            age,
+            gender,
+            contactNumber,
+
+            // Every new complaint starts here
+            status: "Pending",
+
+            archived: false,
+            resolvedAt: null,
+
+            isAnnouncement: false
         });
 
         res.status(201).json(post);
 
     } catch (err) {
+
         console.error("CREATE POST ERROR:", err);
 
         res.status(500).json({
-            message: "Could not create post."
+            message: "Could not create complaint."
         });
     }
 });
@@ -414,23 +550,156 @@ app.get("/api/announcements", auth, async (req, res) => {
     }
 });
 
-app.put("/api/posts/:id", auth, adminOnly, async (req, res) => {
-  try {
-    const content = String(req.body.content || "").trim();
-    if (!content) return res.status(400).json({ message: "Post content is required." });
+// RESOLVE COMPLAINT
+app.put("/api/posts/:id/resolve", auth, adminOnly, async (req, res) => {
+    try {
 
-    const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      { content, updatedAt: new Date() },
-      { new: true }
-    );
+        const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ message: "Post not found." });
-    res.json(post);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Could not update post." });
-  }
+        if (!post) {
+            return res.status(404).json({
+                message: "Complaint not found."
+            });
+        }
+
+        if (post.type !== "complaint") {
+            return res.status(400).json({
+                message: "Only complaints can be resolved."
+            });
+        }
+
+        if (post.status === "Resolved") {
+            return res.status(400).json({
+                message: "Complaint is already resolved."
+            });
+        }
+
+        post.status = "Resolved";
+        post.archived = true;
+        post.resolvedAt = new Date();
+        post.updatedAt = new Date();
+
+        await post.save();
+
+        res.json({
+            message: "Complaint resolved and archived.",
+            post
+        });
+
+    } catch (err) {
+
+        console.error("RESOLVE COMPLAINT ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not resolve complaint."
+        });
+    }
+});
+
+
+app.get("/api/reports/complaints", auth, adminOnly, async (req, res) => {
+    try {
+
+        const complaints = await Post.find({
+            type: "complaint"
+        })
+            .sort({ createdAt: 1 })
+            .lean();
+
+        res.json(complaints);
+
+    } catch (err) {
+
+        console.error("GET REPORT COMPLAINTS ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not load complaint reports."
+        });
+    }
+});
+
+app.put("/api/posts/:id/status", auth, adminOnly, async (req, res) => {
+    try {
+
+        const status = String(req.body.status || "").trim();
+
+        const validStatuses = [
+            "Pending",
+            "In Progress",
+            "Resolved"
+        ];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+                message: "Invalid complaint status."
+            });
+        }
+
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Complaint not found."
+            });
+        }
+
+        if (post.type !== "complaint") {
+            return res.status(400).json({
+                message: "Only complaints have statuses."
+            });
+        }
+
+        post.status = status;
+        post.updatedAt = new Date();
+
+        if (status === "Resolved") {
+            post.archived = true;
+            post.resolvedAt = new Date();
+        } else {
+            post.archived = false;
+            post.resolvedAt = null;
+        }
+
+        await post.save();
+
+        res.json({
+            message: `Complaint status changed to ${status}.`,
+            post
+        });
+
+    } catch (err) {
+
+        console.error("UPDATE STATUS ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not update complaint status."
+        });
+    }
+});
+
+
+app.get("/api/archive", auth, adminOnly, async (req, res) => {
+    try {
+
+        const archived = await Post.find({
+            type: "complaint",
+            archived: true,
+            status: "Resolved"
+        })
+            .sort({ resolvedAt: -1 })
+            .limit(200)
+            .lean();
+
+        res.json(archived);
+
+    } catch (err) {
+
+        console.error("GET ARCHIVE ERROR:", err);
+
+        res.status(500).json({
+            message: "Could not load archived complaints."
+        });
+    }
 });
 
 app.delete("/api/posts/:id", auth, async (req, res) => {
