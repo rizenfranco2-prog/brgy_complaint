@@ -3540,39 +3540,19 @@ body.app-body {
     }
 
 
-/* =========================================================
-   ADMIN PROFILE — FIX TEXT VISIBILITY
-   ========================================================= */
+/* ADMIN PROFILE — LIGHT TEXT */
 
-.admin-dashboard .profile-mini,
-.app-body .profile-mini {
-    background: #102A47 !important;
-    border: 1px solid #3B5F82 !important;
+.app-body .profile-mini strong {
+    color: #EAF4FF !important;
+    font-weight: 700;
 }
 
-    /* Profile name */
-    .admin-dashboard .profile-mini strong,
-    .app-body .profile-mini strong {
-        color: #FFFFFF !important;
-        font-weight: 700;
-    }
+.app-body .profile-mini small {
+    color: #BFD7EE !important;
+}
 
-    /* "System administrator" text */
-    .admin-dashboard .profile-mini small,
-    .app-body .profile-mini small {
-        color: #AFC4D9 !important;
-    }
-
-    /* Profile avatar */
-    .admin-dashboard .profile-mini .avatar,
-    .app-body .profile-mini .avatar {
-        background: #DCEBFF !important;
-        color: #2563EB !important;
-        border: 3px solid #B8D5FF !important;
-    }
-
-    /* Sidebar profile button/area */
-    .admin-dashboard .profile-mini:hover,
-    .app-body .profile-mini:hover {
-        background: #153858 !important;
-    }
+.app-body .profile-mini .avatar {
+    background: #DCEBFF !important;
+    color: #2563EB !important;
+    border: 3px solid #B8D5FF !important;
+}
