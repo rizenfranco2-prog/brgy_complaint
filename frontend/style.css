@@ -3229,5 +3229,204 @@ textarea {
     }
 }
 
+/* =========================================================
+   BARANGAY CONNECT — TEAL BACKGROUND
+   RESIDENT + ADMIN DASHBOARD
+   ========================================================= */
+
+body.app-body {
+    min-height: 100vh !important;
+    background: #087F8C !important;
+    color: #EFFFFF;
+}
+
+/* Main layout */
+.app-body .layout,
+.app-body .main-content {
+    background: transparent !important;
+}
+
+/* Topbar */
+.app-body .topbar {
+    background: #056873 !important;
+    color: #FFFFFF !important;
+    border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+/* Sidebar */
+.app-body .sidebar {
+    background: #056873 !important;
+    color: #FFFFFF !important;
+    border-right: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+    /* Sidebar text */
+    .app-body .sidebar .nav-link {
+        color: #DFFFFF !important;
+    }
+
+        .app-body .sidebar .nav-link:hover {
+            background: #0A94A1 !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Active menu */
+        .app-body .sidebar .nav-link.active {
+            background: #D9FAFA !important;
+            color: #056873 !important;
+        }
+
+            .app-body .sidebar .nav-link.active * {
+                color: #056873 !important;
+            }
+
+/* Cards */
+.app-body .card,
+.app-body .composer,
+.app-body .post,
+.app-body .stat,
+.app-body .admin-table-card,
+.app-body .admin-row,
+.app-body .announcement-card,
+.app-body .chart-card {
+    background: #FFFFFF !important;
+    color: #183B43 !important;
+    border: none !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+    /* Card text */
+    .app-body .card h1,
+    .app-body .card h2,
+    .app-body .card h3,
+    .app-body .card h4,
+    .app-body .card strong,
+    .app-body .composer h1,
+    .app-body .composer h2,
+    .app-body .composer h3,
+    .app-body .composer strong,
+    .app-body .post strong {
+        color: #164650 !important;
+    }
+
+    /* Normal text */
+    .app-body .card p,
+    .app-body .composer p,
+    .app-body .post p,
+    .app-body .muted {
+        color: #52727A !important;
+    }
+
+/* Inputs */
+.app-body input,
+.app-body textarea,
+.app-body select {
+    background: #F3FBFB !important;
+    color: #173F47 !important;
+    border: 1px solid #A8DADC !important;
+}
+
+    .app-body input::placeholder,
+    .app-body textarea::placeholder {
+        color: #75959C !important;
+    }
+
+/* Buttons */
+.app-body .primary-btn {
+    background: #087F8C !important;
+    color: #FFFFFF !important;
+}
+
+    .app-body .primary-btn:hover {
+        background: #056873 !important;
+    }
+
+/* Secondary buttons */
+.app-body .secondary-btn {
+    background: #E1F6F7 !important;
+    color: #056873 !important;
+    border: 1px solid #A8DADC !important;
+}
+
+/* Profile */
+.app-body .profile-mini {
+    background: #FFFFFF !important;
+    color: #173F47 !important;
+}
+
+    .app-body .profile-mini strong {
+        color: #173F47 !important;
+    }
+
+    .app-body .profile-mini small {
+        color: #52727A !important;
+    }
+
+    /* Avatar */
+    .app-body .profile-mini .avatar {
+        background: #D9F5F6 !important;
+        color: #087F8C !important;
+        border: 3px solid #A8DADC !important;
+    }
+
+/* Top search */
+.app-body .top-search {
+    background: #FFFFFF !important;
+    border: 1px solid #A8DADC !important;
+}
+
+    .app-body .top-search input {
+        color: #173F47 !important;
+    }
+
+        .app-body .top-search input::placeholder {
+            color: #75959C !important;
+        }
+
+/* Admin table */
+.app-body .table-head {
+    background: #E8F8F8 !important;
+    color: #164650 !important;
+}
+
+.app-body .admin-row:hover {
+    background: #F0FBFB !important;
+}
+
+/* Status badges */
+.app-body .status-pending {
+    background: #FFF4E5 !important;
+    color: #B45309 !important;
+}
+
+.app-body .status-progress {
+    background: #E0F2FE !important;
+    color: #0369A1 !important;
+}
+
+.app-body .status-resolved {
+    background: #DCFCE7 !important;
+    color: #15803D !important;
+}
+
+/* Modal */
+.app-body .modal-card {
+    background: #FFFFFF !important;
+    color: #173F47 !important;
+}
+
+/* Scrollbar */
+.app-body ::-webkit-scrollbar-track {
+    background: #056873;
+}
+
+.app-body ::-webkit-scrollbar-thumb {
+    background: #34AEB7;
+}
+
+    .app-body ::-webkit-scrollbar-thumb:hover {
+        background: #D9FAFA;
+    }
+
 
 
