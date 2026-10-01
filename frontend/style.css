@@ -3230,6 +3230,315 @@ textarea {
 }
 
 
+/* =========================================================
+   BARANGAY CONNECT — SAME NAVY BACKGROUND
+   RESIDENT + ADMIN DASHBOARD
+   ========================================================= */
+
+/* Main website background */
+body.app-body {
+    min-height: 100vh;
+    background: radial-gradient( circle at 15% 10%, rgba(37, 99, 235, 0.22), transparent 30% ), radial-gradient( circle at 85% 80%, rgba(14, 165, 233, 0.14), transparent 30% ), #081B33 !important;
+    color: #EAF4FF;
+}
+
+/* Main layout */
+.app-body .layout {
+    min-height: 100vh;
+    background: transparent !important;
+}
+
+/* Main content area */
+.app-body .main-content {
+    background: transparent !important;
+    color: #EAF4FF;
+}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.app-body .topbar {
+    background: #091C32 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    color: #EAF4FF;
+}
+
+    .app-body .topbar a,
+    .app-body .topbar strong,
+    .app-body .topbar span {
+        color: #EAF4FF;
+    }
+
+.app-body .top-search {
+    background: #102A47 !important;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+    .app-body .top-search input {
+        color: #FFFFFF !important;
+    }
+
+        .app-body .top-search input::placeholder {
+            color: #8FA8C2;
+        }
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.app-body .sidebar {
+    background: #0C223B !important;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    color: #EAF4FF;
+}
+
+    .app-body .sidebar *,
+    .app-body .profile-mini strong {
+        color: #EAF4FF;
+    }
+
+    .app-body .sidebar .nav-link {
+        color: #AFC4D9 !important;
+    }
+
+        .app-body .sidebar .nav-link:hover {
+            background: #153858 !important;
+            color: #FFFFFF !important;
+        }
+
+        .app-body .sidebar .nav-link.active {
+            background: #2563EB !important;
+            color: #FFFFFF !important;
+        }
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+.app-body h1,
+.app-body h2,
+.app-body h3,
+.app-body h4,
+.app-body strong {
+    color: #F5FAFF;
+}
+
+.app-body p,
+.app-body .muted,
+.app-body small {
+    color: #AFC4D9;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.app-body .card,
+.app-body .composer,
+.app-body .post,
+.app-body .stat,
+.app-body .admin-table-card,
+.app-body .admin-row,
+.app-body .announcement-card,
+.app-body .chart-card {
+    background: #102A47 !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #EAF4FF;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+}
+
+/* =========================================================
+   COMPLAINT FORM
+   ========================================================= */
+
+.app-body input,
+.app-body textarea,
+.app-body select {
+    background: #0B2139 !important;
+    border: 1px solid #294866 !important;
+    color: #FFFFFF !important;
+}
+
+    .app-body input::placeholder,
+    .app-body textarea::placeholder {
+        color: #7892AC !important;
+    }
+
+    .app-body input:focus,
+    .app-body textarea:focus,
+    .app-body select:focus {
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.app-body .primary-btn {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border: none;
+}
+
+    .app-body .primary-btn:hover {
+        background: #1D4ED8 !important;
+    }
+
+.app-body .secondary-btn {
+    background: #163A5F !important;
+    color: #EAF4FF !important;
+    border: 1px solid #315579;
+}
+
+    .app-body .secondary-btn:hover {
+        background: #1D4D78 !important;
+    }
+
+/* =========================================================
+   POSTS / FEED
+   ========================================================= */
+
+.app-body .post-author strong,
+.app-body .post-profile strong {
+    color: #FFFFFF;
+}
+
+.app-body .post-author small {
+    color: #8FA8C2;
+}
+
+.app-body .post-content {
+    color: #EAF4FF;
+}
+
+.app-body .comments {
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.app-body .comment {
+    background: #0B2139 !important;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+    .app-body .comment strong {
+        color: #FFFFFF;
+    }
+
+/* =========================================================
+   ADMIN DASHBOARD
+   ========================================================= */
+
+/* Admin dashboard page */
+.admin-dashboard,
+.admin-main,
+.admin-content {
+    background: transparent !important;
+}
+
+/* Admin statistics */
+.app-body .stat {
+    background: #102A47 !important;
+}
+
+.app-body .stat-value {
+    color: #FFFFFF !important;
+}
+
+.app-body .stat-label {
+    color: #9FB6CC !important;
+}
+
+/* Admin table */
+.app-body .admin-table-card {
+    background: #102A47 !important;
+}
+
+.app-body .table-head {
+    background: #0D2742 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+    .app-body .table-head h2,
+    .app-body .table-head h3 {
+        color: #FFFFFF;
+    }
+
+.app-body .admin-row {
+    background: #102A47 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+    .app-body .admin-row:hover {
+        background: #153858 !important;
+    }
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.app-body .status-pending {
+    background: rgba(245,158,11,0.16) !important;
+    color: #FBBF24 !important;
+}
+
+.app-body .status-progress {
+    background: rgba(59,130,246,0.16) !important;
+    color: #60A5FA !important;
+}
+
+.app-body .status-resolved {
+    background: rgba(34,197,94,0.16) !important;
+    color: #4ADE80 !important;
+}
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+.app-body .modal-card {
+    background: #102A47 !important;
+    color: #EAF4FF;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+    .app-body .modal-card h2,
+    .app-body .modal-card h3 {
+        color: #FFFFFF;
+    }
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.app-body .toast {
+    background: #102A47 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.app-body ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.app-body ::-webkit-scrollbar-track {
+    background: #081B33;
+}
+
+.app-body ::-webkit-scrollbar-thumb {
+    background: #1E4A73;
+    border-radius: 10px;
+}
+
+    .app-body ::-webkit-scrollbar-thumb:hover {
+        background: #2563EB;
+    }
+
 
 /* =========================================================
    ADMIN PROFILE — FIX TEXT VISIBILITY
