@@ -56,20 +56,18 @@
 
       <section class="admin-table-card card">
           <div class="table-head">
-              <div><h2>Community posts</h2><p class="muted">Manage all published posts and comments.</p></div>
-          </div>
-          <div class="admin-post-list" id="adminPostList"></div>
-          <div class="loading" id="adminLoading">Loading posts...</div>
-          <div class="complaint-details">
-              <div><strong>Category:</strong> ${escapeHTML(post.category || "Other")}</div>
-              <div><strong>Address:</strong> ${escapeHTML(post.address || "Not provided")}</div>
-              <div><strong>Age:</strong> ${post.age || "Not provided"}</div>
-              <div><strong>Gender:</strong> ${escapeHTML(post.gender || "Not provided")}</div>
-              <div><strong>Contact Number:</strong> ${escapeHTML(post.contactNumber || "Not provided")}</div>
               <div>
-                  <strong>Status:</strong>
-                  <span class="status-badge">${escapeHTML(post.status || "Pending")}</span>
+                  <h2>Community posts</h2>
+                  <p class="muted">
+                      Manage all published posts and comments.
+                  </p>
               </div>
+          </div>
+
+          <div class="admin-post-list" id="adminPostList"></div>
+
+          <div class="loading" id="adminLoading">
+              Loading posts...
           </div>
       </section>
     </main>

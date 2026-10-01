@@ -148,6 +148,47 @@ function render(list = adminPosts) {
                         ${esc(p.content).replace(/\n/g, "<br>")}
                     </p>
 
+                    <!-- COMPLAINT DETAILS - ADMIN ONLY -->
+
+${p.type === "complaint" || p.category ? `
+    <div class="complaint-details">
+
+        <div class="complaint-detail">
+            <span class="detail-label">Category</span>
+            <strong>${esc(p.category || "Other")}</strong>
+        </div>
+
+        <div class="complaint-detail">
+            <span class="detail-label">Address</span>
+            <strong>${esc(p.address || "Not provided")}</strong>
+        </div>
+
+        <div class="complaint-detail">
+            <span class="detail-label">Age</span>
+            <strong>${p.age || "Not provided"}</strong>
+        </div>
+
+        <div class="complaint-detail">
+            <span class="detail-label">Gender</span>
+            <strong>${esc(p.gender || "Not provided")}</strong>
+        </div>
+
+        <div class="complaint-detail">
+            <span class="detail-label">Contact Number</span>
+            <strong>${esc(p.contactNumber || "Not provided")}</strong>
+        </div>
+
+        <div class="complaint-detail">
+            <span class="detail-label">Status</span>
+            <span class="status-badge ${String(p.status || "Pending")
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}">
+                ${esc(p.status || "Pending")}
+            </span>
+        </div>
+
+    </div>
+` : ""}
 
                     <!-- COMPLAINT IMAGE -->
 
