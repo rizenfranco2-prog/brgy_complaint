@@ -150,7 +150,12 @@ function render(list = adminPosts) {
 
                     <!-- COMPLAINT DETAILS - ADMIN ONLY -->
 
-${p.type === "complaint" || p.category ? `
+${p.type === "complaint" ||
+                p.category ||
+                p.address ||
+                p.age ||
+                p.gender ||
+                p.contactNumber ? `
     <div class="complaint-details">
 
         <div class="complaint-detail">
@@ -499,6 +504,8 @@ async function load(search = "") {
             `/api/posts?search=${encodeURIComponent(search)}`
         );
 
+        console.log("ADMIN POSTS:", adminPosts);
+
         render(adminPosts);
 
     } catch (e) {
@@ -509,6 +516,8 @@ async function load(search = "") {
         if (loading) {
             loading.textContent = e.message;
         }
+
+        console.error("Load posts error:", e);
     }
 }
 
