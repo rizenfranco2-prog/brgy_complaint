@@ -281,6 +281,149 @@ ${p.type === "complaint" ||
     }).join("");
 
 
+
+    document
+        .getElementById("complaintForm")
+        .addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+
+            const category =
+                document.getElementById(
+                    "complaintCategory"
+                ).value;
+
+
+            const address =
+                document.getElementById(
+                    "complaintAddress"
+                ).value.trim();
+
+
+            const age =
+                document.getElementById(
+                    "complaintAge"
+                ).value;
+
+
+            const gender =
+                document.getElementById(
+                    "complaintGender"
+                ).value;
+
+
+            const contactNumber =
+                document.getElementById(
+                    "complaintContact"
+                ).value.trim();
+
+
+            const content =
+                document.getElementById(
+                    "complaintContent"
+                ).value.trim();
+
+
+            if (
+                !category ||
+                !address ||
+                !age ||
+                !gender ||
+                !contactNumber ||
+                !content
+            ) {
+
+                alert("Please complete all complaint fields.");
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `${API_URL}/api/posts`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${localStorage.getItem(
+                                    "barangay_token"
+                                )}`
+                        },
+
+                        body: JSON.stringify({
+
+                            type: "complaint",
+
+                            category,
+
+                            address,
+
+                            age: Number(age),
+
+                            gender,
+
+                            contactNumber,
+
+                            content,
+
+                            status: "Pending"
+
+                        })
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Failed to submit complaint."
+                    );
+
+                }
+
+
+                alert(
+                    "Complaint submitted successfully."
+                );
+
+
+                document
+                    .getElementById("complaintForm")
+                    .reset();
+
+
+                // Reload the resident feed
+                if (typeof loadPosts === "function") {
+                    loadPosts();
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Complaint submission error:",
+                    error
+                );
+
+                alert(error.message);
+
+            }
+
+        });
+
+
     /* ================================================= */
     /* EDIT POST */
     /* ================================================= */

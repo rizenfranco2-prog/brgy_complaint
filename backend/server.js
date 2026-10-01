@@ -31,8 +31,7 @@ const adminSchema = new mongoose.Schema({
 const postSchema = new mongoose.Schema({
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User"
+        required: true
     },
 
     authorName: {
@@ -40,7 +39,6 @@ const postSchema = new mongoose.Schema({
         required: true
     },
 
-    // complaint or announcement
     type: {
         type: String,
         enum: ["complaint", "announcement"],
@@ -49,12 +47,9 @@ const postSchema = new mongoose.Schema({
 
     content: {
         type: String,
-        required: true,
-        trim: true,
-        maxlength: 5000
+        required: true
     },
 
-    // Complaint information
     category: {
         type: String,
         default: ""
@@ -62,14 +57,12 @@ const postSchema = new mongoose.Schema({
 
     address: {
         type: String,
-        default: "",
-        maxlength: 300
+        default: ""
     },
 
     age: {
         type: Number,
-        min: 1,
-        max: 120
+        default: null
     },
 
     gender: {
@@ -80,19 +73,15 @@ const postSchema = new mongoose.Schema({
 
     contactNumber: {
         type: String,
-        default: "",
-        maxlength: 30
+        default: ""
     },
 
-    // Complaint status
     status: {
         type: String,
         enum: ["Pending", "In Progress", "Resolved"],
         default: "Pending"
     },
 
-    // Resolved complaints are archived,
-    // but NOT deleted from MongoDB.
     archived: {
         type: Boolean,
         default: false
@@ -332,54 +321,107 @@ app.get("/api/posts", auth, async (req, res) => {
 
 app.post("/api/posts", auth, async (req, res) => {
     try {
-        const content = String(req.body.content || "").trim();
-        const image = String(req.body.image || "").trim();
 
-        const type = String(req.body.type || "complaint").trim();
+        const {
+            content,
+            category,
+            address,
+            age,
+            gender,
+            contactNumber,
+            image
+        } = req.body;
 
-        const category = String(req.body.category || "").trim();
-        const address = String(req.body.address || "").trim();
-        const gender = String(req.body.gender || "").trim();
-        const contactNumber = String(req.body.contactNumber || "").trim();
 
-        const age = Number(req.body.age);
-
-        if (!content) {
+        if (!content || !content.trim()) {
             return res.status(400).json({
                 message: "Complaint description is required."
             });
         }
 
-        // --------------------------------
-        // ADMIN ANNOUNCEMENT
-        // --------------------------------
+
+        // =========================================
+        // ADMIN POST
+        // =========================================
+
         if (req.auth.role === "admin") {
 
-            const admin = await Admin.findById(req.auth.id);
-
-            if (!admin) {
-                return res.status(404).json({
-                    message: "Admin account not found."
-                });
-            }
-
             const post = await Post.create({
-                authorId: admin._id,
-                authorName: `${admin.username} (Admin)`,
+
+                authorId: req.auth.id,
+
+                authorName:
+                    `${req.auth.username || "Administrator"} (Admin)`,
 
                 type: "announcement",
 
-                content,
-                image,
+                content: content.trim(),
 
                 isAnnouncement: true,
 
-                // Announcements don't enter complaint workflow
+                status: "Pending",
+
                 archived: false
+
             });
 
             return res.status(201).json(post);
         }
+
+
+        // =========================================
+        // RESIDENT COMPLAINT
+        // =========================================
+
+        const post = await Post.create({
+
+            authorId: req.auth.id,
+
+            authorName:
+                req.auth.name || "Resident",
+
+            type: "complaint",
+
+            content: content.trim(),
+
+            category:
+                String(category || "").trim(),
+
+            address:
+                String(address || "").trim(),
+
+            age:
+                age ? Number(age) : null,
+
+            gender:
+                String(gender || "").trim(),
+
+            contactNumber:
+                String(contactNumber || "").trim(),
+
+            image:
+                String(image || "").trim(),
+
+            status: "Pending",
+
+            archived: false,
+
+            isAnnouncement: false
+
+        });
+
+
+        return res.status(201).json(post);
+
+    } catch (error) {
+
+        console.error("CREATE POST ERROR:", error);
+
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
 
         // --------------------------------
         // RESIDENT COMPLAINT
