@@ -828,61 +828,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             try {
 
-                /* =============================== */
-                /* GET COMPLAINT VALUES */
-                /* =============================== */
-
-                const category =
-                    document.getElementById("complaintCategory").value;
-
-                const address =
-                    document.getElementById("complaintAddress").value.trim();
-
-                const age =
-                    Number(document.getElementById("complaintAge").value);
-
-                const gender =
-                    document.getElementById("complaintGender").value;
-
-                const contactNumber =
-                    document.getElementById("complaintContact").value.trim();
-
-                const content =
-                    textarea.value.trim();
-
-
-                /* =============================== */
-                /* VALIDATION */
-                /* =============================== */
-
-                if (!category) {
-                    return toast("Please select a complaint category.");
+                if (!textarea.value.trim()) {
+                    return toast("Write something first.");
                 }
-
-                if (!address) {
-                    return toast("Please enter the address.");
-                }
-
-                if (!Number.isInteger(age) || age < 1 || age > 120) {
-                    return toast("Please enter a valid age.");
-                }
-
-                if (!gender) {
-                    return toast("Please select your gender.");
-                }
-
-                if (!contactNumber) {
-                    return toast("Please enter your contact number.");
-                }
-
-                if (!content) {
-                    return toast("Please describe your complaint.");
-                }
-
-
-                /* =============================== */
-                /* SEND COMPLAINT TO BACKEND */
-                /* =============================== */
 
                 await api(
                     "/api/posts",
@@ -890,84 +838,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                         method: "POST",
 
                         body: JSON.stringify({
-
-                            content: content,
-
-                            image: selectedImage,
-
-                            category: category,
-
-                            address: address,
-
-                            age: age,
-
-                            gender: gender,
-
-                            contactNumber: contactNumber
-
+                            content: textarea.value,
+                            image: selectedImage
                         })
                     }
                 );
-
-
-                /* =============================== */
-                /* CLEAR FORM */
-                /* =============================== */
-
-                textarea.value = "";
-
-                document.getElementById("charCount")
-                    .textContent = "0 / 5000";
-
-
-                document.getElementById("complaintCategory")
-                    .value = "";
-
-                document.getElementById("complaintAddress")
-                    .value = "";
-
-                document.getElementById("complaintAge")
-                    .value = "";
-
-                document.getElementById("complaintGender")
-                    .value = "";
-
-                document.getElementById("complaintContact")
-                    .value = "";
-
-
-                /* =============================== */
-                /* CLEAR IMAGE */
-                /* =============================== */
-
-                selectedImage = "";
-
-                imageInput.value = "";
-
-                imagePreview.src = "";
-
-                imagePreviewContainer
-                    .classList.add("hidden");
-
-
-                /* =============================== */
-                /* SUCCESS */
-                /* =============================== */
-
-                toast("Complaint submitted successfully.");
-
-                loadPosts();
-
-
-            } catch (e) {
-
-                console.error("CREATE COMPLAINT ERROR:", e);
-
-                toast(e.message);
-
-            }
-
-        };
 
 
                 textarea.value = "";
