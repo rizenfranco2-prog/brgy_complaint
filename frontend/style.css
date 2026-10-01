@@ -6,30 +6,22 @@
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
     --primary-light: #eff6ff;
-
     --success: #16a34a;
     --success-light: #f0fdf4;
-
     --warning: #d97706;
     --warning-light: #fffbeb;
-
     --danger: #dc2626;
     --danger-light: #fef2f2;
-
     --text: #172033;
     --text-secondary: #475569;
     --muted: #64748b;
-
     --background: #f5f7fb;
     --white: #ffffff;
     --border: #e2e8f0;
-
     --sidebar-width: 240px;
     --topbar-height: 72px;
-
     --radius: 14px;
     --radius-small: 10px;
-
     --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
     --shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.09);
 }
@@ -51,12 +43,7 @@ body {
     min-height: 100vh;
     background: var(--background);
     color: var(--text);
-    font-family:
-        Inter,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
 }
@@ -90,19 +77,14 @@ a {
     position: sticky;
     top: 0;
     z-index: 1000;
-
     width: 100%;
     min-height: var(--topbar-height);
-
     display: flex;
     align-items: center;
     gap: 20px;
-
     padding: 0 28px;
-
     background: rgba(255, 255, 255, 0.97);
     border-bottom: 1px solid var(--border);
-
     backdrop-filter: blur(12px);
 }
 
@@ -110,9 +92,7 @@ a {
     display: flex;
     align-items: center;
     gap: 10px;
-
     min-width: 210px;
-
     color: var(--text);
     font-size: 17px;
     font-weight: 800;
@@ -122,16 +102,12 @@ a {
 .top-logo {
     width: 40px;
     height: 40px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 11px;
-
     background: var(--primary);
     color: white;
-
     font-size: 12px;
     font-weight: 800;
 }
@@ -142,34 +118,28 @@ a {
     max-width: 520px;
 }
 
-.top-search input {
-    width: 100%;
-    height: 42px;
+    .top-search input {
+        width: 100%;
+        height: 42px;
+        padding: 0 15px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        outline: none;
+        background: #f8fafc;
+        color: var(--text);
+        transition: 0.2s;
+    }
 
-    padding: 0 15px;
-
-    border: 1px solid var(--border);
-    border-radius: 11px;
-
-    outline: none;
-
-    background: #f8fafc;
-    color: var(--text);
-
-    transition: 0.2s;
-}
-
-.top-search input:focus {
-    border-color: var(--primary);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
-}
+        .top-search input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
 
 .top-user {
     display: flex;
     align-items: center;
     gap: 10px;
-
     margin-left: auto;
 }
 
@@ -178,59 +148,49 @@ a {
     flex-direction: column;
 }
 
-.top-user-info strong {
-    font-size: 13px;
-}
+    .top-user-info strong {
+        font-size: 13px;
+    }
 
-.top-user-info span {
-    color: var(--muted);
-    font-size: 11px;
-}
+    .top-user-info span {
+        color: var(--muted);
+        font-size: 11px;
+    }
 
 .top-avatar {
     width: 40px;
     height: 40px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background: var(--primary-light);
     color: var(--primary);
-
     font-weight: 800;
-
     overflow: hidden;
 }
 
-.top-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .top-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
 .logout-btn {
     min-height: 38px;
-
     padding: 8px 13px;
-
     border: 1px solid var(--border);
     border-radius: 9px;
-
     background: white;
     color: var(--text-secondary);
-
     font-weight: 600;
-
     transition: 0.2s;
 }
 
-.logout-btn:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-}
+    .logout-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
 
 /* =========================================================
    MAIN LAYOUT
@@ -239,16 +199,11 @@ a {
 .layout {
     width: 100%;
     max-width: 1450px;
-
     min-height: calc(100vh - var(--topbar-height));
-
     margin: 0 auto;
-
     display: grid;
     grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-
     gap: 28px;
-
     padding: 28px;
 }
 
@@ -264,28 +219,20 @@ a {
 .sidebar {
     position: sticky;
     top: 96px;
-
     align-self: start;
-
     width: 100%;
-
     padding: 10px;
-
     background: white;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-
     box-shadow: var(--shadow);
 }
 
 .sidebar-title {
     padding: 10px 12px 8px;
-
     color: var(--muted);
-
     font-size: 11px;
     font-weight: 800;
-
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
@@ -300,44 +247,35 @@ a {
 .sidebar-item {
     width: 100%;
     min-height: 42px;
-
     display: flex;
     align-items: center;
     gap: 11px;
-
     padding: 9px 12px;
-
     border: none;
     border-radius: 9px;
-
     background: transparent;
-
     color: var(--text-secondary);
-
     font-weight: 600;
     text-align: left;
-
     transition: 0.2s;
 }
 
-.nav-item:hover,
-.sidebar-item:hover {
-    background: #f8fafc;
-    color: var(--text);
-}
+    .nav-item:hover,
+    .sidebar-item:hover {
+        background: #f8fafc;
+        color: var(--text);
+    }
 
-.nav-item.active,
-.sidebar-item.active {
-    background: var(--primary-light);
-    color: var(--primary);
-
-    font-weight: 700;
-}
+    .nav-item.active,
+    .sidebar-item.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+    }
 
 .nav-icon {
     width: 20px;
     flex-shrink: 0;
-
     text-align: center;
 }
 
@@ -350,29 +288,24 @@ a {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 20px;
-
     margin-bottom: 24px;
 }
 
-.page-header h1,
-.page-header h2,
-.report-header h1 {
-    margin: 0 0 5px;
+    .page-header h1,
+    .page-header h2,
+    .report-header h1 {
+        margin: 0 0 5px;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.2;
+    }
 
-    color: var(--text);
-
-    font-size: 28px;
-    line-height: 1.2;
-}
-
-.page-header p,
-.report-header p {
-    margin: 0;
-
-    color: var(--muted);
-}
+    .page-header p,
+    .report-header p {
+        margin: 0;
+        color: var(--muted);
+    }
 
 /* =========================================================
    CARDS
@@ -388,10 +321,8 @@ a {
 .chart-card,
 .report-table-card {
     background: white;
-
     border: 1px solid var(--border);
     border-radius: var(--radius);
-
     box-shadow: var(--shadow);
 }
 
@@ -415,13 +346,11 @@ a {
     display: flex;
     align-items: center;
     gap: 11px;
-
     margin-bottom: 14px;
 }
 
 .post-author strong {
     display: block;
-
     color: var(--text);
     font-size: 14px;
 }
@@ -434,60 +363,48 @@ a {
 
 .post-content {
     margin: 0;
-
     color: var(--text);
-
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
 .post-image-container {
     margin-top: 15px;
-
     overflow: hidden;
-
     border-radius: 12px;
-
     background: #f1f5f9;
 }
 
-.post-image-container img,
-.admin-post-image {
-    width: 100%;
-    max-height: 520px;
-
-    object-fit: cover;
-}
+    .post-image-container img,
+    .admin-post-image {
+        width: 100%;
+        max-height: 520px;
+        object-fit: cover;
+    }
 
 .post-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-
     margin-top: 16px;
     padding-top: 14px;
-
     border-top: 1px solid var(--border);
 }
 
 .post-action {
     min-height: 34px;
-
     padding: 7px 11px;
-
     border: none;
     border-radius: 8px;
-
     background: transparent;
     color: var(--text-secondary);
-
     font-weight: 600;
 }
 
-.post-action:hover {
-    background: #f8fafc;
-    color: var(--primary);
-}
+    .post-action:hover {
+        background: #f8fafc;
+        color: var(--primary);
+    }
 
 /* =========================================================
    COMMENTS
@@ -497,32 +414,25 @@ a {
     display: flex;
     flex-direction: column;
     gap: 10px;
-
     margin-top: 16px;
 }
 
 .comment {
     padding: 11px 13px;
-
     border-radius: 10px;
-
     background: #f8fafc;
 }
 
 .comment-author {
     color: var(--text);
-
     font-size: 12px;
     font-weight: 700;
 }
 
 .comment-content {
     margin: 3px 0 0;
-
     color: var(--text-secondary);
-
     font-size: 13px;
-
     overflow-wrap: anywhere;
 }
 
@@ -534,29 +444,22 @@ a {
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-
     gap: 16px;
-
     margin-bottom: 24px;
 }
 
 .stat-card,
 .report-stat-card {
     position: relative;
-
     min-width: 0;
-
     padding: 20px;
-
     overflow: hidden;
 }
 
 .stat-label,
 .report-stat-label {
     margin-bottom: 8px;
-
     color: var(--muted);
-
     font-size: 12px;
     font-weight: 700;
 }
@@ -564,10 +467,8 @@ a {
 .stat-value,
 .report-stat-value {
     color: var(--text);
-
     font-size: 28px;
     font-weight: 800;
-
     line-height: 1.1;
 }
 
@@ -578,9 +479,7 @@ a {
 .reports-main {
     width: 100%;
     max-width: 1250px;
-
     margin: 0 auto;
-
     padding: 0 0 40px;
 }
 
@@ -592,36 +491,28 @@ a {
     min-width: 130px;
 }
 
-.report-filter label {
-    display: block;
+    .report-filter label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 700;
+    }
 
-    margin-bottom: 6px;
+    .report-filter select {
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: white;
+        color: var(--text);
+        outline: none;
+    }
 
-    color: var(--text-secondary);
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.report-filter select {
-    min-height: 40px;
-
-    padding: 8px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 9px;
-
-    background: white;
-    color: var(--text);
-
-    outline: none;
-}
-
-.report-filter select:focus {
-    border-color: var(--primary);
-
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
-}
+        .report-filter select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
 
 /* =========================================================
    REPORT STAT CARDS
@@ -630,9 +521,7 @@ a {
 .report-stats {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-
     gap: 16px;
-
     margin-bottom: 20px;
 }
 
@@ -640,30 +529,27 @@ a {
     padding-left: 24px;
 }
 
-.report-stat-card::before {
-    content: "";
+    .report-stat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--primary);
+    }
 
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    .report-stat-card.pending::before {
+        background: var(--warning);
+    }
 
-    width: 4px;
+    .report-stat-card.progress::before {
+        background: var(--primary);
+    }
 
-    background: var(--primary);
-}
-
-.report-stat-card.pending::before {
-    background: var(--warning);
-}
-
-.report-stat-card.progress::before {
-    background: var(--primary);
-}
-
-.report-stat-card.resolved::before {
-    background: var(--success);
-}
+    .report-stat-card.resolved::before {
+        background: var(--success);
+    }
 
 /* =========================================================
    CHARTS
@@ -671,64 +557,51 @@ a {
 
 .charts-grid {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.5fr)
-        minmax(280px, 0.8fr);
-
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
     gap: 18px;
-
     margin-bottom: 18px;
 }
 
 .chart-card {
     min-width: 0;
-
     padding: 20px;
 }
 
-.chart-card.full-width {
-    grid-column: 1 / -1;
-}
+    .chart-card.full-width {
+        grid-column: 1 / -1;
+    }
 
 .chart-card-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 12px;
-
     margin-bottom: 18px;
 }
 
 .chart-card h2,
 .chart-card h3 {
     margin: 0;
-
     color: var(--text);
-
     font-size: 16px;
 }
 
 .chart-card p {
     margin: 4px 0 0;
-
     color: var(--muted);
-
     font-size: 12px;
 }
 
 .chart-container {
     position: relative;
-
     width: 100%;
     min-height: 280px;
 }
 
-.chart-container canvas {
-    width: 100% !important;
-    max-height: 340px;
-}
+    .chart-container canvas {
+        width: 100% !important;
+        max-height: 340px;
+    }
 
 /* =========================================================
    REPORT TABLE
@@ -740,57 +613,45 @@ a {
 
 .report-table-header {
     padding: 20px;
-
     border-bottom: 1px solid var(--border);
 }
 
-.report-table-header h2 {
-    margin: 0;
-
-    color: var(--text);
-
-    font-size: 16px;
-}
+    .report-table-header h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 16px;
+    }
 
 .report-table-wrap {
     width: 100%;
-
     overflow-x: auto;
 }
 
 .report-table {
     width: 100%;
-
     min-width: 620px;
-
     border-collapse: collapse;
 }
 
-.report-table th {
-    padding: 13px 16px;
+    .report-table th {
+        padding: 13px 16px;
+        background: #f8fafc;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
 
-    background: #f8fafc;
+    .report-table td {
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+        color: var(--text-secondary);
+    }
 
-    color: var(--muted);
-
-    font-size: 11px;
-    font-weight: 800;
-
-    text-align: left;
-    text-transform: uppercase;
-}
-
-.report-table td {
-    padding: 14px 16px;
-
-    border-top: 1px solid var(--border);
-
-    color: var(--text-secondary);
-}
-
-.report-table tbody tr:hover {
-    background: #fbfdff;
-}
+    .report-table tbody tr:hover {
+        background: #fbfdff;
+    }
 
 /* =========================================================
    STATUS BADGES
@@ -799,36 +660,32 @@ a {
 .status-badge {
     display: inline-flex;
     align-items: center;
-
     min-height: 26px;
-
     padding: 4px 9px;
-
     border-radius: 999px;
-
     font-size: 11px;
     font-weight: 700;
 }
 
-.status-badge.pending {
-    background: var(--warning-light);
-    color: var(--warning);
-}
+    .status-badge.pending {
+        background: var(--warning-light);
+        color: var(--warning);
+    }
 
-.status-badge.in-progress {
-    background: var(--primary-light);
-    color: var(--primary);
-}
+    .status-badge.in-progress {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
 
-.status-badge.resolved {
-    background: var(--success-light);
-    color: var(--success);
-}
+    .status-badge.resolved {
+        background: var(--success-light);
+        color: var(--success);
+    }
 
-.status-badge.default {
-    background: #f1f5f9;
-    color: var(--muted);
-}
+    .status-badge.default {
+        background: #f1f5f9;
+        color: var(--muted);
+    }
 
 /* =========================================================
    ANNOUNCEMENTS / PORTAL
@@ -846,25 +703,21 @@ a {
     padding: 20px;
 }
 
-.announcement-card h3,
-.portal-card h3 {
-    margin: 0 0 7px;
+    .announcement-card h3,
+    .portal-card h3 {
+        margin: 0 0 7px;
+        color: var(--text);
+    }
 
-    color: var(--text);
-}
-
-.announcement-card p,
-.portal-card p {
-    margin: 0;
-
-    color: var(--text-secondary);
-}
+    .announcement-card p,
+    .portal-card p {
+        margin: 0;
+        color: var(--text-secondary);
+    }
 
 .announcement-meta {
     margin-top: 12px;
-
     color: var(--muted);
-
     font-size: 12px;
 }
 
@@ -872,7 +725,6 @@ a {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-
     margin-top: 16px;
 }
 
@@ -882,59 +734,46 @@ a {
 
 .primary-btn {
     min-height: 42px;
-
     padding: 10px 16px;
-
     border: none;
     border-radius: 10px;
-
     background: var(--primary);
     color: white;
-
     font-weight: 700;
-
     transition: 0.2s;
 }
 
-.primary-btn:hover {
-    background: var(--primary-dark);
-}
+    .primary-btn:hover {
+        background: var(--primary-dark);
+    }
 
 .secondary-btn {
     min-height: 40px;
-
     padding: 9px 15px;
-
     border: 1px solid var(--border);
     border-radius: 10px;
-
     background: white;
     color: var(--text);
-
     font-weight: 600;
 }
 
-.secondary-btn:hover {
-    background: #f8fafc;
-}
+    .secondary-btn:hover {
+        background: #f8fafc;
+    }
 
 .danger-btn {
     min-height: 40px;
-
     padding: 9px 15px;
-
     border: none;
     border-radius: 10px;
-
     background: var(--danger-light);
     color: var(--danger);
-
     font-weight: 600;
 }
 
-.danger-btn:hover {
-    background: #fee2e2;
-}
+    .danger-btn:hover {
+        background: #fee2e2;
+    }
 
 /* =========================================================
    PROFILE
@@ -942,88 +781,67 @@ a {
 
 .profile-modal {
     position: fixed;
-
     inset: 0;
-
     z-index: 2000;
-
     display: none;
-
     align-items: center;
     justify-content: center;
-
     padding: 20px;
-
     background: rgba(15, 23, 42, 0.5);
 }
 
-.profile-modal.show,
-.profile-modal.active {
-    display: flex;
-}
+    .profile-modal.show,
+    .profile-modal.active {
+        display: flex;
+    }
 
 .profile-modal-content {
     width: min(100%, 520px);
     max-height: 90vh;
-
     overflow-y: auto;
-
     background: white;
-
     border: 1px solid var(--border);
     border-radius: 18px;
-
     box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-
     gap: 14px;
-
     padding: 22px;
-
     border-bottom: 1px solid var(--border);
 }
 
-.profile-header h2 {
-    margin: 0;
+    .profile-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
 
-    font-size: 18px;
-}
-
-.profile-header p {
-    margin: 3px 0 0;
-
-    color: var(--muted);
-
-    font-size: 12px;
-}
+    .profile-header p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
 
 .profile-avatar {
     width: 48px;
     height: 48px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background: var(--primary-light);
     color: var(--primary);
-
     font-weight: 800;
-
     overflow: hidden;
 }
 
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
 /* =========================================================
    IMAGE UPLOAD
@@ -1033,16 +851,13 @@ a {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-
     gap: 12px;
 }
 
 .image-preview {
     width: 100%;
     max-height: 260px;
-
     object-fit: cover;
-
     border: 1px solid var(--border);
     border-radius: 12px;
 }
@@ -1055,28 +870,24 @@ a {
 .loading-state,
 .error-state {
     padding: 40px 20px;
-
     text-align: center;
-
     border: 1px dashed var(--border);
     border-radius: var(--radius);
-
     background: white;
 }
 
-.empty-state h3,
-.loading-state h3,
-.error-state h3 {
-    margin: 0 0 6px;
-}
+    .empty-state h3,
+    .loading-state h3,
+    .error-state h3 {
+        margin: 0 0 6px;
+    }
 
-.empty-state p,
-.loading-state p,
-.error-state p {
-    margin: 0;
-
-    color: var(--muted);
-}
+    .empty-state p,
+    .loading-state p,
+    .error-state p {
+        margin: 0;
+        color: var(--muted);
+    }
 
 .error-state {
     background: var(--danger-light);
@@ -1091,9 +902,7 @@ a {
 
     .layout {
         grid-template-columns: 210px minmax(0, 1fr);
-
         gap: 20px;
-
         padding: 20px;
     }
 
@@ -1120,25 +929,19 @@ a {
 
     .topbar {
         height: auto;
-
         flex-wrap: wrap;
-
         padding: 12px 16px;
-
         gap: 10px;
     }
 
     .brand {
         min-width: 0;
-
         flex: 1;
     }
 
     .top-search {
         order: 3;
-
         flex: 1 0 100%;
-
         max-width: none;
     }
 
@@ -1148,30 +951,24 @@ a {
 
     .layout {
         display: block;
-
         padding: 16px;
     }
 
     .sidebar {
         position: static;
-
         margin-bottom: 18px;
-
         overflow-x: auto;
     }
 
     .nav-list {
         flex-direction: row;
-
         overflow-x: auto;
     }
 
     .nav-item,
     .sidebar-item {
         width: auto;
-
         flex-shrink: 0;
-
         white-space: nowrap;
     }
 
@@ -1232,7 +1029,6 @@ a {
 
     .logout-btn {
         padding: 7px 10px;
-
         font-size: 12px;
     }
 
