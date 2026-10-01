@@ -1292,7 +1292,7 @@ function logoutAdmin() {
 
 
     window.location.href =
-        "admin-login.html";
+        "admin.html";
 }
 
 
