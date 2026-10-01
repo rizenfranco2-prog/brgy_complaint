@@ -3540,29 +3540,84 @@ body.app-body {
     }
 
 /* =========================================================
-   PROFILE — LIGHT TEXT FOR NAVY BACKGROUND
+   FIX LIGHT TEXT VISIBILITY ON NAVY THEME
    ========================================================= */
 
-.app-body .profile-mini {
-    background: #102A47 !important;
-    border: 1px solid #315579 !important;
+/* Sidebar menu text */
+.app-body .sidebar .nav-link {
+    color: #DCEBFA !important;
+    font-weight: 600 !important;
 }
 
-    /* Administrator */
-    .app-body .profile-mini strong {
-        color: #FFFFFF !important;
-        font-weight: 700 !important;
-    }
-
-    /* System administrator */
-    .app-body .profile-mini small {
-        color: #D6E9FA !important;
-        font-weight: 500 !important;
-    }
-
-    /* Avatar */
-    .app-body .profile-mini .avatar {
-        background: #DCEBFF !important;
+    /* Active sidebar menu */
+    .app-body .sidebar .nav-link.active {
+        background: #E8F2FF !important;
         color: #1D4ED8 !important;
-        border: 3px solid #AFCFFF !important;
     }
+
+        .app-body .sidebar .nav-link.active * {
+            color: #1D4ED8 !important;
+        }
+
+    /* Hover */
+    .app-body .sidebar .nav-link:hover {
+        background: #1B4168 !important;
+        color: #FFFFFF !important;
+    }
+
+        .app-body .sidebar .nav-link:hover * {
+            color: #FFFFFF !important;
+        }
+
+/* Profile */
+.app-body .profile-mini strong {
+    color: #FFFFFF !important;
+}
+
+.app-body .profile-mini small {
+    color: #D6E9FA !important;
+}
+
+/* Complaint status section */
+.app-body .complaint-status,
+.app-body .status-card {
+    color: #17324D !important;
+}
+
+    /* Status title */
+    .app-body .complaint-status strong,
+    .app-body .status-card strong {
+        color: #17324D !important;
+    }
+
+    /* Pending description */
+    .app-body .complaint-status p,
+    .app-body .status-card p,
+    .app-body .complaint-status small,
+    .app-body .status-card small {
+        color: #5B7590 !important;
+    }
+
+/* Status badge */
+.app-body .status-pending {
+    color: #B45309 !important;
+    background: #FFF7ED !important;
+    border: 1px solid #FDBA74 !important;
+}
+
+/* Character counter */
+.app-body .composer .char-count,
+.app-body .character-count {
+    color: #D6E9FA !important;
+}
+
+/* General labels */
+.app-body label {
+    color: #DCEBFA !important;
+}
+
+/* Form helper text */
+.app-body .form-help,
+.app-body .helper-text {
+    color: #AFC4D9 !important;
+}
