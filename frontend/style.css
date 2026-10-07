@@ -3703,3 +3703,70 @@ body.app-body {
         text-align: left;
     }
 }
+
+/* =========================================
+   ADMIN SIDEBAR - MATCH SECOND DESIGN
+   ========================================= */
+
+.app-body .sidebar .nav-link {
+    width: 100%;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent !important;
+    color: #FFFFFF !important;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+
+    /* Hover */
+    .app-body .sidebar .nav-link:hover {
+        background: #0A94A1 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Active button */
+    .app-body .sidebar .nav-link.active {
+        background: #D9FAFA !important;
+        color: #056873 !important;
+        border-left: 4px solid #2563EB;
+        padding-left: 8px;
+        font-weight: 700;
+    }
+
+        /* Active text */
+        .app-body .sidebar .nav-link.active span {
+            color: #056873 !important;
+        }
+
+        /* Blue dot on active button */
+        .app-body .sidebar .nav-link.active::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            margin-left: auto;
+            border-radius: 50%;
+            background: #2563EB;
+        }
+
+/* Make Change Password look like the other menu items */
+.app-body .sidebar button.nav-link {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    text-align: left;
+}
+
+    /* Remove browser button styling */
+    .app-body .sidebar button.nav-link:focus {
+        outline: none;
+    }
