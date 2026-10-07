@@ -1,0 +1,347 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Complaint Status • Barangay Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app-body">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <a href="admin-dashboard.html" class="top-brand">
+            <div class="brand-mark">BC</div>
+
+            <div>
+                <strong>Barangay Connect</strong>
+                <small>Administrator</small>
+            </div>
+        </a>
+
+        <div class="top-search">
+            <input type="text"
+                   id="adminSearch"
+                   placeholder="Search complaints...">
+        </div>
+
+        <div class="top-user">
+
+            <div class="admin-avatar" id="adminAvatar">
+                A
+            </div>
+
+            <div>
+                <strong id="adminName">Admin</strong>
+                <small>Administrator</small>
+            </div>
+
+            <button id="adminLogout" class="logout-btn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- PAGE LAYOUT -->
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="profile-mini">
+
+                <div class="avatar" id="sidebarAvatar">
+                    A
+                </div>
+
+                <div>
+                    <strong id="sidebarAdminName">
+                        Admin
+                    </strong>
+
+                    <small>
+                        Administrator
+                    </small>
+                </div>
+
+            </div>
+
+
+            <nav>
+
+                <a href="admin-dashboard.html" class="nav-link">
+                    ▦
+                    <span>Posts</span>
+                </a>
+
+                <button id="adminPasswordBtn"
+                        class="nav-link"
+                        type="button">
+                    ⚿
+                    <span>Change Password</span>
+                </button>
+
+                <a href="announcements.html" class="nav-link">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+                <a href="admin-notes.html" class="nav-link">
+                    📝
+                    <span>Admin Notes</span>
+                </a>
+
+                <a href="date-filter.html" class="nav-link">
+                    📅
+                    <span>Date Filter</span>
+                </a>
+
+                <a href="complaint-status.html"
+                   class="nav-link active">
+                    📋
+                    <span>Complaint Status</span>
+                </a>
+
+                <a href="music.html" class="nav-link">
+                    🎵
+                    <span>Music</span>
+                </a>
+
+                <a href="dashboard.html" class="nav-link">
+                    👥
+                    <span>User Feed</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <section class="admin-main">
+
+                <!-- HEADING -->
+                <div class="dashboard-heading">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            COMPLAINT MONITORING
+                        </div>
+
+                        <h1>
+                            Complaint Status
+                        </h1>
+
+                        <p class="muted">
+                            View and monitor complaints according
+                            to their current status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS SUMMARY -->
+                <div class="status-summary">
+
+                    <div class="status-summary-card"
+                         data-status="Pending">
+
+                        <div class="status-summary-icon pending-icon">
+                            ⏳
+                        </div>
+
+                        <div>
+                            <strong id="pendingCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Pending
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="status-summary-card"
+                         data-status="In Progress">
+
+                        <div class="status-summary-icon progress-icon">
+                            🔄
+                        </div>
+
+                        <div>
+                            <strong id="progressCount">
+                                0
+                            </strong>
+
+                            <span>
+                                In Progress
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="status-summary-card"
+                         data-status="Resolved">
+
+                        <div class="status-summary-icon resolved-icon">
+                            ✓
+                        </div>
+
+                        <div>
+                            <strong id="resolvedCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Resolved
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTER -->
+                <div class="status-filter-card">
+
+                    <div>
+
+                        <label for="complaintStatusSelect">
+                            Complaint Status
+                        </label>
+
+                        <select id="complaintStatusSelect">
+
+                            <option value="All">
+                                All Complaints
+                            </option>
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+                            <option value="In Progress">
+                                In Progress
+                            </option>
+
+                            <option value="Resolved">
+                                Resolved
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="status-result">
+                        <strong id="statusResultCount">
+                            0
+                        </strong>
+
+                        <span>
+                            complaints found
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- COMPLAINT LIST -->
+                <div id="complaintList"
+                     class="complaint-status-list">
+
+                    <div class="loading">
+                        Loading complaints...
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="passwordModal"
+         class="modal hidden">
+
+        <div class="modal-card">
+
+            <button id="closePasswordModal"
+                    class="modal-close"
+                    type="button">
+                ×
+            </button>
+
+            <h2>
+                Change Password
+            </h2>
+
+            <form id="adminPasswordForm">
+
+                <label>
+                    Current Password
+                </label>
+
+                <input type="password"
+                       id="adminCurrentPassword"
+                       required>
+
+                <label>
+                    New Password
+                </label>
+
+                <input type="password"
+                       id="adminNewPassword"
+                       required>
+
+                <label>
+                    Confirm New Password
+                </label>
+
+                <input type="password"
+                       id="adminConfirmPassword"
+                       required>
+
+                <button type="submit"
+                        class="primary-btn">
+                    Change Password
+                </button>
+
+                <p id="adminPasswordMessage"
+                   class="form-message"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOAST -->
+    <div id="toast"
+         class="toast"></div>
+
+
+    <script src="config.js"></script>
+    <script src="complaint-status.js"></script>
+
+</body>
+</html>
