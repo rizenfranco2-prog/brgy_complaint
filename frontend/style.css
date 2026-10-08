@@ -1835,6 +1835,11 @@ textarea {
    MODALS
    ========================================================= */
 
+.modal.hidden,
+.hidden {
+    display: none !important;
+}
+
 .modal {
     position: fixed;
     inset: 0;

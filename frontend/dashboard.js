@@ -547,7 +547,57 @@ async function loadPosts(search = "") {
     }
 
 }
+document.addEventListener("DOMContentLoaded", () => {
+    // Helper functions
+    const openModal = (modalId) => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove("hidden");
+        } else {
+            console.error(`Modal with ID "${modalId}" not found.`);
+        }
+    };
 
+    const closeModal = (modalId) => {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.add("hidden");
+    };
+
+    // 1. Open Password Modal (Handles both Resident 'passwordBtn' and Admin 'adminPasswordBtn')
+    const passwordBtn = document.getElementById("passwordBtn") || document.getElementById("adminPasswordBtn");
+    if (passwordBtn) {
+        passwordBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openModal("passwordModal");
+        });
+    }
+
+    // 2. Open Profile Modal (Sidebar mini-profile)
+    const profileBtn = document.getElementById("sidebarProfileBtn");
+    if (profileBtn) {
+        profileBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            openModal("profileModal");
+        });
+    }
+
+    // 3. Handle Close Buttons ([data-close="modalId"])
+    document.querySelectorAll("[data-close]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const modalId = btn.getAttribute("data-close");
+            closeModal(modalId);
+        });
+    });
+
+    // 4. Close on Backdrop Click
+    window.addEventListener("click", (e) => {
+        if (e.target.classList.contains("modal")) {
+            e.target.classList.add("hidden");
+        }
+    });
+});
 
 /* ================================================= */
 /* OPEN USER PROFILE */
