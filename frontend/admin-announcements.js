@@ -470,96 +470,95 @@ function closePasswordModal() {
     }
 }
 
-const adminPasswordBtn = document.getElementById("adminPasswordBtn");
-
-if (adminPasswordBtn) {
-    adminPasswordBtn.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const passwordModal = document.getElementById("passwordModal");
-
-        if (passwordModal) {
-            passwordModal.classList.add("show");
-        } else {
-            console.error("passwordModal was not found.");
-        }
-    });
-}
-
-
-/* CLOSE PASSWORD MODAL */
-
-const closePasswordBtn =
-    document.getElementById("closePasswordModal");
-
-if (closePasswordBtn) {
-    closePasswordBtn.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        const passwordModal =
-            document.getElementById("passwordModal");
-
-        if (passwordModal) {
-            passwordModal.classList.remove("show");
-        }
-    });
-}
-
 
 /* =====================================================
    CHANGE PASSWORD
    ===================================================== */
+
+function openPasswordModal() {
+    const modal = document.getElementById("passwordModal");
+
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("show");
+    }
+}
+
+
+function closePasswordModal() {
+    const modal = document.getElementById("passwordModal");
+
+    if (modal) {
+        modal.classList.remove("show");
+        modal.classList.add("hidden");
+    }
+}
+
 
 async function changePassword(event) {
 
     event.preventDefault();
 
     const currentPassword =
-        document.getElementById("currentPassword").value.trim();
+        document.getElementById("adminCurrentPassword").value.trim();
 
     const newPassword =
-        document.getElementById("newPassword").value.trim();
+        document.getElementById("adminNewPassword").value.trim();
 
     const confirmPassword =
-        document.getElementById("confirmPassword").value.trim();
+        document.getElementById("adminConfirmPassword").value.trim();
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        toast("Please fill in all password fields.");
-        return;
-    }
+    const message =
+        document.getElementById("adminPasswordMessage");
 
     if (newPassword !== confirmPassword) {
-        toast("New passwords do not match.");
+
+        message.textContent = "New passwords do not match.";
+        message.className = "form-message error";
+
         return;
     }
 
     if (newPassword.length < 6) {
-        toast("New password must be at least 6 characters.");
+
+        message.textContent =
+            "New password must be at least 6 characters.";
+
+        message.className = "form-message error";
+
         return;
     }
 
     try {
 
         await api("/api/auth/change-password", {
+
             method: "PUT",
+
             body: JSON.stringify({
-                currentPassword,
-                newPassword
+                currentPassword: currentPassword,
+                newPassword: newPassword
             })
+
         });
 
-        toast("Password changed successfully.");
+        message.textContent =
+            "Password changed successfully.";
 
-        document.getElementById("passwordForm").reset();
+        message.className = "form-message success";
 
-        closePasswordModal();
+        document.getElementById("adminPasswordForm").reset();
+
+        setTimeout(() => {
+            closePasswordModal();
+        }, 1000);
 
     } catch (error) {
 
         console.error("Change password error:", error);
 
-        toast(error.message);
+        message.textContent = error.message;
+        message.className = "form-message error";
     }
 }
 
@@ -714,36 +713,57 @@ document.addEventListener(
             );
         }
 
+        /* =====================================================
+           PASSWORD
+           ===================================================== */
 
-        /* PASSWORD */
+        const adminPasswordBtn =
+            document.getElementById("adminPasswordBtn");
 
-        document
-            .getElementById("adminPasswordBtn")
-            ?.addEventListener(
-                "click",
-                openPasswordModal
-            );
+        if (adminPasswordBtn) {
 
+            adminPasswordBtn.addEventListener("click", function (event) {
 
-        document
-            .getElementById("closePasswordModal")
-            ?.addEventListener(
-                "click",
-                closePasswordModal
-            );
+                event.preventDefault();
+
+                openPasswordModal();
+
+            });
+
+        }
 
 
-        const passwordForm =
-            document.getElementById(
-                "passwordForm"
-            );
+        const adminPasswordForm =
+            document.getElementById("adminPasswordForm");
 
-        if (passwordForm) {
+        if (adminPasswordForm) {
 
-            passwordForm.addEventListener(
+            adminPasswordForm.addEventListener(
                 "submit",
                 changePassword
             );
+
+        }
+
+
+        /* CLOSE PASSWORD MODAL */
+
+        const passwordCloseButton =
+            document.querySelector(
+                '[data-close="passwordModal"]'
+            );
+
+        if (passwordCloseButton) {
+
+            passwordCloseButton.addEventListener(
+                "click",
+                function () {
+
+                    closePasswordModal();
+
+                }
+            );
+
         }
 
 
