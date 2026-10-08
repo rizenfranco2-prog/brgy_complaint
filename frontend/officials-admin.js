@@ -351,7 +351,7 @@ function renderOfficials(
                 official.position
             )}
                         </strong>
-                }
+
 
                         ${official.contactNumber
                     ? `
