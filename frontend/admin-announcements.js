@@ -99,18 +99,26 @@ async function loadAnnouncements(search = "") {
     try {
 
         const data = await api(
-            `/api/announcements${
-                search
-                    ? `?search=${encodeURIComponent(search)}`
-                    : ""
+            `/api/posts${search
+                ? `?search=${encodeURIComponent(search)}`
+                : ""
             }`
         );
 
-        renderAnnouncements(data.announcements || []);
+        // Get all posts
+        let announcements = data.posts || [];
+
+        // Only show announcements
+        announcements = announcements.filter(post =>
+            post.type === "announcement" ||
+            post.isAnnouncement === true
+        );
+
+        renderAnnouncements(announcements);
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Load announcements error:", error);
 
         list.innerHTML = `
             <div class="loading">
