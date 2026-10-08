@@ -475,90 +475,46 @@ function closePasswordModal() {
    CHANGE PASSWORD
    ===================================================== */
 
-function openPasswordModal() {
-    const modal = document.getElementById("passwordModal");
-
-    if (modal) {
-        modal.classList.remove("hidden");
-        modal.classList.add("show");
-    }
-}
-
-
-function closePasswordModal() {
-    const modal = document.getElementById("passwordModal");
-
-    if (modal) {
-        modal.classList.remove("show");
-        modal.classList.add("hidden");
-    }
-}
-
-
 async function changePassword(event) {
 
     event.preventDefault();
 
     const currentPassword =
-        document.getElementById("adminCurrentPassword").value.trim();
+        document.getElementById("currentPassword").value;
 
     const newPassword =
-        document.getElementById("adminNewPassword").value.trim();
+        document.getElementById("newPassword").value;
 
     const confirmPassword =
-        document.getElementById("adminConfirmPassword").value.trim();
-
-    const message =
-        document.getElementById("adminPasswordMessage");
+        document.getElementById("confirmPassword").value;
 
     if (newPassword !== confirmPassword) {
 
-        message.textContent = "New passwords do not match.";
-        message.className = "form-message error";
-
-        return;
-    }
-
-    if (newPassword.length < 6) {
-
-        message.textContent =
-            "New password must be at least 6 characters.";
-
-        message.className = "form-message error";
-
+        toast("New passwords do not match.");
         return;
     }
 
     try {
 
         await api("/api/auth/change-password", {
-
-            method: "PUT",
-
+            method: "POST",
             body: JSON.stringify({
-                currentPassword: currentPassword,
-                newPassword: newPassword
+                currentPassword,
+                newPassword
             })
-
         });
 
-        message.textContent =
-            "Password changed successfully.";
+        toast("Password changed successfully.");
 
-        message.className = "form-message success";
+        document.getElementById(
+            "passwordForm"
+        ).reset();
 
-        document.getElementById("adminPasswordForm").reset();
-
-        setTimeout(() => {
-            closePasswordModal();
-        }, 1000);
+        closePasswordModal();
 
     } catch (error) {
 
-        console.error("Change password error:", error);
-
-        message.textContent = error.message;
-        message.className = "form-message error";
+        toast(error.message);
     }
 }
 
@@ -713,57 +669,36 @@ document.addEventListener(
             );
         }
 
-        /* =====================================================
-           PASSWORD
-           ===================================================== */
 
-        const adminPasswordBtn =
-            document.getElementById("adminPasswordBtn");
+        /* PASSWORD */
 
-        if (adminPasswordBtn) {
-
-            adminPasswordBtn.addEventListener("click", function (event) {
-
-                event.preventDefault();
-
-                openPasswordModal();
-
-            });
-
-        }
+        document
+            .getElementById("adminPasswordBtn")
+            ?.addEventListener(
+                "click",
+                openPasswordModal
+            );
 
 
-        const adminPasswordForm =
-            document.getElementById("adminPasswordForm");
+        document
+            .getElementById("closePasswordModal")
+            ?.addEventListener(
+                "click",
+                closePasswordModal
+            );
 
-        if (adminPasswordForm) {
 
-            adminPasswordForm.addEventListener(
+        const passwordForm =
+            document.getElementById(
+                "passwordForm"
+            );
+
+        if (passwordForm) {
+
+            passwordForm.addEventListener(
                 "submit",
                 changePassword
             );
-
-        }
-
-
-        /* CLOSE PASSWORD MODAL */
-
-        const passwordCloseButton =
-            document.querySelector(
-                '[data-close="passwordModal"]'
-            );
-
-        if (passwordCloseButton) {
-
-            passwordCloseButton.addEventListener(
-                "click",
-                function () {
-
-                    closePasswordModal();
-
-                }
-            );
-
         }
 
 
