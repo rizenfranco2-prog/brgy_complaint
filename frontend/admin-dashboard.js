@@ -1,18 +1,18 @@
 let adminPosts = [];
 
 
-/* =========================
+/* =========================================================
    TOKEN
-========================= */
+========================================================= */
 
 function token() {
     return localStorage.getItem("barangay_token");
 }
 
 
-/* =========================
+/* =========================================================
    API HELPER
-========================= */
+========================================================= */
 
 async function api(path, options = {}) {
 
@@ -50,9 +50,9 @@ async function api(path, options = {}) {
 }
 
 
-/* =========================
+/* =========================================================
    ESCAPE HTML
-========================= */
+========================================================= */
 
 function esc(value) {
 
@@ -65,9 +65,9 @@ function esc(value) {
 }
 
 
-/* =========================
+/* =========================================================
    TIME AGO
-========================= */
+========================================================= */
 
 function ago(date) {
 
@@ -106,9 +106,9 @@ function ago(date) {
 }
 
 
-/* =========================
+/* =========================================================
    TOAST
-========================= */
+========================================================= */
 
 function toast(message) {
 
@@ -126,13 +126,18 @@ function toast(message) {
 }
 
 
-/* =========================
-   MESSAGE
-========================= */
+/* =========================================================
+   FORM MESSAGE
+========================================================= */
 
-function showMessage(elementId, message, success = false) {
+function showMessage(
+    elementId,
+    message,
+    success = false
+) {
 
-    const el = document.getElementById(elementId);
+    const el =
+        document.getElementById(elementId);
 
     if (!el) return;
 
@@ -143,9 +148,9 @@ function showMessage(elementId, message, success = false) {
 }
 
 
-/* =========================
+/* =========================================================
    LOAD ADMIN POSTS
-========================= */
+========================================================= */
 
 async function load(search = "") {
 
@@ -168,23 +173,8 @@ async function load(search = "") {
         const data =
             await api(`/api/posts${query}`);
 
-        adminPosts = data.posts || [];
-
-        console.log("FULL ADMIN API RESPONSE:", data);
-        console.log("FIRST POST:", adminPosts[0]);
-        console.log("USER INFO:", {
-            name: adminPosts[0]?.authorName,
-            category: adminPosts[0]?.category,
-            address: adminPosts[0]?.address,
-            age: adminPosts[0]?.age,
-            gender: adminPosts[0]?.gender,
-            contactNumber: adminPosts[0]?.contactNumber
-        });
-
-        console.log(
-            "ADMIN POSTS:",
-            adminPosts
-        );
+        adminPosts =
+            data.posts || [];
 
         render(adminPosts);
 
@@ -198,13 +188,17 @@ async function load(search = "") {
         );
 
         if (list) {
+
             list.innerHTML = `
                 <div class="empty-state">
                     Could not load posts.
                     <br>
-                    <small>${esc(err.message)}</small>
+                    <small>
+                        ${esc(err.message)}
+                    </small>
                 </div>
             `;
+
         }
 
     } finally {
@@ -217,9 +211,9 @@ async function load(search = "") {
 }
 
 
-/* =========================
+/* =========================================================
    STATISTICS
-========================= */
+========================================================= */
 
 function updateStatistics() {
 
@@ -236,7 +230,8 @@ function updateStatistics() {
     const totalComments =
         adminPosts.reduce(
             (total, post) =>
-                total + (post.comments?.length || 0),
+                total +
+                (post.comments?.length || 0),
             0
         );
 
@@ -266,14 +261,16 @@ function updateStatistics() {
 }
 
 
-/* =========================
+/* =========================================================
    RENDER POSTS
-========================= */
+========================================================= */
 
 function render(list = adminPosts) {
 
     const box =
-        document.getElementById("adminPostList");
+        document.getElementById(
+            "adminPostList"
+        );
 
     if (!box) return;
 
@@ -290,382 +287,368 @@ function render(list = adminPosts) {
     }
 
 
-    box.innerHTML = list.map(post => {
+    box.innerHTML =
+        list.map(post => {
 
-        const comments =
-            post.comments || [];
-
-
-        /*
-         * Determine if this is a complaint.
-         */
-
-        const isComplaint =
-            post.type === "complaint" ||
-            post.category ||
-            post.address ||
-            post.age !== undefined ||
-            post.gender ||
-            post.contactNumber;
+            const comments =
+                post.comments || [];
 
 
-        /*
-         * Status
-         */
-
-        const status =
-            post.status || "Pending";
-
-
-        const statusClass =
-            status
-                .toLowerCase()
-                .replace(/\s+/g, "-");
+            const isComplaint =
+                post.type === "complaint" ||
+                post.category ||
+                post.address ||
+                post.age !== undefined ||
+                post.gender ||
+                post.contactNumber;
 
 
-        /*
-         * Author
-         */
-
-        const authorName =
-            post.authorName ||
-            "Unknown User";
+            const status =
+                post.status || "Pending";
 
 
-        /* =========================
-   USER + COMPLAINT INFORMATION
-========================= */
-
-        const complaintDetails =
-            isComplaint
-                ? `
-            <div class="complaint-details">
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Complainant Name
-                    </span>
-
-                    <strong>
-                        ${esc(post.authorName || "Unknown User")}
-                    </strong>
-                </div>
+            const statusClass =
+                status
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
 
 
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Category
-                    </span>
-
-                    <strong>
-                        ${esc(post.category || "Not provided")}
-                    </strong>
-                </div>
+            const authorName =
+                post.authorName ||
+                "Unknown User";
 
 
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Address
-                    </span>
+            const complaintDetails =
+                isComplaint
+                    ? `
+                <div class="complaint-details">
 
-                    <strong>
-                        ${esc(post.address || "Not provided")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Age
-                    </span>
-
-                    <strong>
-                        ${post.age !== undefined &&
-                    post.age !== null &&
-                    post.age !== ""
-                    ? esc(post.age)
-                    : "Not provided"
-                }
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Gender
-                    </span>
-
-                    <strong>
-                        ${esc(post.gender || "Not provided")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Contact Number
-                    </span>
-
-                    <strong>
-                        ${esc(
-                    post.contactNumber ||
-                    "Not provided"
-                )}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Status
-                    </span>
-
-                    <div>
-
-                        <span
-                            class="status-badge ${statusClass}">
-                            ${esc(status)}
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Complainant Name
                         </span>
-
-
-                        <select
-                            class="complaint-status-select"
-                            data-status-id="${post._id}"
-                        >
-
-                            <option
-                                value="Pending"
-                                ${status === "Pending" ? "selected" : ""}
-                            >
-                                Pending
-                            </option>
-
-                            <option
-                                value="In Progress"
-                                ${status === "In Progress" ? "selected" : ""}
-                            >
-                                In Progress
-                            </option>
-
-                            <option
-                                value="Resolved"
-                                ${status === "Resolved" ? "selected" : ""}
-                            >
-                                Resolved
-                            </option>
-
-                        </select>
-
-                    </div>
-                </div>
-
-            </div>
-        `
-                : "";
-
-
-        /*
-         * Image
-         */
-
-        const image =
-            post.image
-                ? `
-                    <img
-                        class="admin-post-image"
-                        src="${esc(post.image)}"
-                        alt="Complaint image"
-                    >
-                `
-                : "";
-
-
-        /*
-         * Comments
-         */
-
-        const commentsHTML =
-            comments.length
-                ? comments.map(comment => `
-                    <div class="admin-comment">
 
                         <strong>
                             ${esc(
-                    comment.authorName ||
-                    "User"
-                )}
+                        post.authorName ||
+                        "Unknown User"
+                    )}
                         </strong>
+                    </div>
 
-                        <span>
-                            ${esc(
-                    comment.content ||
-                    ""
-                )}
+
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Category
                         </span>
 
-                        <small class="muted">
-                            ${ago(comment.createdAt)}
-                        </small>
-
+                        <strong>
+                            ${esc(
+                        post.category ||
+                        "Not provided"
+                    )}
+                        </strong>
                     </div>
-                `).join("")
-                : `
-                    <p class="muted">
-                        No comments yet.
-                    </p>
-                `;
 
 
-        return `
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Address
+                        </span>
 
-            <article
-                class="admin-row"
-                data-post-id="${post._id}"
-            >
+                        <strong>
+                            ${esc(
+                        post.address ||
+                        "Not provided"
+                    )}
+                        </strong>
+                    </div>
 
-                <div class="admin-row-main">
+
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Age
+                        </span>
+
+                        <strong>
+                            ${post.age !== undefined &&
+                        post.age !== null &&
+                        post.age !== ""
+                        ? esc(post.age)
+                        : "Not provided"
+                    }
+                        </strong>
+                    </div>
 
 
-                    <!-- POST HEADER -->
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Gender
+                        </span>
 
-                    <div class="admin-post-top">
+                        <strong>
+                            ${esc(
+                        post.gender ||
+                        "Not provided"
+                    )}
+                        </strong>
+                    </div>
+
+
+                    <div class="complaint-detail">
+                        <span class="detail-label">
+                            Contact Number
+                        </span>
+
+                        <strong>
+                            ${esc(
+                        post.contactNumber ||
+                        "Not provided"
+                    )}
+                        </strong>
+                    </div>
+
+
+                    <div class="complaint-detail">
+
+                        <span class="detail-label">
+                            Status
+                        </span>
 
                         <div>
 
-                            <strong>
-                                ${esc(authorName)}
-                            </strong>
-
-                            <span class="muted">
-                                • ${ago(post.createdAt)}
+                            <span
+                                class="status-badge ${statusClass}">
+                                ${esc(status)}
                             </span>
 
-                        </div>
 
-                    </div>
-
-
-                    <!-- POST TYPE -->
-
-                    ${post.type === "announcement" ||
-                post.isAnnouncement === true
-                ? `
-                                <span class="post-type-badge">
-                                    Announcement
-                                </span>
-                            `
-                : `
-                                <span class="post-type-badge">
-                                    Complaint
-                                </span>
-                            `
-            }
-
-
-                    <!-- CONTENT -->
-
-                    <p class="admin-post-content">
-                        ${esc(post.content || "")}
-                    </p>
-
-
-                    <!-- COMPLAINT DETAILS -->
-
-                    ${complaintDetails}
-
-
-                    <!-- IMAGE -->
-
-                    ${image}
-
-
-                    <!-- ACTION BUTTONS -->
-
-                    <div class="admin-post-actions">
-
-                        <button
-                            class="icon-btn"
-                            type="button"
-                            data-edit="${post._id}">
-                            Edit
-                        </button>
-
-
-                        <button
-                            class="icon-btn"
-                            type="button"
-                            data-delete="${post._id}">
-                            Delete
-                        </button>
-
-                    </div>
-
-
-                    <!-- COMMENTS -->
-
-                    <div class="admin-comments">
-
-                        <strong>
-                            Comments (${comments.length})
-                        </strong>
-
-
-                        <div class="admin-comment-list">
-
-                            ${commentsHTML}
-
-                        </div>
-
-
-                        <!-- ADD COMMENT -->
-
-                        <form
-                            class="admin-comment-form"
-                            data-comment="${post._id}"
-                        >
-
-                            <input
-                                type="text"
-                                placeholder="Write a comment..."
-                                maxlength="1000"
-                                required
+                            <select
+                                class="complaint-status-select"
+                                data-status-id="${post._id}"
                             >
 
+                                <option
+                                    value="Pending"
+                                    ${status === "Pending"
+                        ? "selected"
+                        : ""
+                    }>
+                                    Pending
+                                </option>
 
-                            <button
-                                class="primary-btn"
-                                type="submit">
-                                Comment
-                            </button>
 
-                        </form>
+                                <option
+                                    value="In Progress"
+                                    ${status === "In Progress"
+                        ? "selected"
+                        : ""
+                    }>
+                                    In Progress
+                                </option>
+
+
+                                <option
+                                    value="Resolved"
+                                    ${status === "Resolved"
+                        ? "selected"
+                        : ""
+                    }>
+                                    Resolved
+                                </option>
+
+                            </select>
+
+                        </div>
 
                     </div>
 
                 </div>
+            `
+                    : "";
 
-            </article>
 
-        `;
+            const image =
+                post.image
+                    ? `
+                <img
+                    class="admin-post-image"
+                    src="${esc(post.image)}"
+                    alt="Complaint image"
+                >
+            `
+                    : "";
 
-    }).join("");
+
+            const commentsHTML =
+                comments.length
+                    ? comments.map(comment => `
+                        <div class="admin-comment">
+
+                            <strong>
+                                ${esc(
+                        comment.authorName ||
+                        "User"
+                    )}
+                            </strong>
+
+                            <span>
+                                ${esc(
+                        comment.content ||
+                        ""
+                    )}
+                            </span>
+
+                            <small class="muted">
+                                ${ago(
+                        comment.createdAt
+                    )}
+                            </small>
+
+                        </div>
+                    `).join("")
+                    : `
+                        <p class="muted">
+                            No comments yet.
+                        </p>
+                    `;
+
+
+            return `
+                <article
+                    class="admin-row"
+                    data-post-id="${post._id}"
+                >
+
+                    <div class="admin-row-main">
+
+
+                        <div class="admin-post-top">
+
+                            <div>
+
+                                <strong>
+                                    ${esc(authorName)}
+                                </strong>
+
+                                <span class="muted">
+                                    • ${ago(
+                post.createdAt
+            )}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        ${post.type === "announcement" ||
+                    post.isAnnouncement === true
+
+                    ? `
+                                    <span class="post-type-badge">
+                                        Announcement
+                                    </span>
+                                `
+
+                    : `
+                                    <span class="post-type-badge">
+                                        Complaint
+                                    </span>
+                                `
+                }
+
+
+                        <p class="admin-post-content">
+                            ${esc(
+                    post.content || ""
+                )}
+                        </p>
+
+
+                        ${complaintDetails}
+
+
+                        ${image}
+
+
+                        <div class="admin-post-actions">
+
+                            <button
+                                class="icon-btn"
+                                type="button"
+                                data-edit="${post._id}">
+                                Edit
+                            </button>
+
+
+                            <button
+                                class="icon-btn"
+                                type="button"
+                                data-delete="${post._id}">
+                                Delete
+                            </button>
+
+                        </div>
+
+
+                        <div class="admin-comments">
+
+                            <strong>
+                                Comments (${comments.length})
+                            </strong>
+
+
+                            <div class="admin-comment-list">
+
+                                ${commentsHTML}
+
+                            </div>
+
+
+                            <form
+                                class="admin-comment-form"
+                                data-comment="${post._id}"
+                            >
+
+                                <input
+                                    type="text"
+                                    placeholder="Write a comment..."
+                                    maxlength="1000"
+                                    required
+                                >
+
+
+                                <button
+                                    class="primary-btn"
+                                    type="submit">
+                                    Comment
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
 
 
     attachPostEvents();
-
 }
 
 
-/* =========================
+/* =========================================================
    POST EVENTS
-========================= */
+========================================================= */
 
 function attachPostEvents() {
 
 
-    /*
-     * EDIT
-     */
+    /* EDIT */
 
     document
         .querySelectorAll("[data-edit]")
@@ -688,36 +671,50 @@ function attachPostEvents() {
 
 
                     document
-                        .getElementById("editPostId")
-                        .value = post._id;
+                        .getElementById(
+                            "editPostId"
+                        )
+                        .value =
+                        post._id;
 
 
                     document
-                        .getElementById("adminPostContent")
+                        .getElementById(
+                            "adminPostContent"
+                        )
                         .value =
                         post.content || "";
 
 
                     document
-                        .getElementById("postModalTitle")
+                        .getElementById(
+                            "postModalTitle"
+                        )
                         .textContent =
                         "Edit post";
 
 
                     document
-                        .getElementById("adminPostSubmit")
+                        .getElementById(
+                            "adminPostSubmit"
+                        )
                         .textContent =
                         "Update";
 
 
                     document
-                        .getElementById("adminPostMessage")
+                        .getElementById(
+                            "adminPostMessage"
+                        )
                         .textContent = "";
 
 
                     document
-                        .getElementById("postModal")
-                        .classList.remove("hidden");
+                        .getElementById(
+                            "postModal"
+                        )
+                        .classList
+                        .remove("hidden");
 
                 }
             );
@@ -725,9 +722,7 @@ function attachPostEvents() {
         });
 
 
-    /*
-     * DELETE
-     */
+    /* DELETE */
 
     document
         .querySelectorAll("[data-delete]")
@@ -741,13 +736,11 @@ function attachPostEvents() {
                         button.dataset.delete;
 
 
-                    const confirmed =
-                        confirm(
+                    if (
+                        !confirm(
                             "Are you sure you want to delete this post?"
-                        );
-
-
-                    if (!confirmed) {
+                        )
+                    ) {
                         return;
                     }
 
@@ -786,9 +779,7 @@ function attachPostEvents() {
         });
 
 
-    /*
-     * CHANGE COMPLAINT STATUS
-     */
+    /* CHANGE STATUS */
 
     document
         .querySelectorAll(
@@ -845,9 +836,7 @@ function attachPostEvents() {
         });
 
 
-    /*
-     * ADD COMMENT
-     */
+    /* ADD COMMENT */
 
     document
         .querySelectorAll("[data-comment]")
@@ -859,22 +848,16 @@ function attachPostEvents() {
 
                     event.preventDefault();
 
-
                     const postId =
                         form.dataset.comment;
-
 
                     const input =
                         form.querySelector("input");
 
-
                     const content =
                         input.value.trim();
 
-
-                    if (!content) {
-                        return;
-                    }
+                    if (!content) return;
 
 
                     try {
@@ -893,11 +876,9 @@ function attachPostEvents() {
 
                         input.value = "";
 
-
                         toast(
                             "Comment added."
                         );
-
 
                         load();
 
@@ -920,49 +901,75 @@ function attachPostEvents() {
 }
 
 
-/* =========================
+/* =========================================================
    NEW POST MODAL
-========================= */
+========================================================= */
 
 function openNewPostModal() {
 
-    document
-        .getElementById("postModalTitle")
-        .textContent =
-        "Create post";
+    const title =
+        document.getElementById(
+            "postModalTitle"
+        );
+
+    const submit =
+        document.getElementById(
+            "adminPostSubmit"
+        );
+
+    const editId =
+        document.getElementById(
+            "editPostId"
+        );
+
+    const content =
+        document.getElementById(
+            "adminPostContent"
+        );
+
+    const message =
+        document.getElementById(
+            "adminPostMessage"
+        );
 
 
-    document
-        .getElementById("adminPostSubmit")
-        .textContent =
-        "Publish";
+    if (title) {
+        title.textContent =
+            "Create post";
+    }
+
+    if (submit) {
+        submit.textContent =
+            "Publish";
+    }
+
+    if (editId) {
+        editId.value = "";
+    }
+
+    if (content) {
+        content.value = "";
+    }
+
+    if (message) {
+        message.textContent = "";
+    }
 
 
-    document
-        .getElementById("editPostId")
-        .value = "";
+    const modal =
+        document.getElementById(
+            "postModal"
+        );
 
-
-    document
-        .getElementById("adminPostContent")
-        .value = "";
-
-
-    document
-        .getElementById("adminPostMessage")
-        .textContent = "";
-
-
-    document
-        .getElementById("postModal")
-        .classList.remove("hidden");
-
+    if (modal) {
+        modal.classList.remove("hidden");
+    }
 }
 
 
-/* =========================
-   CLOSE MODALS
-========================= */
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
 
 function closeModal(id) {
 
@@ -972,13 +979,12 @@ function closeModal(id) {
     if (modal) {
         modal.classList.add("hidden");
     }
-
 }
 
 
-/* =========================
+/* =========================================================
    ADMIN POST FORM
-========================= */
+========================================================= */
 
 async function submitAdminPost(event) {
 
@@ -987,14 +993,18 @@ async function submitAdminPost(event) {
 
     const content =
         document
-            .getElementById("adminPostContent")
+            .getElementById(
+                "adminPostContent"
+            )
             .value
             .trim();
 
 
     const editId =
         document
-            .getElementById("editPostId")
+            .getElementById(
+                "editPostId"
+            )
             .value
             .trim();
 
@@ -1018,14 +1028,12 @@ async function submitAdminPost(event) {
 
     try {
 
-        submitButton.disabled = true;
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
 
 
         if (editId) {
-
-            /*
-             * EDIT EXISTING POST
-             */
 
             await api(
                 `/api/posts/${editId}`,
@@ -1044,10 +1052,6 @@ async function submitAdminPost(event) {
             );
 
         } else {
-
-            /*
-             * CREATE ANNOUNCEMENT
-             */
 
             await api(
                 "/api/posts",
@@ -1084,32 +1088,59 @@ async function submitAdminPost(event) {
 
     } finally {
 
-        submitButton.disabled = false;
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
 
     }
-
 }
 
 
-/* =========================
-   ADMIN PASSWORD
-========================= */
+/* =========================================================
+   ADMIN CHANGE PASSWORD
+========================================================= */
 
 async function submitAdminPassword(event) {
 
     event.preventDefault();
 
+
     const currentPassword =
-        document.getElementById("adminCurrentPassword").value;
+        document.getElementById(
+            "adminCurrentPassword"
+        );
 
     const newPassword =
-        document.getElementById("adminNewPassword").value;
+        document.getElementById(
+            "adminNewPassword"
+        );
 
     const confirmPassword =
-        document.getElementById("adminConfirmPassword").value;
+        document.getElementById(
+            "adminConfirmPassword"
+        );
 
 
-    if (newPassword !== confirmPassword) {
+    if (
+        !currentPassword ||
+        !newPassword ||
+        !confirmPassword
+    ) {
+        return;
+    }
+
+
+    const current =
+        currentPassword.value;
+
+    const newPass =
+        newPassword.value;
+
+    const confirm =
+        confirmPassword.value;
+
+
+    if (newPass !== confirm) {
 
         showMessage(
             "adminPasswordMessage",
@@ -1120,7 +1151,7 @@ async function submitAdminPassword(event) {
     }
 
 
-    if (newPassword.length < 6) {
+    if (newPass.length < 6) {
 
         showMessage(
             "adminPasswordMessage",
@@ -1133,14 +1164,19 @@ async function submitAdminPassword(event) {
 
     try {
 
+        /*
+         * IMPORTANT:
+         * Backend uses PUT.
+         */
+
         await api(
             "/api/auth/change-password",
             {
                 method: "PUT",
 
                 body: JSON.stringify({
-                    currentPassword,
-                    newPassword
+                    currentPassword: current,
+                    newPassword: newPass
                 })
             }
         );
@@ -1154,15 +1190,24 @@ async function submitAdminPassword(event) {
 
 
         document
-            .getElementById("adminPasswordForm")
+            .getElementById(
+                "adminPasswordForm"
+            )
             .reset();
 
 
-        toast("Password changed successfully.");
+        toast(
+            "Password changed successfully."
+        );
+
 
     } catch (err) {
 
-        console.error(err);
+        console.error(
+            "CHANGE PASSWORD ERROR:",
+            err
+        );
+
 
         showMessage(
             "adminPasswordMessage",
@@ -1175,15 +1220,44 @@ async function submitAdminPassword(event) {
 }
 
 
-/* =========================
-   AUTH CHECK
-========================= */
+/* =========================================================
+   OPEN ADMIN PASSWORD MODAL
+========================================================= */
+
+function openAdminPasswordModal() {
+
+    const modal =
+        document.getElementById(
+            "passwordModal"
+        );
+
+
+    if (!modal) {
+
+        console.error(
+            "passwordModal was not found."
+        );
+
+        return;
+    }
+
+
+    modal.classList.remove("hidden");
+
+    console.log(
+        "Admin password modal opened."
+    );
+}
+
+
+/* =========================================================
+   ADMIN AUTH CHECK
+========================================================= */
 
 async function checkAdmin() {
 
     const currentToken =
         token();
-
 
     const role =
         localStorage.getItem(
@@ -1191,11 +1265,10 @@ async function checkAdmin() {
         );
 
 
-    /*
-     * No token
-     */
-
-    if (!currentToken || role !== "admin") {
+    if (
+        !currentToken ||
+        role !== "admin"
+    ) {
 
         window.location.href =
             "admin-login.html";
@@ -1212,11 +1285,26 @@ async function checkAdmin() {
             );
 
 
-        if (data.user) {
+        /*
+         * Your backend returns:
+         *
+         * {
+         *   role: "admin",
+         *   account: {...}
+         * }
+         */
+
+        const account =
+            data.account ||
+            data.user ||
+            null;
+
+
+        if (account) {
 
             const name =
-                data.user.username ||
-                data.user.name ||
+                account.username ||
+                account.name ||
                 "Administrator";
 
 
@@ -1271,13 +1359,12 @@ async function checkAdmin() {
 
         return false;
     }
-
 }
 
 
-/* =========================
+/* =========================================================
    LOGOUT
-========================= */
+========================================================= */
 
 function logoutAdmin() {
 
@@ -1291,13 +1378,13 @@ function logoutAdmin() {
 
 
     window.location.href =
-        "admin.html";
+        "admin-login.html";
 }
 
 
-/* =========================
+/* =========================================================
    SEARCH
-========================= */
+========================================================= */
 
 function setupSearch() {
 
@@ -1333,21 +1420,23 @@ function setupSearch() {
 
         }
     );
-
 }
 
 
-/* =========================
+/* =========================================================
    DOM READY
-========================= */
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        /*
-         * Check admin
-         */
+        console.log(
+            "ADMIN DASHBOARD JS LOADED"
+        );
+
+
+        /* AUTH */
 
         const valid =
             await checkAdmin();
@@ -1358,23 +1447,17 @@ document.addEventListener(
         }
 
 
-        /*
-         * Load posts
-         */
+        /* LOAD POSTS */
 
         load();
 
 
-        /*
-         * Search
-         */
+        /* SEARCH */
 
         setupSearch();
 
 
-        /*
-         * New post
-         */
+        /* NEW POST */
 
         const newPostBtn =
             document.getElementById(
@@ -1392,9 +1475,7 @@ document.addEventListener(
         }
 
 
-        /*
-         * Admin post form
-         */
+        /* ADMIN POST FORM */
 
         const adminPostForm =
             document.getElementById(
@@ -1412,44 +1493,46 @@ document.addEventListener(
         }
 
 
-        /*
-         * Change password button
-         */
+        /* =================================================
+           CHANGE PASSWORD BUTTON
+        ================================================= */
 
         const passwordButton =
             document.getElementById(
-                "passwordBtn"
+                "adminPasswordBtn"
             );
+
+
+        console.log(
+            "PASSWORD BUTTON:",
+            passwordButton
+        );
 
 
         if (passwordButton) {
 
             passwordButton.addEventListener(
                 "click",
-                () => {
-
-                    document
-                        .getElementById(
-                            "passwordModal"
-                        )
-                        .classList.remove(
-                            "hidden"
-                        );
-
-                }
+                openAdminPasswordModal
             );
 
         }
 
 
-        /*
-         * Password form
-         */
+        /* =================================================
+           CHANGE PASSWORD FORM
+        ================================================= */
 
         const passwordForm =
             document.getElementById(
                 "adminPasswordForm"
             );
+
+
+        console.log(
+            "PASSWORD FORM:",
+            passwordForm
+        );
 
 
         if (passwordForm) {
@@ -1462,9 +1545,7 @@ document.addEventListener(
         }
 
 
-        /*
-         * Logout
-         */
+        /* LOGOUT */
 
         const logoutButton =
             document.getElementById(
@@ -1482,9 +1563,7 @@ document.addEventListener(
         }
 
 
-        /*
-         * Close buttons
-         */
+        /* CLOSE BUTTONS */
 
         document
             .querySelectorAll(
@@ -1506,12 +1585,12 @@ document.addEventListener(
             });
 
 
-        /*
-         * Close modal when clicking outside
-         */
+        /* CLICK OUTSIDE MODAL */
 
         document
-            .querySelectorAll(".modal")
+            .querySelectorAll(
+                ".modal"
+            )
             .forEach(modal => {
 
                 modal.addEventListener(
@@ -1534,4 +1613,4 @@ document.addEventListener(
             });
 
     }
-);
+);s

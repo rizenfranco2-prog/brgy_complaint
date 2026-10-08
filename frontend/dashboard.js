@@ -114,7 +114,6 @@ function renderPosts(list = posts) {
 
     if (!container) return;
 
-
     if (!list.length) {
 
         container.innerHTML = `
@@ -139,7 +138,6 @@ function renderPosts(list = posts) {
         return;
     }
 
-
     container.innerHTML = list.map(post => {
 
         const own =
@@ -150,17 +148,11 @@ function renderPosts(list = posts) {
 
         const status = post.status || "Pending";
 
-
         return `
             <article class="post card">
 
-                <!-- ================================= -->
-                <!-- POST HEADER -->
-                <!-- ================================= -->
-
                 <div class="post-head">
 
-                    <!-- AUTHOR IS NOW PLAIN TEXT -->
                     <div class="post-profile">
 
                         <span class="avatar">
@@ -183,41 +175,31 @@ function renderPosts(list = posts) {
 
                     </div>
 
-
                     ${own
                 ? `
-                            <button
-                                class="more-btn"
-                                data-delete-post="${post._id}"
-                                title="Delete post"
-                                type="button"
-                            >
-                                ⋯
-                            </button>
-                        `
+                                <button
+                                    class="more-btn"
+                                    data-delete-post="${post._id}"
+                                    title="Delete post"
+                                    type="button">
+                                    ⋯
+                                </button>
+                            `
                 : ""
             }
 
                 </div>
 
 
-                <!-- ================================= -->
-                <!-- CATEGORY -->
-                <!-- ================================= -->
-
                 ${post.category
                 ? `
-                        <div class="post-category">
-                            ${escapeHTML(post.category)}
-                        </div>
-                    `
+                            <div class="post-category">
+                                ${escapeHTML(post.category)}
+                            </div>
+                        `
                 : ""
             }
 
-
-                <!-- ================================= -->
-                <!-- CONTENT -->
-                <!-- ================================= -->
 
                 <div class="post-content">
 
@@ -227,36 +209,28 @@ function renderPosts(list = posts) {
                 </div>
 
 
-                <!-- ================================= -->
-                <!-- IMAGE -->
-                <!-- ================================= -->
-
                 ${post.image
                 ? `
-                        <div class="post-image-container">
+                            <div class="post-image-container">
 
-                            <img
-                                src="${escapeHTML(post.image)}"
-                                class="post-image"
-                                alt="Complaint picture"
-                                loading="lazy"
-                            >
+                                <img
+                                    src="${escapeHTML(post.image)}"
+                                    class="post-image"
+                                    alt="Complaint picture"
+                                    loading="lazy">
 
-                        </div>
-                    `
+                            </div>
+                        `
                 : ""
             }
 
-
-                <!-- ================================= -->
-                <!-- STATUS -->
-                <!-- ================================= -->
 
                 <div class="post-status">
 
                     <span class="status-badge ${status
                 .toLowerCase()
-                .replace(/\s+/g, "-")}">
+                .replace(/\s+/g, "-")
+            }">
 
                         ${escapeHTML(status)}
 
@@ -264,10 +238,6 @@ function renderPosts(list = posts) {
 
                 </div>
 
-
-                <!-- ================================= -->
-                <!-- POST META -->
-                <!-- ================================= -->
 
                 <div class="post-meta">
 
@@ -281,86 +251,74 @@ function renderPosts(list = posts) {
                 </div>
 
 
-                <!-- ================================= -->
-                <!-- COMMENTS -->
-                <!-- ================================= -->
-
                 <div class="comments">
 
                     ${comments.map(c => `
 
-                        <div class="comment">
+                            <div class="comment">
 
-                            <span class="avatar tiny">
+                                <span class="avatar tiny">
 
-                                ${escapeHTML(
-                    initials(c.authorName)
-                )}
+                                    ${escapeHTML(
+                initials(c.authorName)
+            )}
 
-                            </span>
+                                </span>
 
+                                <div class="comment-body">
 
-                            <div class="comment-body">
+                                    <strong>
+                                        ${escapeHTML(c.authorName)}
+                                    </strong>
 
-                                <strong>
-                                    ${escapeHTML(c.authorName)}
-                                </strong>
+                                    <p>
+                                        ${escapeHTML(c.content)}
+                                    </p>
 
-                                <p>
-                                    ${escapeHTML(c.content)}
-                                </p>
+                                    <small>
+                                        ${timeAgo(c.createdAt)}
+                                    </small>
 
-                                <small>
-                                    ${timeAgo(c.createdAt)}
-                                </small>
+                                </div>
+
+                                ${currentUser &&
+                    String(c.authorId) ===
+                    String(currentUser._id)
+
+                    ? `
+                                            <button
+                                                class="delete-comment"
+                                                data-delete-comment="${c._id}"
+                                                type="button">
+                                                ×
+                                            </button>
+                                        `
+                    : ""
+                }
 
                             </div>
 
+                        `).join("")
+            }
 
-                            ${currentUser &&
-                        String(c.authorId) ===
-                        String(currentUser._id)
-
-                        ? `
-                                    <button
-                                        class="delete-comment"
-                                        data-delete-comment="${c._id}"
-                                        type="button"
-                                    >
-                                        ×
-                                    </button>
-                                `
-                        : ""
-                    }
-
-                        </div>
-
-                    `).join("")}
-
-
-                    <!-- COMMENT FORM -->
 
                     <form
                         class="comment-form"
-                        data-post-id="${post._id}"
-                    >
+                        data-post-id="${post._id}">
 
                         <span class="avatar tiny">
 
                             ${escapeHTML(
-                        initials(currentUser?.name)
-                    )}
+                initials(currentUser?.name)
+            )}
 
                         </span>
-
 
                         <input
                             type="text"
                             maxlength="1000"
                             placeholder="Write a comment..."
-                            required
-                        >
-
+                            required>
 
                         <button type="submit">
                             Post
@@ -522,14 +480,11 @@ async function loadPosts(search = "") {
 
         }
 
-
         const data = await api(
             `/api/posts?search=${encodeURIComponent(search)}`
         );
 
-
         posts = data.posts || [];
-
 
         renderPosts(posts);
 
@@ -614,7 +569,6 @@ async function openUserProfile(userId, userName) {
         const data =
             await api(`/api/users/${userId}/posts`);
 
-
         const userPosts =
             data.posts || [];
 
@@ -662,10 +616,10 @@ async function openUserProfile(userId, userName) {
 
                         ${post.category
                         ? `
-                                <div class="profile-post-category">
-                                    ${escapeHTML(post.category)}
-                                </div>
-                            `
+                                    <div class="profile-post-category">
+                                        ${escapeHTML(post.category)}
+                                    </div>
+                                `
                         : ""
                     }
 
@@ -680,16 +634,15 @@ async function openUserProfile(userId, userName) {
 
                         ${post.image
                         ? `
-                                <div class="profile-post-image">
+                                    <div class="profile-post-image">
 
-                                    <img
-                                        src="${escapeHTML(post.image)}"
-                                        alt="Complaint picture"
-                                        loading="lazy"
-                                    >
+                                        <img
+                                            src="${escapeHTML(post.image)}"
+                                            alt="Complaint picture"
+                                            loading="lazy">
 
-                                </div>
-                            `
+                                    </div>
+                                `
                         : ""
                     }
 
@@ -866,6 +819,77 @@ async function compressImage(file) {
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
+
+        /* ================================================= */
+        /* CHANGE PASSWORD BUTTON */
+        /* ================================================= */
+
+        const passwordBtn =
+            document.getElementById("passwordBtn");
+
+        if (passwordBtn) {
+
+            passwordBtn.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const passwordModal =
+                        document.getElementById(
+                            "passwordModal"
+                        );
+
+                    if (!passwordModal) {
+
+                        console.error(
+                            "passwordModal not found."
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                     * Remove hidden class
+                     * and add show class.
+                     */
+
+                    passwordModal.classList.remove(
+                        "hidden"
+                    );
+
+                    passwordModal.classList.add(
+                        "show"
+                    );
+
+
+                    /*
+                     * Force the modal to display.
+                     * This prevents CSS from keeping
+                     * it hidden.
+                     */
+
+                    passwordModal.style.display =
+                        "flex";
+
+
+                    console.log(
+                        "Change Password opened."
+                    );
+
+                }
+            );
+
+        } else {
+
+            console.error(
+                "passwordBtn not found."
+            );
+
+        }
+
 
         /* ============================================= */
         /* CHECK LOGIN */
@@ -1494,32 +1518,6 @@ document.addEventListener(
 
 
         /* ================================================= */
-        /* CHANGE PASSWORD */
-        /* ================================================= */
-
-        const passwordBtn =
-            document.getElementById(
-                "passwordBtn"
-            );
-
-
-        if (passwordBtn) {
-
-            passwordBtn.onclick = () => {
-
-                document
-                    .getElementById(
-                        "passwordModal"
-                    )
-                    .classList
-                    .remove("hidden");
-
-            };
-
-        }
-
-
-        /* ================================================= */
         /* CLOSE MODALS */
         /* ================================================= */
 
@@ -1536,9 +1534,23 @@ document.addEventListener(
 
                     if (modal) {
 
+                        modal.classList.remove(
+                            "show"
+                        );
+
                         modal.classList.add(
                             "hidden"
                         );
+
+                        if (
+                            btn.dataset.close ===
+                            "passwordModal"
+                        ) {
+
+                            modal.style.display =
+                                "none";
+
+                        }
 
                     }
 
@@ -1548,7 +1560,7 @@ document.addEventListener(
 
 
         /* ================================================= */
-        /* CHANGE PASSWORD */
+        /* CHANGE PASSWORD FORM */
         /* ================================================= */
 
         const passwordForm =
@@ -1583,6 +1595,23 @@ document.addEventListener(
                         );
 
 
+                    const message =
+                        document.getElementById(
+                            "passwordMessage"
+                        );
+
+
+                    if (
+                        !currentPassword ||
+                        !newPassword ||
+                        !confirmPassword
+                    ) {
+
+                        return;
+
+                    }
+
+
                     if (
                         newPassword.value !==
                         confirmPassword.value
@@ -1591,6 +1620,18 @@ document.addEventListener(
                         showMessage(
                             "passwordMessage",
                             "New passwords do not match."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (newPassword.value.length < 6) {
+
+                        showMessage(
+                            "passwordMessage",
+                            "New password must be at least 6 characters."
                         );
 
                         return;
@@ -1661,7 +1702,8 @@ function showMessage(
 
     if (!el) return;
 
-    el.textContent = message;
+    el.textContent =
+        message;
 
     el.className =
         `form-message ${error ? "error" : "success"}`;
