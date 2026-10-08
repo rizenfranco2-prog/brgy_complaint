@@ -351,17 +351,6 @@ function renderOfficials(
                 official.position
             )}
                         </strong>
-
-                        ${official.barangay
-                    ? `
-                                    <p>
-                                        Barangay:
-                                        ${escapeHTML(
-                        official.barangay
-                    )}
-                                    </p>
-                                  `
-                    : ""
                 }
 
                         ${official.contactNumber
@@ -528,12 +517,6 @@ async function editOfficial(id) {
 
 
         document.getElementById(
-            "officialBarangay"
-        ).value =
-            official.barangay || "";
-
-
-        document.getElementById(
             "officialContact"
         ).value =
             official.contactNumber || "";
@@ -649,7 +632,6 @@ async function saveOfficial(event) {
         name,
         position,
         government,
-        barangay,
         contactNumber,
         email,
         image
