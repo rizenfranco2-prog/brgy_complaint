@@ -1903,7 +1903,7 @@ app.put(
             ) {
 
                 post.archived =
-                    true;
+                    false;
 
                 post.resolvedAt =
                     new Date();
