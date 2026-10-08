@@ -360,47 +360,56 @@ function renderComplaints() {
                     </div>
 
 
-                    <div class="complaint-actions">
+<div class="complaint-actions">
 
-                        <label>
-                            Update Status
-                        </label>
+    <div>
+        <label>
+            Update Status
+        </label>
 
-                        <select
-                            class="complaint-status-select"
-                            data-id="${post._id}"
-                        >
+        <select
+            class="complaint-status-select"
+            data-id="${post._id}"
+        >
 
-                            <option
-                                value="Pending"
-                                ${status === "Pending"
-                    ? "selected"
-                    : ""}
-                            >
-                                Pending
-                            </option>
+            <option
+                value="Pending"
+                ${status === "Pending" ? "selected" : ""}
+            >
+                Pending
+            </option>
 
-                            <option
-                                value="In Progress"
-                                ${status === "In Progress"
-                    ? "selected"
-                    : ""}
-                            >
-                                In Progress
-                            </option>
+            <option
+                value="In Progress"
+                ${status === "In Progress" ? "selected" : ""}
+            >
+                In Progress
+            </option>
 
-                            <option
-                                value="Resolved"
-                                ${status === "Resolved"
-                    ? "selected"
-                    : ""}
-                            >
-                                Resolved
-                            </option>
+            <option
+                value="Resolved"
+                ${status === "Resolved" ? "selected" : ""}
+            >
+                Resolved
+            </option>
 
-                        </select>
+        </select>
+    </div>
 
-                    </div>
+    ${status === "Resolved"
+                    ? `
+            <button
+                type="button"
+                class="delete-complaint-btn"
+                data-id="${post._id}"
+            >
+                Delete Complaint
+            </button>
+        `
+                    : ""
+    }
+
+</div>
 
                 </article>
             `;
