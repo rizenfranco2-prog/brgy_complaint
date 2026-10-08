@@ -1898,24 +1898,12 @@ app.put(
                 new Date();
 
 
-            if (
-                status === "Resolved"
-            ) {
-
-                post.archived =
-                    false;
-
-                post.resolvedAt =
-                    new Date();
-
+            if (status === "Resolved") {
+                post.archived = false;
+                post.resolvedAt = new Date();
             } else {
-
-                post.archived =
-                    false;
-
-                post.resolvedAt =
-                    null;
-
+                post.archived = false;
+                post.resolvedAt = null;
             }
 
 
