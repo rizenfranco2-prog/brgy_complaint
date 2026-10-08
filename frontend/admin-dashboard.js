@@ -1,30 +1,24 @@
+/* ================================================= */
+/* GLOBAL VARIABLES & CONFIGURATION */
+/* ================================================= */
 let adminPosts = [];
+let currentAdmin = null;
 
-
-/* =========================================================
-   TOKEN
-========================================================= */
-
-function token() {
+/* Helper to safely retrieve token */
+function getAdminToken() {
     return localStorage.getItem("barangay_token");
 }
 
-
-/* =========================================================
-   API HELPER
-========================================================= */
-
-async function api(path, options = {}) {
-
+/* Centralized API Helper */
+async function apiCall(path, options = {}) {
     const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {})
     };
 
-    const currentToken = token();
-
-    if (currentToken) {
-        headers.Authorization = `Bearer ${currentToken}`;
+    const token = getAdminToken();
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
     }
 
     const res = await fetch(`${API_URL}${path}`, {
@@ -32,1585 +26,414 @@ async function api(path, options = {}) {
         headers
     });
 
-    let data = {};
-
-    try {
-        data = await res.json();
-    } catch {
-        data = {};
-    }
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-        throw new Error(
-            data.message || `Request failed (${res.status})`
-        );
+        throw new Error(data.message || "Request failed.");
     }
 
     return data;
 }
 
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function esc(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+/* ================================================= */
+/* UTILITY FUNCTIONS */
+/* ================================================= */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    }[ch]));
 }
 
-
-/* =========================================================
-   TIME AGO
-========================================================= */
-
-function ago(date) {
-
-    if (!date) return "";
-
-    const now = new Date();
-    const then = new Date(date);
-
-    const seconds = Math.floor(
-        (now - then) / 1000
-    );
-
-    if (seconds < 60) {
-        return "just now";
-    }
-
-    const minutes = Math.floor(seconds / 60);
-
-    if (minutes < 60) {
-        return `${minutes}m ago`;
-    }
-
-    const hours = Math.floor(minutes / 60);
-
-    if (hours < 24) {
-        return `${hours}h ago`;
-    }
-
-    const days = Math.floor(hours / 24);
-
-    if (days < 7) {
-        return `${days}d ago`;
-    }
-
-    return then.toLocaleDateString();
+function initials(name) {
+    return String(name || "A")
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(x => x[0])
+        .join("")
+        .toUpperCase();
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
+function timeAgo(date) {
+    const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+    if (seconds < 60) return "Just now";
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    return new Date(date).toLocaleDateString();
+}
 
 function toast(message) {
-
     const el = document.getElementById("toast");
-
     if (!el) return;
-
     el.textContent = message;
-
     el.classList.add("show");
-
     setTimeout(() => {
         el.classList.remove("show");
     }, 2500);
 }
 
+/* ================================================= */
+/* DATA FETCHING & RENDERING */
+/* ================================================= */
 
-/* =========================================================
-   FORM MESSAGE
-========================================================= */
-
-function showMessage(
-    elementId,
-    message,
-    success = false
-) {
-
-    const el =
-        document.getElementById(elementId);
-
-    if (!el) return;
-
-    el.textContent = message;
-
-    el.className =
-        `form-message ${success ? "success" : "error"}`;
-}
-
-
-/* =========================================================
-   LOAD ADMIN POSTS
-========================================================= */
-
-async function load(search = "") {
-
-    const loading =
-        document.getElementById("adminLoading");
-
-    const list =
-        document.getElementById("adminPostList");
+/* Fetch posts and calculate summary statistics */
+async function loadAdminDashboard(search = "") {
+    const loadingEl = document.getElementById("adminLoading");
+    const container = document.getElementById("adminPostList");
 
     try {
+        if (loadingEl) loadingEl.style.display = "block";
 
-        if (loading) {
-            loading.style.display = "block";
-        }
+        const data = await apiCall(`/api/admin/posts?search=${encodeURIComponent(search)}`);
+        adminPosts = data.posts || [];
 
-        const query = search
-            ? `?search=${encodeURIComponent(search)}`
-            : "";
+        /* Update Dashboard Stats */
+        updateStats(adminPosts);
 
-        const data =
-            await api(`/api/posts${query}`);
-
-        adminPosts =
-            data.posts || [];
-
-        render(adminPosts);
-
-        updateStatistics();
+        /* Render Posts List */
+        renderAdminPosts(adminPosts);
 
     } catch (err) {
-
-        console.error(
-            "LOAD ADMIN POSTS ERROR:",
-            err
-        );
-
-        if (list) {
-
-            list.innerHTML = `
-                <div class="empty-state">
-                    Could not load posts.
-                    <br>
-                    <small>
-                        ${esc(err.message)}
-                    </small>
-                </div>
-            `;
-
+        if (loadingEl) {
+            loadingEl.textContent = `Error: ${err.message}`;
         }
-
+        toast(err.message);
     } finally {
-
-        if (loading) {
-            loading.style.display = "none";
+        if (loadingEl && adminPosts.length > 0) {
+            loadingEl.style.display = "none";
         }
-
     }
 }
 
+function updateStats(posts) {
+    const statPosts = document.getElementById("statPosts");
+    const statComments = document.getElementById("statComments");
+    const statAdminPosts = document.getElementById("statAdminPosts");
 
-/* =========================================================
-   STATISTICS
-========================================================= */
+    const totalPosts = posts.length;
+    const totalComments = posts.reduce((acc, post) => acc + (post.comments?.length || 0), 0);
+    const adminPostsCount = posts.filter(post => post.isAdminPost || post.authorRole === "admin").length;
 
-function updateStatistics() {
-
-    const statPosts =
-        document.getElementById("statPosts");
-
-    const statComments =
-        document.getElementById("statComments");
-
-    const statAdminPosts =
-        document.getElementById("statAdminPosts");
-
-
-    const totalComments =
-        adminPosts.reduce(
-            (total, post) =>
-                total +
-                (post.comments?.length || 0),
-            0
-        );
-
-
-    const totalAdminPosts =
-        adminPosts.filter(
-            post =>
-                post.type === "announcement" ||
-                post.isAnnouncement === true
-        ).length;
-
-
-    if (statPosts) {
-        statPosts.textContent =
-            adminPosts.length;
-    }
-
-    if (statComments) {
-        statComments.textContent =
-            totalComments;
-    }
-
-    if (statAdminPosts) {
-        statAdminPosts.textContent =
-            totalAdminPosts;
-    }
+    if (statPosts) statPosts.textContent = totalPosts;
+    if (statComments) statComments.textContent = totalComments;
+    if (statAdminPosts) statAdminPosts.textContent = adminPostsCount;
 }
 
+function renderAdminPosts(posts) {
+    const container = document.getElementById("adminPostList");
+    const loadingEl = document.getElementById("adminLoading");
 
-/* =========================================================
-   RENDER POSTS
-========================================================= */
+    if (!container) return;
 
-function render(list = adminPosts) {
-
-    const box =
-        document.getElementById(
-            "adminPostList"
-        );
-
-    if (!box) return;
-
-
-    if (!list.length) {
-
-        box.innerHTML = `
-            <div class="empty-state">
-                No posts or complaints found.
+    if (!posts.length) {
+        container.innerHTML = `
+            <div class="empty card" style="padding: 2rem; text-align: center;">
+                <h3>No posts found</h3>
+                <p class="muted">There are no posts matching your criteria.</p>
             </div>
         `;
-
+        if (loadingEl) loadingEl.style.display = "none";
         return;
     }
 
+    container.innerHTML = posts.map(post => {
+        const comments = post.comments || [];
+        const status = post.status || "Pending";
 
-    box.innerHTML =
-        list.map(post => {
-
-            const comments =
-                post.comments || [];
-
-
-            const isComplaint =
-                post.type === "complaint" ||
-                post.category ||
-                post.address ||
-                post.age !== undefined ||
-                post.gender ||
-                post.contactNumber;
-
-
-            const status =
-                post.status || "Pending";
-
-
-            const statusClass =
-                status
-                    .toLowerCase()
-                    .replace(/\s+/g, "-");
-
-
-            const authorName =
-                post.authorName ||
-                "Unknown User";
-
-
-            const complaintDetails =
-                isComplaint
-                    ? `
-                <div class="complaint-details">
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Complainant Name
-                        </span>
-
-                        <strong>
-                            ${esc(
-                        post.authorName ||
-                        "Unknown User"
-                    )}
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Category
-                        </span>
-
-                        <strong>
-                            ${esc(
-                        post.category ||
-                        "Not provided"
-                    )}
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Address
-                        </span>
-
-                        <strong>
-                            ${esc(
-                        post.address ||
-                        "Not provided"
-                    )}
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Age
-                        </span>
-
-                        <strong>
-                            ${post.age !== undefined &&
-                        post.age !== null &&
-                        post.age !== ""
-                        ? esc(post.age)
-                        : "Not provided"
-                    }
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Gender
-                        </span>
-
-                        <strong>
-                            ${esc(
-                        post.gender ||
-                        "Not provided"
-                    )}
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-                        <span class="detail-label">
-                            Contact Number
-                        </span>
-
-                        <strong>
-                            ${esc(
-                        post.contactNumber ||
-                        "Not provided"
-                    )}
-                        </strong>
-                    </div>
-
-
-                    <div class="complaint-detail">
-
-                        <span class="detail-label">
-                            Status
-                        </span>
-
+        return `
+            <article class="admin-post-card card" style="margin-bottom: 1rem; padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <span class="avatar">${escapeHTML(initials(post.authorName))}</span>
                         <div>
-
-                            <span
-                                class="status-badge ${statusClass}">
-                                ${esc(status)}
-                            </span>
-
-
-                            <select
-                                class="complaint-status-select"
-                                data-status-id="${post._id}"
-                            >
-
-                                <option
-                                    value="Pending"
-                                    ${status === "Pending"
-                        ? "selected"
-                        : ""
-                    }>
-                                    Pending
-                                </option>
-
-
-                                <option
-                                    value="In Progress"
-                                    ${status === "In Progress"
-                        ? "selected"
-                        : ""
-                    }>
-                                    In Progress
-                                </option>
-
-
-                                <option
-                                    value="Resolved"
-                                    ${status === "Resolved"
-                        ? "selected"
-                        : ""
-                    }>
-                                    Resolved
-                                </option>
-
-                            </select>
-
+                            <strong>${escapeHTML(post.authorName)}</strong>
+                            <small style="display: block;" class="muted">${timeAgo(post.createdAt)}</small>
                         </div>
-
                     </div>
-
+                    <div>
+                        <button class="secondary-btn edit-post-btn" data-id="${post._id}" data-content="${escapeHTML(post.content)}" type="button">Edit</button>
+                        <button class="danger-btn delete-post-btn" data-id="${post._id}" type="button">Delete</button>
+                    </div>
                 </div>
-            `
-                    : "";
 
+                ${post.category ? `<div style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.5rem;" class="muted">[${escapeHTML(post.category)}]</div>` : ""}
 
-            const image =
-                post.image
-                    ? `
-                <img
-                    class="admin-post-image"
-                    src="${esc(post.image)}"
-                    alt="Complaint image"
-                >
-            `
-                    : "";
+                <div class="post-content" style="margin-bottom: 0.75rem;">
+                    ${escapeHTML(post.content).replace(/\n/g, "<br>")}
+                </div>
 
-
-            const commentsHTML =
-                comments.length
-                    ? comments.map(comment => `
-                        <div class="admin-comment">
-
-                            <strong>
-                                ${esc(
-                        comment.authorName ||
-                        "User"
-                    )}
-                            </strong>
-
-                            <span>
-                                ${esc(
-                        comment.content ||
-                        ""
-                    )}
-                            </span>
-
-                            <small class="muted">
-                                ${ago(
-                        comment.createdAt
-                    )}
-                            </small>
-
-                        </div>
-                    `).join("")
-                    : `
-                        <p class="muted">
-                            No comments yet.
-                        </p>
-                    `;
-
-
-            return `
-                <article
-                    class="admin-row"
-                    data-post-id="${post._id}"
-                >
-
-                    <div class="admin-row-main">
-
-
-                        <div class="admin-post-top">
-
-                            <div>
-
-                                <strong>
-                                    ${esc(authorName)}
-                                </strong>
-
-                                <span class="muted">
-                                    • ${ago(
-                post.createdAt
-            )}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        ${post.type === "announcement" ||
-                    post.isAnnouncement === true
-
-                    ? `
-                                    <span class="post-type-badge">
-                                        Announcement
-                                    </span>
-                                `
-
-                    : `
-                                    <span class="post-type-badge">
-                                        Complaint
-                                    </span>
-                                `
-                }
-
-
-                        <p class="admin-post-content">
-                            ${esc(
-                    post.content || ""
-                )}
-                        </p>
-
-
-                        ${complaintDetails}
-
-
-                        ${image}
-
-
-                        <div class="admin-post-actions">
-
-                            <button
-                                class="icon-btn"
-                                type="button"
-                                data-edit="${post._id}">
-                                Edit
-                            </button>
-
-
-                            <button
-                                class="icon-btn"
-                                type="button"
-                                data-delete="${post._id}">
-                                Delete
-                            </button>
-
-                        </div>
-
-
-                        <div class="admin-comments">
-
-                            <strong>
-                                Comments (${comments.length})
-                            </strong>
-
-
-                            <div class="admin-comment-list">
-
-                                ${commentsHTML}
-
-                            </div>
-
-
-                            <form
-                                class="admin-comment-form"
-                                data-comment="${post._id}"
-                            >
-
-                                <input
-                                    type="text"
-                                    placeholder="Write a comment..."
-                                    maxlength="1000"
-                                    required
-                                >
-
-
-                                <button
-                                    class="primary-btn"
-                                    type="submit">
-                                    Comment
-                                </button>
-
-                            </form>
-
-                        </div>
-
+                ${post.image ? `
+                    <div style="margin-bottom: 0.75rem;">
+                        <img src="${escapeHTML(post.image)}" style="max-width: 100%; max-height: 300px; border-radius: 8px;" alt="Post media">
                     </div>
+                ` : ""}
 
-                </article>
-            `;
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;" class="muted">
+                    <span>Status: <strong>${escapeHTML(status)}</strong></span>
+                    <span>${comments.length} Comment${comments.length === 1 ? "" : "s"}</span>
+                </div>
+            </article>
+        `;
+    }).join("");
 
-        }).join("");
+    if (loadingEl) loadingEl.style.display = "none";
 
+    /* Attach Event Handlers to Dynamic Elements */
+    container.querySelectorAll(".delete-post-btn").forEach(btn => {
+        btn.onclick = () => deletePost(btn.dataset.id);
+    });
 
-    attachPostEvents();
+    container.querySelectorAll(".edit-post-btn").forEach(btn => {
+        btn.onclick = () => openEditPostModal(btn.dataset.id, btn.dataset.content);
+    });
 }
 
-
-/* =========================================================
-   POST EVENTS
-========================================================= */
-
-function attachPostEvents() {
-
-
-    /* EDIT */
-
-    document
-        .querySelectorAll("[data-edit]")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const id =
-                        button.dataset.edit;
-
-                    const post =
-                        adminPosts.find(
-                            item =>
-                                item._id === id
-                        );
-
-                    if (!post) return;
-
-
-                    document
-                        .getElementById(
-                            "editPostId"
-                        )
-                        .value =
-                        post._id;
-
-
-                    document
-                        .getElementById(
-                            "adminPostContent"
-                        )
-                        .value =
-                        post.content || "";
-
-
-                    document
-                        .getElementById(
-                            "postModalTitle"
-                        )
-                        .textContent =
-                        "Edit post";
-
-
-                    document
-                        .getElementById(
-                            "adminPostSubmit"
-                        )
-                        .textContent =
-                        "Update";
-
-
-                    document
-                        .getElementById(
-                            "adminPostMessage"
-                        )
-                        .textContent = "";
-
-
-                    document
-                        .getElementById(
-                            "postModal"
-                        )
-                        .classList
-                        .remove("hidden");
-
-                }
-            );
-
-        });
-
-
-    /* DELETE */
-
-    document
-        .querySelectorAll("[data-delete]")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                async () => {
-
-                    const id =
-                        button.dataset.delete;
-
-
-                    if (
-                        !confirm(
-                            "Are you sure you want to delete this post?"
-                        )
-                    ) {
-                        return;
-                    }
-
-
-                    try {
-
-                        await api(
-                            `/api/posts/${id}`,
-                            {
-                                method: "DELETE"
-                            }
-                        );
-
-
-                        toast(
-                            "Post deleted successfully."
-                        );
-
-
-                        load();
-
-                    } catch (err) {
-
-                        console.error(err);
-
-                        toast(
-                            err.message ||
-                            "Could not delete post."
-                        );
-
-                    }
-
-                }
-            );
-
-        });
-
-
-    /* CHANGE STATUS */
-
-    document
-        .querySelectorAll(
-            ".complaint-status-select"
-        )
-        .forEach(select => {
-
-            select.addEventListener(
-                "change",
-                async () => {
-
-                    const id =
-                        select.dataset.statusId;
-
-                    const status =
-                        select.value;
-
-
-                    try {
-
-                        await api(
-                            `/api/posts/${id}/status`,
-                            {
-                                method: "PUT",
-
-                                body: JSON.stringify({
-                                    status
-                                })
-                            }
-                        );
-
-
-                        toast(
-                            `Complaint changed to ${status}.`
-                        );
-
-
-                        load();
-
-                    } catch (err) {
-
-                        console.error(err);
-
-                        toast(
-                            err.message ||
-                            "Could not update status."
-                        );
-
-                    }
-
-                }
-            );
-
-        });
-
-
-    /* ADD COMMENT */
-
-    document
-        .querySelectorAll("[data-comment]")
-        .forEach(form => {
-
-            form.addEventListener(
-                "submit",
-                async event => {
-
-                    event.preventDefault();
-
-                    const postId =
-                        form.dataset.comment;
-
-                    const input =
-                        form.querySelector("input");
-
-                    const content =
-                        input.value.trim();
-
-                    if (!content) return;
-
-
-                    try {
-
-                        await api(
-                            `/api/posts/${postId}/comments`,
-                            {
-                                method: "POST",
-
-                                body: JSON.stringify({
-                                    content
-                                })
-                            }
-                        );
-
-
-                        input.value = "";
-
-                        toast(
-                            "Comment added."
-                        );
-
-                        load();
-
-                    } catch (err) {
-
-                        console.error(err);
-
-                        toast(
-                            err.message ||
-                            "Could not add comment."
-                        );
-
-                    }
-
-                }
-            );
-
-        });
-
+/* Delete Post Action */
+async function deletePost(postId) {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+        await apiCall(`/api/admin/posts/${postId}`, { method: "DELETE" });
+        toast("Post deleted successfully.");
+        await loadAdminDashboard();
+    } catch (err) {
+        toast(err.message);
+    }
 }
 
+/* ================================================= */
+/* MODALS MANAGEMENT */
+/* ================================================= */
 
-/* =========================================================
-   NEW POST MODAL
-========================================================= */
-
+/* Post Modal (Create / Edit) */
 function openNewPostModal() {
-
-    const title =
-        document.getElementById(
-            "postModalTitle"
-        );
-
-    const submit =
-        document.getElementById(
-            "adminPostSubmit"
-        );
-
-    const editId =
-        document.getElementById(
-            "editPostId"
-        );
-
-    const content =
-        document.getElementById(
-            "adminPostContent"
-        );
-
-    const message =
-        document.getElementById(
-            "adminPostMessage"
-        );
-
-
-    if (title) {
-        title.textContent =
-            "Create post";
-    }
-
-    if (submit) {
-        submit.textContent =
-            "Publish";
-    }
-
-    if (editId) {
-        editId.value = "";
-    }
-
-    if (content) {
-        content.value = "";
-    }
-
-    if (message) {
-        message.textContent = "";
-    }
-
-
-    const modal =
-        document.getElementById(
-            "postModal"
-        );
-
-    if (modal) {
-        modal.classList.remove("hidden");
-    }
-}
-
-
-/* =========================================================
-   CLOSE MODAL
-========================================================= */
-
-function closeModal(id) {
-
-    const modal =
-        document.getElementById(id);
-
-    if (modal) {
-        modal.classList.add("hidden");
-    }
-}
-
-
-/* =========================================================
-   ADMIN POST FORM
-========================================================= */
-
-async function submitAdminPost(event) {
-
-    event.preventDefault();
-
-
-    const content =
-        document
-            .getElementById(
-                "adminPostContent"
-            )
-            .value
-            .trim();
-
-
-    const editId =
-        document
-            .getElementById(
-                "editPostId"
-            )
-            .value
-            .trim();
-
-
-    if (!content) {
-
-        showMessage(
-            "adminPostMessage",
-            "Post content is required."
-        );
-
-        return;
-    }
-
-
-    const submitButton =
-        document.getElementById(
-            "adminPostSubmit"
-        );
-
-
-    try {
-
-        if (submitButton) {
-            submitButton.disabled = true;
-        }
-
-
-        if (editId) {
-
-            await api(
-                `/api/posts/${editId}`,
-                {
-                    method: "PUT",
-
-                    body: JSON.stringify({
-                        content
-                    })
-                }
-            );
-
-
-            toast(
-                "Post updated successfully."
-            );
-
-        } else {
-
-            await api(
-                "/api/posts",
-                {
-                    method: "POST",
-
-                    body: JSON.stringify({
-                        content
-                    })
-                }
-            );
-
-
-            toast(
-                "Announcement published."
-            );
-
-        }
-
-
-        closeModal("postModal");
-
-        load();
-
-    } catch (err) {
-
-        console.error(err);
-
-        showMessage(
-            "adminPostMessage",
-            err.message ||
-            "Could not save post."
-        );
-
-    } finally {
-
-        if (submitButton) {
-            submitButton.disabled = false;
-        }
-
-    }
-}
-
-
-/* =========================================================
-   ADMIN CHANGE PASSWORD
-========================================================= */
-
-async function submitAdminPassword(event) {
-
-    event.preventDefault();
-
-
-    const currentPassword =
-        document.getElementById(
-            "adminCurrentPassword"
-        );
-
-    const newPassword =
-        document.getElementById(
-            "adminNewPassword"
-        );
-
-    const confirmPassword =
-        document.getElementById(
-            "adminConfirmPassword"
-        );
-
-
-    if (
-        !currentPassword ||
-        !newPassword ||
-        !confirmPassword
-    ) {
-        return;
-    }
-
-
-    const current =
-        currentPassword.value;
-
-    const newPass =
-        newPassword.value;
-
-    const confirm =
-        confirmPassword.value;
-
-
-    if (newPass !== confirm) {
-
-        showMessage(
-            "adminPasswordMessage",
-            "New passwords do not match."
-        );
-
-        return;
-    }
-
-
-    if (newPass.length < 6) {
-
-        showMessage(
-            "adminPasswordMessage",
-            "Password must be at least 6 characters."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        /*
-         * IMPORTANT:
-         * Backend uses PUT.
-         */
-
-        await api(
-            "/api/auth/change-password",
-            {
-                method: "PUT",
-
-                body: JSON.stringify({
-                    currentPassword: current,
-                    newPassword: newPass
-                })
-            }
-        );
-
-
-        showMessage(
-            "adminPasswordMessage",
-            "Password updated successfully.",
-            true
-        );
-
-
-        document
-            .getElementById(
-                "adminPasswordForm"
-            )
-            .reset();
-
-
-        toast(
-            "Password changed successfully."
-        );
-
-
-    } catch (err) {
-
-        console.error(
-            "CHANGE PASSWORD ERROR:",
-            err
-        );
-
-
-        showMessage(
-            "adminPasswordMessage",
-            err.message ||
-            "Could not change password."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   OPEN ADMIN PASSWORD MODAL
-========================================================= */
-
-function openAdminPasswordModal() {
-
-    const modal =
-        document.getElementById(
-            "passwordModal"
-        );
-
-
-    if (!modal) {
-
-        console.error(
-            "passwordModal was not found."
-        );
-
-        return;
-    }
-
+    const modal = document.getElementById("postModal");
+    const title = document.getElementById("postModalTitle");
+    const editIdInput = document.getElementById("editPostId");
+    const contentInput = document.getElementById("adminPostContent");
+    const messageEl = document.getElementById("adminPostMessage");
+
+    if (!modal) return;
+
+    if (title) title.textContent = "Create post";
+    if (editIdInput) editIdInput.value = "";
+    if (contentInput) contentInput.value = "";
+    if (messageEl) messageEl.textContent = "";
 
     modal.classList.remove("hidden");
-
-    console.log(
-        "Admin password modal opened."
-    );
+    modal.style.display = "flex";
 }
 
+function openEditPostModal(id, content) {
+    const modal = document.getElementById("postModal");
+    const title = document.getElementById("postModalTitle");
+    const editIdInput = document.getElementById("editPostId");
+    const contentInput = document.getElementById("adminPostContent");
+    const messageEl = document.getElementById("adminPostMessage");
 
-/* =========================================================
-   ADMIN AUTH CHECK
-========================================================= */
+    if (!modal) return;
 
-async function checkAdmin() {
+    if (title) title.textContent = "Edit post";
+    if (editIdInput) editIdInput.value = id;
+    if (contentInput) contentInput.value = content;
+    if (messageEl) messageEl.textContent = "";
 
-    const currentToken =
-        token();
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+}
 
-    const role =
-        localStorage.getItem(
-            "barangay_role"
-        );
-
-
-    if (
-        !currentToken ||
-        role !== "admin"
-    ) {
-
-        window.location.href =
-            "admin-login.html";
-
-        return false;
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.style.display = "none";
     }
+}
 
+/* ================================================= */
+/* INITIALIZATION & EVENT LISTENERS */
+/* ================================================= */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    /* 1. Verify Authentication */
+    if (!getAdminToken()) {
+        window.location.href = "index.html";
+        return;
+    }
 
     try {
+        const me = await apiCall("/api/auth/me");
 
-        const data =
-            await api(
-                "/api/auth/me"
-            );
-
-
-        /*
-         * Your backend returns:
-         *
-         * {
-         *   role: "admin",
-         *   account: {...}
-         * }
-         */
-
-        const account =
-            data.account ||
-            data.user ||
-            null;
-
-
-        if (account) {
-
-            const name =
-                account.username ||
-                account.name ||
-                "Administrator";
-
-
-            const adminName =
-                document.getElementById(
-                    "adminName"
-                );
-
-
-            const sideName =
-                document.getElementById(
-                    "adminSideName"
-                );
-
-
-            if (adminName) {
-                adminName.textContent =
-                    name;
-            }
-
-
-            if (sideName) {
-                sideName.textContent =
-                    name;
-            }
-
-        }
-
-
-        return true;
-
-    } catch (err) {
-
-        console.error(
-            "ADMIN AUTH ERROR:",
-            err
-        );
-
-
-        localStorage.removeItem(
-            "barangay_token"
-        );
-
-        localStorage.removeItem(
-            "barangay_role"
-        );
-
-
-        window.location.href =
-            "admin-login.html";
-
-
-        return false;
-    }
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-function logoutAdmin() {
-
-    localStorage.removeItem(
-        "barangay_token"
-    );
-
-    localStorage.removeItem(
-        "barangay_role"
-    );
-
-
-    window.location.href =
-        "admin-login.html";
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function setupSearch() {
-
-    const searchInput =
-        document.getElementById(
-            "adminSearch"
-        );
-
-
-    if (!searchInput) return;
-
-
-    let timer;
-
-
-    searchInput.addEventListener(
-        "input",
-        () => {
-
-            clearTimeout(timer);
-
-
-            timer = setTimeout(
-                () => {
-
-                    load(
-                        searchInput.value.trim()
-                    );
-
-                },
-                300
-            );
-
-        }
-    );
-}
-
-
-/* =========================================================
-   DOM READY
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-
-        console.log(
-            "ADMIN DASHBOARD JS LOADED"
-        );
-
-
-        /* AUTH */
-
-        const valid =
-            await checkAdmin();
-
-
-        if (!valid) {
+        if (me.role !== "admin") {
+            window.location.href = "feed.html";
             return;
         }
 
+        currentAdmin = me.account;
+        const adminNameStr = currentAdmin.name || "Administrator";
 
-        /* LOAD POSTS */
+        /* Update Profile Info in DOM */
+        const adminName = document.getElementById("adminName");
+        const adminSideName = document.getElementById("adminSideName");
 
-        load();
+        if (adminName) adminName.textContent = adminNameStr;
+        if (adminSideName) adminSideName.textContent = adminNameStr;
 
+        document.querySelectorAll(".admin-avatar").forEach(avatar => {
+            avatar.textContent = initials(adminNameStr);
+        });
 
-        /* SEARCH */
+        /* Load Posts */
+        await loadAdminDashboard();
 
-        setupSearch();
-
-
-        /* NEW POST */
-
-        const newPostBtn =
-            document.getElementById(
-                "newPostBtn"
-            );
-
-
-        if (newPostBtn) {
-
-            newPostBtn.addEventListener(
-                "click",
-                openNewPostModal
-            );
-
-        }
-
-
-        /* ADMIN POST FORM */
-
-        const adminPostForm =
-            document.getElementById(
-                "adminPostForm"
-            );
-
-
-        if (adminPostForm) {
-
-            adminPostForm.addEventListener(
-                "submit",
-                submitAdminPost
-            );
-
-        }
-
-
-        /* =================================================
-           CHANGE PASSWORD BUTTON
-        ================================================= */
-
-        const passwordButton =
-            document.getElementById(
-                "adminPasswordBtn"
-            );
-
-
-        console.log(
-            "PASSWORD BUTTON:",
-            passwordButton
-        );
-
-
-        if (passwordButton) {
-
-            passwordButton.addEventListener(
-                "click",
-                openAdminPasswordModal
-            );
-
-        }
-
-
-        /* =================================================
-           CHANGE PASSWORD FORM
-        ================================================= */
-
-        const passwordForm =
-            document.getElementById(
-                "adminPasswordForm"
-            );
-
-
-        console.log(
-            "PASSWORD FORM:",
-            passwordForm
-        );
-
-
-        if (passwordForm) {
-
-            passwordForm.addEventListener(
-                "submit",
-                submitAdminPassword
-            );
-
-        }
-
-
-        /* LOGOUT */
-
-        const logoutButton =
-            document.getElementById(
-                "adminLogout"
-            );
-
-
-        if (logoutButton) {
-
-            logoutButton.addEventListener(
-                "click",
-                logoutAdmin
-            );
-
-        }
-
-
-        /* CLOSE BUTTONS */
-
-        document
-            .querySelectorAll(
-                "[data-close]"
-            )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        closeModal(
-                            button.dataset.close
-                        );
-
-                    }
-                );
-
-            });
-
-
-        /* CLICK OUTSIDE MODAL */
-
-        document
-            .querySelectorAll(
-                ".modal"
-            )
-            .forEach(modal => {
-
-                modal.addEventListener(
-                    "click",
-                    event => {
-
-                        if (
-                            event.target === modal
-                        ) {
-
-                            modal.classList.add(
-                                "hidden"
-                            );
-
-                        }
-
-                    }
-                );
-
-            });
-
+    } catch (err) {
+        console.error("Auth check failed:", err);
+        localStorage.removeItem("barangay_token");
+        localStorage.removeItem("barangay_role");
+        window.location.href = "index.html";
+        return;
     }
-);
+
+    /* 2. Logout Handler */
+    const adminLogout = document.getElementById("adminLogout");
+    if (adminLogout) {
+        adminLogout.onclick = () => {
+            localStorage.removeItem("barangay_token");
+            localStorage.removeItem("barangay_role");
+            window.location.href = "index.html";
+        };
+    }
+
+    /* 3. Search Handler with Debounce */
+    const adminSearch = document.getElementById("adminSearch");
+    if (adminSearch) {
+        let searchTimeout;
+        adminSearch.oninput = (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadAdminDashboard(e.target.value.trim());
+            }, 300);
+        };
+    }
+
+    /* 4. New Post Modal Handlers */
+    const newPostBtn = document.getElementById("newPostBtn");
+    if (newPostBtn) {
+        newPostBtn.onclick = openNewPostModal;
+    }
+
+    const postForm = document.getElementById("adminPostForm");
+    if (postForm) {
+        postForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById("editPostId")?.value;
+            const content = document.getElementById("adminPostContent")?.value.trim();
+            const messageEl = document.getElementById("adminPostMessage");
+
+            if (!content) return;
+
+            try {
+                if (editId) {
+                    /* Update Post */
+                    await apiCall(`/api/admin/posts/${editId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({ content })
+                    });
+                    toast("Post updated successfully.");
+                } else {
+                    /* Create Post */
+                    await apiCall("/api/admin/posts", {
+                        method: "POST",
+                        body: JSON.stringify({ content, isAdminPost: true })
+                    });
+                    toast("Post published successfully.");
+                }
+
+                closeModal("postModal");
+                await loadAdminDashboard();
+            } catch (err) {
+                if (messageEl) {
+                    messageEl.textContent = err.message;
+                    messageEl.style.color = "red";
+                } else {
+                    toast(err.message);
+                }
+            }
+        };
+    }
+
+    /* Close Buttons for General Modals */
+    document.querySelectorAll("[data-close]").forEach(btn => {
+        btn.onclick = () => {
+            closeModal(btn.dataset.close);
+        };
+    });
+
+    /* 5. Password Modal Handlers */
+    const adminPasswordBtn = document.getElementById("adminPasswordBtn");
+    const passwordModal = document.getElementById("passwordModal");
+    const closePasswordModal = document.getElementById("closePasswordModal");
+    const passwordForm = document.getElementById("adminPasswordForm");
+
+    if (adminPasswordBtn && passwordModal) {
+        adminPasswordBtn.onclick = () => {
+            passwordModal.classList.add("show");
+            passwordModal.style.display = "flex";
+        };
+    }
+
+    if (closePasswordModal && passwordModal) {
+        closePasswordModal.onclick = () => {
+            passwordModal.classList.remove("show");
+            passwordModal.style.display = "none";
+        };
+    }
+
+    if (passwordForm) {
+        passwordForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const currentPassword = document.getElementById("adminCurrentPassword")?.value;
+            const newPassword = document.getElementById("adminNewPassword")?.value;
+            const confirmPassword = document.getElementById("adminConfirmPassword")?.value;
+            const messageEl = document.getElementById("adminPasswordMessage");
+
+            if (newPassword !== confirmPassword) {
+                if (messageEl) {
+                    messageEl.textContent = "New passwords do not match.";
+                    messageEl.style.color = "red";
+                }
+                return;
+            }
+
+            try {
+                await apiCall("/api/auth/change-password", {
+                    method: "POST",
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                if (messageEl) {
+                    messageEl.textContent = "Password updated successfully.";
+                    messageEl.style.color = "green";
+                }
+
+                passwordForm.reset();
+                setTimeout(() => {
+                    passwordModal.classList.remove("show");
+                    passwordModal.style.display = "none";
+                    if (messageEl) messageEl.textContent = "";
+                }, 1500);
+
+            } catch (err) {
+                if (messageEl) {
+                    messageEl.textContent = err.message;
+                    messageEl.style.color = "red";
+                }
+            }
+        };
+    }
+});
