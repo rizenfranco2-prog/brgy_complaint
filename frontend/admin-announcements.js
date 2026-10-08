@@ -673,7 +673,7 @@ document.addEventListener(
         /* PASSWORD */
 
         document
-            .getElementById("adminPasswordBtn")
+            .getElementById("passwordBtn")
             ?.addEventListener(
                 "click",
                 openPasswordModal
