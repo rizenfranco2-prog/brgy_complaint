@@ -198,6 +198,8 @@ const postSchema = new mongoose.Schema({
 });
 
 
+
+
 /* =========================================================
    COMMENT SCHEMA
 ========================================================= */
@@ -274,6 +276,58 @@ function signToken(payload) {
         }
     );
 }
+
+const officialSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    position: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    government: {
+        type: String,
+        enum: ["City Government", "Barangay Government"],
+        required: true
+    },
+
+    barangay: {
+        type: String,
+        default: ""
+    },
+
+    contactNumber: {
+        type: String,
+        default: ""
+    },
+
+    email: {
+        type: String,
+        default: ""
+    },
+
+    image: {
+        type: String,
+        default: ""
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Official = mongoose.model("Official", officialSchema);
 
 
 /* =========================================================
@@ -501,6 +555,163 @@ app.post(
 
     }
 );
+
+app.get("/api/officials", auth, async (req, res) => {
+    try {
+        const { search = "", government = "" } = req.query;
+
+        const filter = {};
+
+        if (government) {
+            filter.government = government;
+        }
+
+        if (search.trim()) {
+            const regex = new RegExp(search.trim(), "i");
+
+            filter.$or = [
+                { name: regex },
+                { position: regex },
+                { barangay: regex }
+            ];
+        }
+
+        const officials = await Official.find(filter)
+            .sort({
+                government: 1,
+                position: 1,
+                name: 1
+            });
+
+        res.json({
+            officials
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to load officials."
+        });
+    }
+});
+
+app.post("/api/officials", adminOnly, async (req, res) => {
+    try {
+        const {
+            name,
+            position,
+            government,
+            barangay,
+            contactNumber,
+            email,
+            image
+        } = req.body;
+
+        if (!name || !position || !government) {
+            return res.status(400).json({
+                message: "Name, position, and government are required."
+            });
+        }
+
+        const official = await Official.create({
+            name: name.trim(),
+            position: position.trim(),
+            government,
+            barangay: barangay?.trim() || "",
+            contactNumber: contactNumber?.trim() || "",
+            email: email?.trim() || "",
+            image: image || ""
+        });
+
+        res.status(201).json({
+            message: "Official added successfully.",
+            official
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to add official."
+        });
+    }
+});
+
+app.put("/api/officials/:id", adminOnly, async (req, res) => {
+    try {
+        const {
+            name,
+            position,
+            government,
+            barangay,
+            contactNumber,
+            email,
+            image
+        } = req.body;
+
+        const official = await Official.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: name?.trim(),
+                position: position?.trim(),
+                government,
+                barangay: barangay?.trim() || "",
+                contactNumber: contactNumber?.trim() || "",
+                email: email?.trim() || "",
+                image: image || "",
+                updatedAt: new Date()
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!official) {
+            return res.status(404).json({
+                message: "Official not found."
+            });
+        }
+
+        res.json({
+            message: "Official updated successfully.",
+            official
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to update official."
+        });
+    }
+});
+
+app.delete("/api/officials/:id", adminOnly, async (req, res) => {
+    try {
+        const official = await Official.findByIdAndDelete(
+            req.params.id
+        );
+
+        if (!official) {
+            return res.status(404).json({
+                message: "Official not found."
+            });
+        }
+
+        res.json({
+            message: "Official deleted successfully."
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to delete official."
+        });
+    }
+});
 
 
 /* =========================================================
@@ -2202,6 +2413,8 @@ app.get(
 
     }
 );
+
+
 
 
 /* =========================================================
