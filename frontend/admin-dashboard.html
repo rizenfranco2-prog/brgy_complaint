@@ -80,65 +80,35 @@
                 </a>
 
 
-                <!-- CHANGE PASSWORD -->
                 <button class="nav-item"
                         id="adminPasswordBtn"
                         type="button">
-
                     ⚿
-
-                    <span>
-                        Change Password
-                    </span>
-
+                    <span>Change Password</span>
                 </button>
 
 
                 <a class="nav-item"
                    href="announcements.html">
-
                     📢
-
-                    <span>
-                        Announcements
-                    </span>
-
+                    <span>Announcements</span>
                 </a>
 
 
                 <a class="nav-item"
                    href="reports.html">
-
                     📊
-
-                    <span>
-                        Reports & Charts
-                    </span>
-
+                    <span>Reports & Charts</span>
                 </a>
 
 
-                <a href="complaint-status.html"
-                   class="nav-link">
-
+                <a href="complaint-status.html" class="nav-link">
                     📋
-
-                    <span>
-                        Complaint Status
-                    </span>
-
+                    <span>Complaint Status</span>
                 </a>
 
-
-                <a href="officials-admin.html"
-                   class="nav-link">
-
-                    🏛️
-
-                    <span>
-                        Officials
-                    </span>
-
+                <a href="officials-admin.html" class="nav-link">
+                    🏛️ <span>Officials</span>
                 </a>
 
             </nav>
@@ -162,12 +132,8 @@
                         Community overview
                     </h1>
 
-                    <p class="muted"
-                       style="color: azure;">
-
-                        Review, publish and moderate
-                        barangay posts.
-
+                    <p class="muted" style="color: azure dodgerblue">
+                        Review, publish and moderate barangay posts.
                     </p>
 
                 </div>
@@ -176,9 +142,7 @@
                 <button class="primary-btn"
                         id="newPostBtn"
                         type="button">
-
                     ＋ New post
-
                 </button>
 
             </section>
@@ -187,7 +151,6 @@
             <!-- STATISTICS -->
             <section class="stats-grid">
 
-                <!-- TOTAL POSTS -->
                 <div class="stat card">
 
                     <span>
@@ -201,7 +164,6 @@
                 </div>
 
 
-                <!-- COMMENTS -->
                 <div class="stat card">
 
                     <span>
@@ -215,7 +177,6 @@
                 </div>
 
 
-                <!-- ADMIN POSTS -->
                 <div class="stat card">
 
                     <span>
@@ -253,16 +214,13 @@
 
                 <!-- JAVASCRIPT PUTS POSTS HERE -->
                 <div class="admin-post-list"
-                     id="adminPostList">
-                </div>
+                     id="adminPostList"></div>
 
 
                 <!-- LOADING -->
                 <div class="loading"
                      id="adminLoading">
-
                     Loading posts...
-
                 </div>
 
             </section>
@@ -272,10 +230,7 @@
     </div>
 
 
-    <!-- =====================================================
-         NEW / EDIT POST MODAL
-         ===================================================== -->
-
+    <!-- NEW / EDIT POST MODAL -->
     <div class="modal hidden"
          id="postModal">
 
@@ -284,9 +239,7 @@
             <button class="close"
                     data-close="postModal"
                     type="button">
-
                 ×
-
             </button>
 
 
@@ -300,8 +253,7 @@
                 <textarea id="adminPostContent"
                           maxlength="5000"
                           required
-                          placeholder="Write an announcement or community update...">
-                </textarea>
+                          placeholder="Write an announcement or community update..."></textarea>
 
 
                 <input type="hidden"
@@ -311,15 +263,12 @@
                 <button class="primary-btn"
                         type="submit"
                         id="adminPostSubmit">
-
                     Publish
-
                 </button>
 
 
                 <p class="form-message"
-                   id="adminPostMessage">
-                </p>
+                   id="adminPostMessage"></p>
 
             </form>
 
@@ -328,92 +277,63 @@
     </div>
 
 
-    <!-- =====================================================
-         CHANGE PASSWORD MODAL
-         INDEPENDENT MODAL
-         ===================================================== -->
+    <!-- CHANGE PASSWORD MODAL -->
+    <div class="modal hidden"
+         id="passwordModal">
 
-    <div id="passwordModal"
-         class="password-modal">
+        <div class="modal-card">
 
-        <div class="password-modal-card">
-
-
-            <!-- CLOSE -->
-            <button type="button"
-                    class="password-modal-close"
-                    id="closePasswordModal">
-
+            <button class="close"
+                    data-close="passwordModal"
+                    type="button">
                 ×
-
             </button>
 
 
-            <!-- TITLE -->
             <h2>
                 Change password
             </h2>
 
 
-            <!-- PASSWORD FORM -->
             <form id="adminPasswordForm">
 
-
-                <!-- CURRENT PASSWORD -->
                 <label for="adminCurrentPassword">
-
                     Current password
-
                 </label>
 
                 <input id="adminCurrentPassword"
                        type="password"
-                       required
-                       autocomplete="current-password">
+                       required>
 
 
-                <!-- NEW PASSWORD -->
                 <label for="adminNewPassword">
-
                     New password
-
                 </label>
 
                 <input id="adminNewPassword"
                        type="password"
                        minlength="6"
-                       required
-                       autocomplete="new-password">
+                       required>
 
 
-                <!-- CONFIRM PASSWORD -->
                 <label for="adminConfirmPassword">
-
                     Confirm new password
-
                 </label>
 
                 <input id="adminConfirmPassword"
                        type="password"
                        minlength="6"
-                       required
-                       autocomplete="new-password">
+                       required>
 
 
-                <!-- UPDATE BUTTON -->
                 <button class="primary-btn"
                         type="submit">
-
                     Update password
-
                 </button>
 
 
-                <!-- MESSAGE -->
                 <p class="form-message"
-                   id="adminPasswordMessage">
-                </p>
-
+                   id="adminPasswordMessage"></p>
 
             </form>
 
@@ -424,13 +344,11 @@
 
     <!-- TOAST -->
     <div class="toast"
-         id="toast">
-    </div>
+         id="toast"></div>
 
 
     <!-- SCRIPTS -->
     <script src="config.js"></script>
-
     <script src="admin-dashboard.js"></script>
 
 </body>
