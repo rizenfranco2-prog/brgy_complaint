@@ -4380,33 +4380,31 @@ body.app-body {
     /* =========================================================
    MODALS
    ========================================================= */
-.app-body .modal {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 9999 !important;
 
-    display: none !important;
+    .app-body .modal {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 9999 !important;
+        display: none !important;
+        width: 100% !important;
+        height: 100% !important;
+        padding: 20px;
+        box-sizing: border-box;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(3px);
+    }
 
-    width: 100% !important;
-    height: 100% !important;
+        /* SHOW MODAL WHEN hidden IS REMOVED */
+        .app-body .modal:not(.hidden) {
+            display: flex !important;
+        }
 
-    padding: 20px;
-    box-sizing: border-box;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    background: rgba(15, 23, 42, 0.65) !important;
-    backdrop-filter: blur(3px);
-}
-
-.app-body .modal:not(.hidden) {
-    display: flex !important;
-}
-
-.app-body .modal.hidden {
-    display: none !important;
-}
+        /* HIDE MODAL */
+        .app-body .modal.hidden {
+            display: none !important;
+        }
 
 
     /* =========================================================
@@ -4452,24 +4450,20 @@ body.app-body {
         }
 
     /* =========================================================
-   FINAL MODAL FIX
+   MODAL VISIBILITY
    ========================================================= */
 
-    /* ALL MODALS ARE HIDDEN BY DEFAULT */
     .app-body .modal {
         display: none !important;
     }
 
-        /* ONLY OPEN MODALS ARE VISIBLE */
-        .app-body .modal:not(.hidden) {
-            display: flex !important;
-        }
-
-        /* HIDDEN ALWAYS WINS */
         .app-body .modal.hidden {
             display: none !important;
         }
 
+        .app-body .modal:not(.hidden) {
+            display: flex !important;
+        }
 
 /* ================================
    OFFICIAL CARD FIX

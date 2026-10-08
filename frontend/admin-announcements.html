@@ -135,12 +135,12 @@
 
 
     <!-- ================= PASSWORD MODAL ================= -->
-    <div id="announcementModal"
-         class="modal hidden">
+    <div id="passwordModal" class="modal hidden">
 
         <div class="modal-card">
 
-            <button class="modal-close"
+            <button type="button"
+                    class="modal-close"
                     id="closePasswordModal">
                 ×
             </button>
@@ -180,14 +180,13 @@
 
 
     <!-- ================= ANNOUNCEMENT MODAL ================= -->
-    <div id="announcementModal" class="modal">
+    <div id="announcementModal" class="modal hidden">
 
         <div class="modal-card">
 
             <button type="button"
                     class="modal-close"
-                    id="closeAnnouncementModal"
-                    onclick="document.getElementById('announcementModal').classList.remove('show')">
+                    id="closeAnnouncementModal">
                 ×
             </button>
 
@@ -223,7 +222,6 @@
         </div>
 
     </div>
-
 
     <!-- ================= TOAST ================= -->
     <div id="toast"
