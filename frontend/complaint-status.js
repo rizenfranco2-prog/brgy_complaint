@@ -441,7 +441,7 @@ function attachStatusEvents() {
                         await api(
                             `/api/posts/${postId}/status`,
                             {
-                                method: "PATCH",
+                                method: "PUT",
 
                                 body: JSON.stringify({
                                     status: newStatus
