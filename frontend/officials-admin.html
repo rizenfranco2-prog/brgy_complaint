@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Officials • Barangay Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app-body">
+
+    <!-- =========================
+         TOPBAR
+    ========================= -->
+
+    <header class="topbar">
+
+        <a href="admin-dashboard.html" class="top-brand">
+
+            <div class="brand-mark">
+                BC
+            </div>
+
+            <div>
+                <strong>Barangay Connect</strong>
+                <small>Administrator</small>
+            </div>
+
+        </a>
+
+
+        <div class="top-search">
+
+            <input type="text"
+                   id="adminSearch"
+                   placeholder="Search officials...">
+
+        </div>
+
+
+        <div class="top-user">
+
+            <div class="admin-avatar" id="adminAvatar">
+                A
+            </div>
+
+            <div>
+                <strong id="adminName">Admin</strong>
+                <small>Administrator</small>
+            </div>
+
+            <button type="button"
+                    id="adminLogout"
+                    class="logout-btn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN LAYOUT
+    ========================= -->
+
+    <div class="layout">
+
+
+        <!-- =========================
+             SIDEBAR
+        ========================= -->
+
+        <aside class="sidebar">
+
+            <div class="profile-mini">
+
+                <div class="avatar" id="sidebarAvatar">
+                    A
+                </div>
+
+                <div>
+                    <strong id="sidebarAdminName">
+                        Admin
+                    </strong>
+
+                    <small>
+                        Administrator
+                    </small>
+                </div>
+
+            </div>
+
+
+            <nav>
+
+                <a href="admin-dashboard.html"
+                   class="nav-link">
+                    ▦
+                    <span>Posts</span>
+                </a>
+
+
+                <button id="adminPasswordBtn"
+                        class="nav-link"
+                        type="button">
+                    ⚿
+                    <span>Change Password</span>
+                </button>
+
+
+                <a href="announcements.html"
+                   class="nav-link">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+
+                <a href="reports.html"
+                   class="nav-link">
+                    📊
+                    <span>Reports & Charts</span>
+                </a>
+
+
+                <a href="officials-admin.html"
+                   class="nav-link active">
+                    🏛️
+                    <span>Officials</span>
+                </a>
+
+
+                <a href="complaint-status.html"
+                   class="nav-link">
+                    📋
+                    <span>Complaint Status</span>
+                </a>
+
+
+            </nav>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================= -->
+
+        <main class="main-content">
+
+            <section class="admin-main">
+
+
+                <!-- PAGE HEADER -->
+
+                <div class="official-page-header">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            GOVERNMENT DIRECTORY
+                        </div>
+
+                        <h1>
+                            Government Officials
+                        </h1>
+
+                        <p class="muted">
+                            Add, update, remove, and search city
+                            and barangay officials.
+                        </p>
+
+                    </div>
+
+
+                    <button type="button"
+                            class="official-add-btn"
+                            id="addOfficialBtn">
+                        + Add Official
+                    </button>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="official-search">
+
+                    <span class="official-search-icon">
+                        🔎
+                    </span>
+
+                    <input type="text"
+                           id="officialSearch"
+                           placeholder="Search by name, position, or barangay...">
+
+                </div>
+
+
+                <!-- =========================
+                     CITY GOVERNMENT
+                ========================= -->
+
+                <section class="official-section">
+
+                    <div class="official-section-heading">
+
+                        <div class="official-section-icon">
+                            🏛️
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                City Government
+                            </h2>
+
+                            <p>
+                                City government officials
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="official-grid"
+                         id="cityOfficials">
+
+                        <div class="official-empty">
+                            <strong>
+                                Loading officials...
+                            </strong>
+
+                            Please wait.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     BARANGAY GOVERNMENT
+                ========================= -->
+
+                <section class="official-section">
+
+                    <div class="official-section-heading">
+
+                        <div class="official-section-icon">
+                            🏘️
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Barangay Officials
+                            </h2>
+
+                            <p>
+                                Officials serving the barangay
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="official-grid"
+                         id="barangayOfficials">
+
+                        <div class="official-empty">
+                            <strong>
+                                Loading officials...
+                            </strong>
+
+                            Please wait.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         ADD / EDIT MODAL
+    ========================= -->
+
+    <div id="officialModal"
+         class="official-modal hidden">
+
+        <div class="official-modal-card">
+
+
+            <div class="official-modal-header">
+
+                <h2 id="officialModalTitle">
+                    Add Official
+                </h2>
+
+                <button type="button"
+                        class="official-modal-close"
+                        id="closeOfficialModal">
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="officialForm"
+                  class="official-form">
+
+                <input type="hidden"
+                       id="officialId">
+
+
+                <!-- NAME -->
+
+                <div class="official-form-group">
+
+                    <label for="officialName">
+                        Full Name
+                    </label>
+
+                    <input type="text"
+                           id="officialName"
+                           placeholder="Enter full name"
+                           required>
+
+                </div>
+
+
+                <!-- POSITION -->
+
+                <div class="official-form-group">
+
+                    <label for="officialPosition">
+                        Position
+                    </label>
+
+                    <input type="text"
+                           id="officialPosition"
+                           placeholder="Example: City Mayor"
+                           required>
+
+                </div>
+
+
+                <!-- GOVERNMENT -->
+
+                <div class="official-form-group">
+
+                    <label for="officialGovernment">
+                        Government
+                    </label>
+
+                    <select id="officialGovernment"
+                            required>
+
+                        <option value="">
+                            Select government
+                        </option>
+
+                        <option value="City Government">
+                            City Government
+                        </option>
+
+                        <option value="Barangay Government">
+                            Barangay Government
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BARANGAY -->
+
+                <div class="official-form-group"
+                     id="barangayField">
+
+                    <label for="officialBarangay">
+                        Barangay
+                    </label>
+
+                    <input type="text"
+                           id="officialBarangay"
+                           placeholder="Enter barangay">
+
+                </div>
+
+
+                <!-- CONTACT -->
+
+                <div class="official-form-group">
+
+                    <label for="officialContact">
+                        Contact Number
+                    </label>
+
+                    <input type="text"
+                           id="officialContact"
+                           placeholder="Optional">
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="official-form-group">
+
+                    <label for="officialEmail">
+                        Email
+                    </label>
+
+                    <input type="email"
+                           id="officialEmail"
+                           placeholder="Optional">
+
+                </div>
+
+
+                <!-- PHOTO -->
+
+                <div class="official-form-group">
+
+                    <label for="officialImage">
+                        Photo URL
+                    </label>
+
+                    <input type="text"
+                           id="officialImage"
+                           placeholder="Optional image URL">
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="official-form-actions">
+
+                    <button type="button"
+                            class="official-cancel-btn"
+                            id="cancelOfficialBtn">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="official-add-btn"
+                            id="saveOfficialBtn">
+                        Add Official
+                    </button>
+
+                </div>
+
+
+                <p id="officialFormMessage"
+                   class="form-message"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         PASSWORD MODAL
+    ========================= -->
+
+    <div id="passwordModal"
+         class="modal hidden">
+
+        <div class="modal-card">
+
+            <button id="closePasswordModal"
+                    class="modal-close"
+                    type="button">
+                ×
+            </button>
+
+            <h2>
+                Change Password
+            </h2>
+
+            <form id="adminPasswordForm">
+
+                <label>
+                    Current Password
+                </label>
+
+                <input type="password"
+                       id="adminCurrentPassword"
+                       required>
+
+
+                <label>
+                    New Password
+                </label>
+
+                <input type="password"
+                       id="adminNewPassword"
+                       required>
+
+
+                <label>
+                    Confirm New Password
+                </label>
+
+                <input type="password"
+                       id="adminConfirmPassword"
+                       required>
+
+
+                <button type="submit"
+                        class="primary-btn">
+                    Change Password
+                </button>
+
+                <p id="adminPasswordMessage"
+                   class="form-message"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div id="toast"
+         class="toast"></div>
+
+
+    <script src="config.js"></script>
+    <script src="officials-admin.js"></script>
+
+</body>
+</html>
