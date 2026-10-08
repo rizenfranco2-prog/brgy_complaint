@@ -1835,78 +1835,83 @@ textarea {
    MODALS
    ========================================================= */
 
-.modal {
+/* =========================================================
+   MODALS & OVERLAYS
+   ========================================================= */
+
+/* Backdrop overlay */
+.modal,
+.modal-overlay,
+.modal-backdrop {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 2000;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-    background: rgba(13, 22, 38, .50);
-    backdrop-filter: blur(4px);
+    background: rgba(10, 15, 26, 0.70);
+    backdrop-filter: blur(6px);
+    transition: opacity 0.2s ease;
 }
 
-
-    /* HIDE MODAL */
-
-    .modal.hidden {
+    /* Explicit hiding via class or hidden attribute */
+    .modal.hidden,
+    .modal-overlay.hidden,
+    [hidden] {
         display: none !important;
     }
 
-
-    /* SHOW MODAL */
-
-    .modal:not(.hidden) {
-        display: grid !important;
-        place-items: center;
-    }
-
-
-.modal-card {
+/* Modal dialog container */
+.modal-card,
+.modal-content {
     position: relative;
-    width: min(520px, 100%);
-    padding: 28px;
-    background: white;
-    border-radius: 18px;
-    box-shadow: var(--shadow-lg);
-    color: var(--ink);
-    animation: modalScaleUp 0.2s ease-out;
+    width: min(480px, 100%);
+    padding: 32px 28px 28px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    color: #1e293b;
+    z-index: 2001;
 }
 
-@keyframes modalScaleUp {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
+    .modal-card h2,
+    .modal-card h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #0f172a;
+        font-size: 20px;
+        font-weight: 700;
     }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-
-.modal-card h2 {
-    margin-top: 0;
-}
-
-
-.close {
+/* Close button styling & hit area */
+.close,
+.modal-close {
     position: absolute;
-    top: 12px;
+    top: 16px;
     right: 16px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
-    background: transparent;
-    color: var(--muted);
-    font-size: 27px;
-    cursor: pointer;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 20px;
     line-height: 1;
-    transition: color .15s ease;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-
-    .close:hover {
-        color: var(--ink);
+    .close:hover,
+    .modal-close:hover {
+        background: #e2e8f0;
+        color: #0f172a;
     }
 
 
