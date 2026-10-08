@@ -418,6 +418,7 @@ function renderComplaints() {
 
 
     attachStatusEvents();
+    attachDeleteEvents();
 }
 
 
@@ -506,6 +507,57 @@ function attachStatusEvents() {
         });
 }
 
+function attachDeleteEvents() {
+
+    document
+        .querySelectorAll(".delete-complaint-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    const postId =
+                        button.dataset.id;
+
+                    await deleteComplaint(postId);
+
+                }
+            );
+
+        });
+}
+
+async function deleteComplaint(postId) {
+
+    const confirmed = confirm(
+        "Are you sure you want to permanently delete this resolved complaint?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        await api(`/api/posts/${postId}`, {
+            method: "DELETE"
+        });
+
+        toast("Resolved complaint deleted.");
+
+        await loadComplaints();
+
+    } catch (error) {
+
+        console.error(error);
+
+        toast(
+            error.message ||
+            "Unable to delete complaint."
+        );
+    }
+}
 
 /* =========================
    STATUS SELECT
