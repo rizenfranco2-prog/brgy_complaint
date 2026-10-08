@@ -272,217 +272,39 @@ function updateStatistics() {
 
 function render(list = adminPosts) {
 
-    const box =
-        document.getElementById("adminPostList");
+    const box = document.getElementById("adminPostList");
 
     if (!box) return;
 
-
     if (!list.length) {
-
         box.innerHTML = `
             <div class="empty-state">
                 No posts or complaints found.
             </div>
         `;
-
         return;
     }
 
-
     box.innerHTML = list.map(post => {
 
-        const comments =
-            post.comments || [];
-
-
-        /*
-         * Determine if this is a complaint.
-         */
-
-        const isComplaint =
-            post.type === "complaint" ||
-            post.category ||
-            post.address ||
-            post.age !== undefined ||
-            post.gender ||
-            post.contactNumber;
-
-
-        /*
-         * Status
-         */
-
-        const status =
-            post.status || "Pending";
-
-
-        const statusClass =
-            status
-                .toLowerCase()
-                .replace(/\s+/g, "-");
-
-
-        /*
-         * Author
-         */
+        const comments = post.comments || [];
 
         const authorName =
-            post.authorName ||
-            "Unknown User";
+            post.authorName || "Unknown User";
 
+        const isAnnouncement =
+            post.type === "announcement" ||
+            post.isAnnouncement === true;
 
-        /* =========================
-   USER + COMPLAINT INFORMATION
-========================= */
-
-        const complaintDetails =
-            isComplaint
-                ? `
-            <div class="complaint-details">
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Complainant Name
-                    </span>
-
-                    <strong>
-                        ${esc(post.authorName || "Unknown User")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Category
-                    </span>
-
-                    <strong>
-                        ${esc(post.category || "Not provided")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Address
-                    </span>
-
-                    <strong>
-                        ${esc(post.address || "Not provided")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Age
-                    </span>
-
-                    <strong>
-                        ${post.age !== undefined &&
-                    post.age !== null &&
-                    post.age !== ""
-                    ? esc(post.age)
-                    : "Not provided"
-                }
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Gender
-                    </span>
-
-                    <strong>
-                        ${esc(post.gender || "Not provided")}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Contact Number
-                    </span>
-
-                    <strong>
-                        ${esc(
-                    post.contactNumber ||
-                    "Not provided"
-                )}
-                    </strong>
-                </div>
-
-
-                <div class="complaint-detail">
-                    <span class="detail-label">
-                        Status
-                    </span>
-
-                    <div>
-
-                        <span
-                            class="status-badge ${statusClass}">
-                            ${esc(status)}
-                        </span>
-
-
-                        <select
-                            class="complaint-status-select"
-                            data-status-id="${post._id}"
-                        >
-
-                            <option
-                                value="Pending"
-                                ${status === "Pending" ? "selected" : ""}
-                            >
-                                Pending
-                            </option>
-
-                            <option
-                                value="In Progress"
-                                ${status === "In Progress" ? "selected" : ""}
-                            >
-                                In Progress
-                            </option>
-
-                            <option
-                                value="Resolved"
-                                ${status === "Resolved" ? "selected" : ""}
-                            >
-                                Resolved
-                            </option>
-
-                        </select>
-
-                    </div>
-                </div>
-
-            </div>
-        `
-                : "";
-
-
-        /*
-         * Image
-         */
-
-        const image =
-            post.image
-                ? `
-                    <img
-                        class="admin-post-image"
-                        src="${esc(post.image)}"
-                        alt="Complaint image"
-                    >
-                `
-                : "";
-
-
-        /*
-         * Comments
-         */
+        const image = post.image
+            ? `
+                <img
+                    class="admin-post-image"
+                    src="${esc(post.image)}"
+                    alt="Post image"
+                >
+              `
+            : "";
 
         const commentsHTML =
             comments.length
@@ -490,17 +312,11 @@ function render(list = adminPosts) {
                     <div class="admin-comment">
 
                         <strong>
-                            ${esc(
-                    comment.authorName ||
-                    "User"
-                )}
+                            ${esc(comment.authorName || "User")}
                         </strong>
 
                         <span>
-                            ${esc(
-                    comment.content ||
-                    ""
-                )}
+                            ${esc(comment.content || "")}
                         </span>
 
                         <small class="muted">
@@ -515,7 +331,6 @@ function render(list = adminPosts) {
                     </p>
                 `;
 
-
         return `
 
             <article
@@ -524,7 +339,6 @@ function render(list = adminPosts) {
             >
 
                 <div class="admin-row-main">
-
 
                     <!-- POST HEADER -->
 
@@ -547,31 +361,19 @@ function render(list = adminPosts) {
 
                     <!-- POST TYPE -->
 
-                    ${post.type === "announcement" ||
-                post.isAnnouncement === true
-                ? `
-                                <span class="post-type-badge">
-                                    Announcement
-                                </span>
-                            `
-                : `
-                                <span class="post-type-badge">
-                                    Complaint
-                                </span>
-                            `
+                    <span class="post-type-badge">
+                        ${isAnnouncement
+                ? "Announcement"
+                : "Complaint"
             }
+                    </span>
 
 
-                    <!-- CONTENT -->
+                    <!-- POST CONTENT -->
 
                     <p class="admin-post-content">
                         ${esc(post.content || "")}
                     </p>
-
-
-                    <!-- COMPLAINT DETAILS -->
-
-                    ${complaintDetails}
 
 
                     <!-- IMAGE -->
@@ -589,7 +391,6 @@ function render(list = adminPosts) {
                             data-edit="${post._id}">
                             Edit
                         </button>
-
 
                         <button
                             class="icon-btn"
@@ -609,15 +410,12 @@ function render(list = adminPosts) {
                             Comments (${comments.length})
                         </strong>
 
-
                         <div class="admin-comment-list">
 
                             ${commentsHTML}
 
                         </div>
 
-
-                        <!-- ADD COMMENT -->
 
                         <form
                             class="admin-comment-form"
@@ -630,7 +428,6 @@ function render(list = adminPosts) {
                                 maxlength="1000"
                                 required
                             >
-
 
                             <button
                                 class="primary-btn"
@@ -650,9 +447,7 @@ function render(list = adminPosts) {
 
     }).join("");
 
-
     attachPostEvents();
-
 }
 
 
