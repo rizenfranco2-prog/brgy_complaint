@@ -1,0 +1,577 @@
+﻿/* =========================================================
+   ANNOUNCEMENTS - USER + ADMIN
+   ========================================================= */
+
+/* MAIN CONTENT */
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 32px;
+    background: #f5f7fb;
+    min-height: calc(100vh - 70px);
+    box-sizing: border-box;
+}
+
+
+/* PAGE HEADER */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+    .page-header h1 {
+        margin: 0 0 6px;
+        color: #172033;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.announcement-search {
+    margin-bottom: 22px;
+}
+
+    .announcement-search input {
+        width: 100%;
+        max-width: 500px;
+        height: 44px;
+        padding: 0 15px;
+        border: 1px solid #dfe4ec;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #172033;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .announcement-search input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+        .announcement-search input::placeholder {
+            color: #9ca3af;
+        }
+
+
+/* =========================================================
+   ADD ANNOUNCEMENT BUTTON - ADMIN
+   ========================================================= */
+
+.primary-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    background: #2563eb;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+    .primary-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .primary-btn:active {
+        transform: translateY(1px);
+    }
+
+
+/* =========================================================
+   ANNOUNCEMENT LIST
+   ========================================================= */
+
+.announcement-list {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =========================================================
+   ANNOUNCEMENT CARD
+   ========================================================= */
+
+.announcement-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #e6eaf0;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+    .announcement-card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.announcement-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.announcement-author {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+    .announcement-author .avatar {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #d9fafa;
+        color: #056873;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .announcement-author strong {
+        display: block;
+        color: #172033;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .announcement-author small {
+        display: block;
+        margin-top: 3px;
+        color: #8a94a6;
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   ANNOUNCEMENT TEXT
+   ========================================================= */
+
+.announcement-content {
+    margin-bottom: 16px;
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   ANNOUNCEMENT IMAGE
+   ========================================================= */
+
+.announcement-image {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    margin-top: 12px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   ADMIN ACTION BUTTONS
+   ========================================================= */
+
+.announcement-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+    .announcement-actions button {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 13px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+.edit-announcement {
+    background: #e8f0ff;
+    color: #2563eb;
+}
+
+    .edit-announcement:hover {
+        background: #dbe7ff;
+    }
+
+.delete-announcement {
+    background: #feecec;
+    color: #dc2626;
+}
+
+    .delete-announcement:hover {
+        background: #fddddd;
+    }
+
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+.comments-section {
+    margin-top: 20px;
+    padding-top: 17px;
+    border-top: 1px solid #edf0f4;
+}
+
+    .comments-section h4 {
+        margin: 0 0 12px;
+        color: #374151;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+    .comment-item > .avatar {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #eef4ff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+.comment-body {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    background: #f4f6fa;
+    border-radius: 10px;
+}
+
+    .comment-body strong {
+        display: block;
+        color: #374151;
+        font-size: 13px;
+    }
+
+    .comment-body p {
+        margin: 4px 0 0;
+        color: #4b5563;
+        font-size: 13px;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+
+/* =========================================================
+   USER COMMENT FORM
+   ========================================================= */
+
+.comment-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+    .comment-form input {
+        flex: 1;
+        min-width: 0;
+        height: 38px;
+        padding: 0 12px;
+        border: 1px solid #dfe4ec;
+        border-radius: 9px;
+        background: #ffffff;
+        color: #374151;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+    }
+
+        .comment-form input:focus {
+            border-color: #2563eb;
+        }
+
+    .comment-form button {
+        height: 38px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 9px;
+        background: #2563eb;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+        .comment-form button:hover {
+            background: #1d4ed8;
+        }
+
+
+/* DELETE COMMENT */
+
+.delete-comment {
+    margin-top: 6px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #dc2626;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .delete-comment:hover {
+        text-decoration: underline;
+    }
+
+
+/* NO COMMENTS */
+
+.no-comments {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading {
+    padding: 50px 20px;
+    text-align: center;
+    color: #7b8494;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.45);
+    box-sizing: border-box;
+}
+
+    .modal.show {
+        display: flex;
+    }
+
+.modal-card {
+    position: relative;
+    width: min(500px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 26px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    box-sizing: border-box;
+}
+
+    .modal-card h2 {
+        margin: 0 0 20px;
+        color: #172033;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .modal-card label {
+        display: block;
+        margin: 14px 0 7px;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .modal-card input,
+    .modal-card textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 13px;
+        border: 1px solid #dfe4ec;
+        border-radius: 9px;
+        background: #ffffff;
+        color: #374151;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+    }
+
+        .modal-card input:focus,
+        .modal-card textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+    .modal-card textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .modal-card .primary-btn {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #6b7280;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+    .modal-close:hover {
+        background: #f3f4f6;
+        color: #111827;
+    }
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 2000;
+    display: none;
+    padding: 12px 18px;
+    background: #172033;
+    color: #ffffff;
+    border-radius: 9px;
+    font-size: 14px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+    .toast.show {
+        display: block;
+    }
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+    .primary-btn {
+        width: 100%;
+    }
+
+    .announcement-list {
+        max-width: 100%;
+    }
+
+    .announcement-card {
+        padding: 17px;
+    }
+
+    .comment-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+        .comment-form button {
+            width: 100%;
+        }
+
+    .announcement-actions {
+        flex-wrap: wrap;
+    }
+
+        .announcement-actions button {
+            flex: 1;
+        }
+
+    .toast {
+        right: 15px;
+        bottom: 15px;
+        left: 15px;
+        text-align: center;
+    }
+}

@@ -15,20 +15,15 @@ async function api(path, options = {}) {
         headers.Authorization = `Bearer ${currentToken}`;
     }
 
-    const res = await fetch(
-        `${API_URL}${path}`,
-        {
-            ...options,
-            headers
-        }
-    );
+    const res = await fetch(`${API_URL}${path}`, {
+        ...options,
+        headers
+    });
 
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-        throw new Error(
-            data.message || "Request failed."
-        );
+        throw new Error(data.message || "Request failed");
     }
 
     return data;
@@ -36,25 +31,22 @@ async function api(path, options = {}) {
 
 
 function escapeHTML(value) {
-    return String(value).replace(
-        /[&<>"']/g,
-        ch => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[ch])
-    );
+
+    const div = document.createElement("div");
+
+    div.textContent = value ?? "";
+
+    return div.innerHTML;
 }
 
 
 function initials(name) {
-    return String(name || "U")
-        .split(/\s+/)
-        .slice(0, 2)
-        .map(x => x[0])
+
+    return (name || "User")
+        .split(" ")
+        .map(word => word[0])
         .join("")
+        .substring(0, 2)
         .toUpperCase();
 }
 
@@ -62,26 +54,27 @@ function initials(name) {
 function timeAgo(date) {
 
     const seconds = Math.floor(
-        (
-            Date.now() -
-            new Date(date).getTime()
-        ) / 1000
+        (Date.now() - new Date(date).getTime()) / 1000
     );
 
-    if (seconds < 60) {
-        return "Just now";
+    if (seconds < 60) return "Just now";
+
+    const minutes = Math.floor(seconds / 60);
+
+    if (minutes < 60) {
+        return `${minutes}m ago`;
     }
 
-    if (seconds < 3600) {
-        return `${Math.floor(seconds / 60)}m`;
+    const hours = Math.floor(minutes / 60);
+
+    if (hours < 24) {
+        return `${hours}h ago`;
     }
 
-    if (seconds < 86400) {
-        return `${Math.floor(seconds / 3600)}h`;
-    }
+    const days = Math.floor(hours / 24);
 
-    if (seconds < 604800) {
-        return `${Math.floor(seconds / 86400)}d`;
+    if (days < 7) {
+        return `${days}d ago`;
     }
 
     return new Date(date).toLocaleDateString();
@@ -90,12 +83,9 @@ function timeAgo(date) {
 
 function toast(message) {
 
-    const element =
-        document.getElementById("toast");
+    const element = document.getElementById("toast");
 
-    if (!element) {
-        return;
-    }
+    if (!element) return;
 
     element.textContent = message;
 
@@ -107,43 +97,67 @@ function toast(message) {
 }
 
 
-/* ================================================= */
-/* RENDER ANNOUNCEMENTS */
-/* ================================================= */
+/* =====================================================
+   LOAD ANNOUNCEMENTS
+   ===================================================== */
+
+async function loadAnnouncements(search = "") {
+
+    const list =
+        document.getElementById("announcementList");
+
+    if (!list) return;
+
+    list.innerHTML = `
+        <div class="loading">
+            Loading announcements...
+        </div>
+    `;
+
+    try {
+
+        const data = await api(
+            `/api/announcements${search
+                ? `?search=${encodeURIComponent(search)}`
+                : ""
+            }`
+        );
+
+        renderAnnouncements(
+            data.announcements || []
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        list.innerHTML = `
+            <div class="loading">
+                Failed to load announcements.
+            </div>
+        `;
+
+        toast(error.message);
+    }
+}
+
+
+/* =====================================================
+   RENDER USER ANNOUNCEMENTS
+   ===================================================== */
 
 function renderAnnouncements(announcements) {
 
-    const container =
+    const list =
         document.getElementById("announcementList");
 
-    const loading =
-        document.getElementById("announcementLoading");
-
-    if (loading) {
-        loading.style.display = "none";
-    }
-
-    if (!container) {
-        return;
-    }
+    if (!list) return;
 
     if (!announcements.length) {
 
-        container.innerHTML = `
-            <div class="empty card">
-
-                <div class="empty-icon">
-                    📢
-                </div>
-
-                <h3>
-                    No announcements
-                </h3>
-
-                <p>
-                    There are no barangay announcements at this time.
-                </p>
-
+        list.innerHTML = `
+            <div class="loading">
+                No announcements available.
             </div>
         `;
 
@@ -151,447 +165,357 @@ function renderAnnouncements(announcements) {
     }
 
 
-    const isAdmin =
-        localStorage.getItem("barangay_role") === "admin";
+    list.innerHTML = announcements.map(post => {
+
+        const author =
+            post.authorName || "Administrator";
+
+        const comments =
+            post.comments || [];
+
+        const image = post.image
+            ? `
+                <img
+                    src="${escapeHTML(post.image)}"
+                    class="announcement-image"
+                    alt="Announcement image"
+                >
+            `
+            : "";
 
 
-    container.innerHTML =
-        announcements.map(post => {
+        return `
+            <article
+                class="announcement-card"
+                data-id="${post._id}"
+            >
 
-            const comments =
-                post.comments || [];
+                <div class="announcement-card-header">
 
-            return `
-                <article class="post card">
+                    <div class="announcement-author">
 
-                    <div class="post-head">
+                        <span class="avatar">
+                            ${escapeHTML(
+            initials(author)
+        )}
+                        </span>
 
-                        <div class="clickable-profile">
+                        <div>
 
-                            <span class="avatar">
-                                ${escapeHTML(
-                initials(post.authorName)
-            )}
-                            </span>
+                            <strong>
+                                ${escapeHTML(author)}
+                            </strong>
 
-                            <div class="post-author">
-
-                                <strong>
-                                    ${escapeHTML(
-                post.authorName
-            )}
-                                </strong>
-
-                                <small>
-                                    ${timeAgo(
-                post.createdAt
-            )}
-                                </small>
-
-                            </div>
+                            <small>
+                                ${timeAgo(post.createdAt)}
+                            </small>
 
                         </div>
 
                     </div>
 
-
-                    <div class="post-content">
-                        ${escapeHTML(
-                post.content
-            ).replace(
-                /\n/g,
-                "<br>"
-            )}
-                    </div>
+                </div>
 
 
-                    ${post.image
-                    ? `
-                                <div class="post-image-container">
-
-                                    <img
-                                        src="${escapeHTML(
-                        post.image
-                    )}"
-                                        class="post-image"
-                                        alt="Barangay announcement picture"
-                                        loading="lazy"
-                                    >
-
-                                </div>
-                            `
-                    : ""
-                }
+                <div class="announcement-content">
+                    ${escapeHTML(post.content)}
+                </div>
 
 
-                    <div class="post-meta">
-
-    <span>
-        ${comments.length}
-        comment${comments.length === 1 ? "" : "s"}
-    </span>
-
-    ${isAdmin
-                    ? `
-            <div class="announcement-actions">
-
-                <button
-                    class="secondary-btn"
-                    data-edit-announcement="${post._id}"
-                >
-                    Edit
-                </button>
-
-                <button
-                    class="danger-btn"
-                    data-delete-announcement="${post._id}"
-                >
-                    Delete
-                </button>
-
-            </div>
-          `
-                    : ""
-                }
-
-</div>
+                ${image}
 
 
-<div class="comments">
+                <!-- COMMENTS -->
 
-    ${comments.map(comment => `
-        <div class="comment">
+                <div class="comments-section">
 
-            <span class="avatar tiny">
-                ${escapeHTML(
-                    initials(comment.authorName)
+                    <h4>
+                        Comments (${comments.length})
+                    </h4>
+
+                    <div class="comment-list">
+
+                        ${comments.length
+                ? comments.map(comment => `
+                                    <div class="comment-item">
+
+                                        <span class="avatar">
+                                            ${escapeHTML(
+                    initials(
+                        comment.authorName
+                    )
                 )}
-            </span>
+                                        </span>
 
-            <div class="comment-body">
+                                        <div class="comment-body">
 
-                <strong>
-                    ${escapeHTML(comment.authorName)}
-                </strong>
+                                            <strong>
+                                                ${escapeHTML(
+                    comment.authorName ||
+                    "User"
+                )}
+                                            </strong>
 
-                <p>
-                    ${escapeHTML(comment.content)}
-                </p>
+                                            <p>
+                                                ${escapeHTML(
+                    comment.content
+                )}
+                                            </p>
 
-                <small>
-                    ${timeAgo(comment.createdAt)}
-                </small>
-
-            </div>
-
-            ${!isAdmin
+                                            ${String(
+                    comment.authorId
+                ) ===
+                        String(
+                            getCurrentUserId()
+                        )
                         ? `
-                    <button
-                        class="delete-comment"
-                        data-delete-comment="${comment._id}"
-                    >
-                        ×
-                    </button>
-                  `
+                                                        <button
+                                                            class="delete-comment"
+                                                            onclick="deleteComment(
+                                                                '${post._id}',
+                                                                '${comment._id}'
+                                                            )">
+                                                            Delete
+                                                        </button>
+                                                      `
                         : ""
                     }
 
-        </div>
-    `).join("")}
+                                        </div>
 
+                                    </div>
+                                `).join("")
+                : `
+                                    <p class="no-comments">
+                                        No comments yet.
+                                    </p>
+                                  `
+            }
 
-    ${!isAdmin
-                    ? `
-            <form
-    class="comment-form"
-    data-post-id="${post._id}"
->
+                    </div>
 
-    <span class="avatar tiny">
-        ${escapeHTML(
-            initials(
-                isAdmin ? "Admin" : "User"
-            )
-        )}
-    </span>
 
-    <input
-        type="text"
-        maxlength="1000"
-        placeholder="Write a comment..."
-        required
-    >
+                    <!-- ADD COMMENT -->
 
-    <button type="submit">
-        Post
-    </button>
+                    <form
+                        class="comment-form"
+                        onsubmit="addComment(event, '${post._id}')"
+                    >
 
-</form>
-          `
-                    : ""
-    }
+                        <input
+                            type="text"
+                            name="comment"
+                            placeholder="Write a comment..."
+                            required
+                        >
 
-</div>
+                        <button type="submit">
+                            Comment
+                        </button>
 
-                </article>
-            `;
+                    </form>
 
-        }).join("");
+                </div>
 
+            </article>
+        `;
 
-    /* ================================================= */
-    /* ADMIN EDIT */
-    /* ================================================= */
-
-    if (isAdmin) {
-
-        container
-            .querySelectorAll(
-                "[data-edit-announcement]"
-            )
-            .forEach(button => {
-
-                button.onclick = async () => {
-
-                    const post =
-                        announcements.find(
-                            item =>
-                                item._id ===
-                                button.dataset.editAnnouncement
-                        );
-
-                    if (!post) {
-                        return;
-                    }
-
-                    const newContent =
-                        prompt(
-                            "Edit announcement:",
-                            post.content
-                        );
-
-                    if (
-                        newContent === null ||
-                        !newContent.trim()
-                    ) {
-                        return;
-                    }
-
-                    try {
-
-                        await api(
-                            `/api/posts/${post._id}`,
-                            {
-                                method: "PUT",
-
-                                body: JSON.stringify({
-                                    content:
-                                        newContent.trim()
-                                })
-                            }
-                        );
-
-                        toast(
-                            "Announcement updated."
-                        );
-
-                        loadAnnouncements();
-
-                    } catch (error) {
-
-                        toast(error.message);
-
-                    }
-
-                };
-
-            });
-
-
-        /* ================================================= */
-        /* ADMIN DELETE ANNOUNCEMENT */
-        /* ================================================= */
-
-        container
-            .querySelectorAll(
-                "[data-delete-announcement]"
-            )
-            .forEach(button => {
-
-                button.onclick = async () => {
-
-                    if (
-                        !confirm(
-                            "Delete this announcement?"
-                        )
-                    ) {
-                        return;
-                    }
-
-                    try {
-
-                        await api(
-                            `/api/posts/${button.dataset.deleteAnnouncement}`,
-                            {
-                                method: "DELETE"
-                            }
-                        );
-
-                        toast(
-                            "Announcement deleted."
-                        );
-
-                        loadAnnouncements();
-
-                    } catch (error) {
-
-                        toast(error.message);
-
-                    }
-
-                };
-
-            });
-
-    }
-
-
-    /* ================================================= */
-    /* DELETE COMMENT */
-    /* ================================================= */
-
-    container
-        .querySelectorAll("[data-delete-comment]")
-        .forEach(button => {
-
-            button.onclick = async () => {
-
-                if (!confirm("Delete this comment?")) {
-                    return;
-                }
-
-                try {
-
-                    await api(
-                        `/api/comments/${button.dataset.deleteComment}`,
-                        {
-                            method: "DELETE"
-                        }
-                    );
-
-                    toast("Comment deleted.");
-
-                    loadAnnouncements();
-
-                } catch (error) {
-
-                    toast(error.message);
-
-                }
-
-            };
-
-        });
-
-
-    /* ================================================= */
-    /* ADD COMMENT */
-    /* ================================================= */
-
-    container
-        .querySelectorAll(".comment-form")
-        .forEach(form => {
-
-            form.onsubmit = async event => {
-
-                event.preventDefault();
-
-                const input =
-                    form.querySelector("input");
-
-                if (
-                    !input ||
-                    !input.value.trim()
-                ) {
-                    return;
-                }
-
-                try {
-
-                    await api(
-                        `/api/posts/${form.dataset.postId}/comments`,
-                        {
-                            method: "POST",
-
-                            body: JSON.stringify({
-                                content:
-                                    input.value.trim()
-                            })
-                        }
-                    );
-
-                    input.value = "";
-
-                    toast("Comment added.");
-
-                    loadAnnouncements();
-
-                } catch (error) {
-
-                    toast(error.message);
-
-                }
-
-            };
-
-        });
-
+    }).join("");
 }
 
 
-/* ================================================= */
-/* LOAD ANNOUNCEMENTS */
-/* ================================================= */
+/* =====================================================
+   CURRENT USER
+   ===================================================== */
 
-async function loadAnnouncements() {
+let currentUser = null;
 
-    const loading =
-        document.getElementById(
-            "announcementLoading"
+function getCurrentUserId() {
+
+    return currentUser?._id || null;
+}
+
+
+/* =====================================================
+   ADD COMMENT
+   ===================================================== */
+
+async function addComment(event, postId) {
+
+    event.preventDefault();
+
+    const form = event.target;
+
+    const input =
+        form.querySelector(
+            'input[name="comment"]'
         );
+
+    const content =
+        input.value.trim();
+
+    if (!content) return;
 
     try {
 
-        const announcements =
-            await api(
-                "/api/announcements"
-            );
-        const currentName =
-            document.getElementById("profileName")?.textContent || "User";
+        await api(`/api/posts/${postId}/comments`, {
+            method: "POST",
 
-        renderAnnouncements(
-            announcements
-        );
+            body: JSON.stringify({
+                content
+            })
+        });
+
+        input.value = "";
+
+        toast("Comment added.");
+
+        loadAnnouncements();
 
     } catch (error) {
 
-        console.error(
-            "Announcement error:",
-            error
-        );
-
-        if (loading) {
-            loading.textContent =
-                error.message;
-        }
-
+        toast(error.message);
     }
 }
 
 
-/* ================================================= */
-/* PAGE LOAD */
-/* ================================================= */
+/* =====================================================
+   DELETE OWN COMMENT
+   ===================================================== */
+
+async function deleteComment(postId, commentId) {
+
+    if (!confirm(
+        "Delete your comment?"
+    )) {
+        return;
+    }
+
+    try {
+
+        await api(
+            `/api/posts/${postId}/comments/${commentId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        toast("Comment deleted.");
+
+        loadAnnouncements();
+
+    } catch (error) {
+
+        toast(error.message);
+    }
+}
+
+
+/* =====================================================
+   PASSWORD MODAL
+   ===================================================== */
+
+function openPasswordModal() {
+
+    document
+        .getElementById("passwordModal")
+        ?.classList.add("show");
+}
+
+
+function closePasswordModal() {
+
+    document
+        .getElementById("passwordModal")
+        ?.classList.remove("show");
+}
+
+
+/* =====================================================
+   CHANGE PASSWORD
+   ===================================================== */
+
+async function changePassword(event) {
+
+    event.preventDefault();
+
+    const currentPassword =
+        document.getElementById(
+            "currentPassword"
+        ).value;
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
+
+    if (newPassword !== confirmPassword) {
+
+        toast("New passwords do not match.");
+
+        return;
+    }
+
+
+    try {
+
+        await api(
+            "/api/auth/change-password",
+            {
+                method: "POST",
+
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword
+                })
+            }
+        );
+
+        toast(
+            "Password changed successfully."
+        );
+
+        document
+            .getElementById("passwordForm")
+            ?.reset();
+
+        closePasswordModal();
+
+    } catch (error) {
+
+        toast(error.message);
+    }
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+function logout() {
+
+    localStorage.removeItem(
+        "barangay_token"
+    );
+
+    localStorage.removeItem(
+        "barangay_role"
+    );
+
+    window.location.href =
+        "resident-login.html";
+}
+
+
+/* =====================================================
+   START USER PAGE
+   ===================================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -599,405 +523,175 @@ document.addEventListener(
 
         if (!token()) {
 
-            location.href =
-                "index.html";
+            window.location.href =
+                "resident-login.html";
 
             return;
         }
 
+
+        /* GET CURRENT USER */
+
         try {
 
             const me =
-                await api(
-                    "/api/auth/me"
-                );
-           
+                await api("/api/auth/me");
 
+            if (me.role === "admin") {
 
-                /* =============================== */
-                /* ADD ANNOUNCEMENT */
-                /* =============================== */
-
-                const controls =
-                    document.getElementById(
-                        "adminAnnouncementControls"
-                    );
-
-                if (controls) {
-
-                    const addButton =
-                        document.createElement("button");
-
-                    addButton.textContent =
-                        "＋ Add Announcement";
-
-                    addButton.className =
-                        "primary-btn";
-
-                    addButton.style.marginTop =
-                        "10px";
-
-                    controls.appendChild(addButton);
-
-
-                    addButton.onclick = async () => {
-
-                        const content =
-                            prompt(
-                                "Enter announcement:"
-                            );
-
-                        if (
-                            content === null ||
-                            !content.trim()
-                        ) {
-                            return;
-                        }
-
-                        try {
-
-                            await api(
-                                "/api/posts",
-                                {
-                                    method: "POST",
-
-                                    body: JSON.stringify({
-                                        content:
-                                            content.trim()
-                                    })
-                                }
-                            );
-
-                            toast(
-                                "Announcement published."
-                            );
-
-                            loadAnnouncements();
-
-                        } catch (error) {
-
-                            toast(
-                                error.message
-                            );
-
-                        }
-                    };
-                }
-
-            }
-
-
-            /* ========================================= */
-            /* ALLOW BOTH ROLES */
-            /* ========================================= */
-
-            if (
-                me.role !== "user" &&
-                me.role !== "admin"
-            ) {
-
-                location.href =
-                    "index.html";
+                window.location.href =
+                    "admin-announcements.html";
 
                 return;
             }
 
-
-            /* ========================================= */
-            /* RESIDENT INFORMATION */
-            /* ========================================= */
-
-            if (me.role === "user") {
-
-                const user =
-                    me.account;
-
-                const topName =
-                    document.getElementById(
-                        "topName"
-                    );
-
-                const profileName =
-                    document.getElementById(
-                        "profileName"
-                    );
-
-                const profileEmail =
-                    document.getElementById(
-                        "profileEmail"
-                    );
-
-                const topAvatar =
-                    document.getElementById(
-                        "topAvatar"
-                    );
-
-                const profileAvatar =
-                    document.getElementById(
-                        "profileAvatar"
-                    );
+            currentUser =
+                me.account || me.user || null;
 
 
-                if (topName) {
-                    topName.textContent =
-                        user.name;
-                }
+            /* USER PROFILE */
+
+            const userName =
+                currentUser?.name ||
+                "User";
+
+            const userEmail =
+                currentUser?.email ||
+                "";
 
 
-                if (profileName) {
-                    profileName.textContent =
-                        user.name;
-                }
+            const topName =
+                document.getElementById(
+                    "topName"
+                );
+
+            const profileName =
+                document.getElementById(
+                    "profileName"
+                );
+
+            const profileEmail =
+                document.getElementById(
+                    "profileEmail"
+                );
+
+            const topAvatar =
+                document.getElementById(
+                    "topAvatar"
+                );
+
+            const profileAvatar =
+                document.getElementById(
+                    "profileAvatar"
+                );
 
 
-                if (profileEmail) {
-                    profileEmail.textContent =
-                        user.email;
-                }
-
-
-                const userInitials =
-                    initials(user.name);
-
-
-                if (topAvatar) {
-                    topAvatar.textContent =
-                        userInitials;
-                }
-
-
-                if (profileAvatar) {
-                    profileAvatar.textContent =
-                        userInitials;
-                }
-
+            if (topName) {
+                topName.textContent =
+                    userName;
             }
 
+            if (profileName) {
+                profileName.textContent =
+                    userName;
+            }
 
-            /* ========================================= */
-            /* LOAD ANNOUNCEMENTS */
-            /* ========================================= */
+            if (profileEmail) {
+                profileEmail.textContent =
+                    userEmail;
+            }
 
-            await loadAnnouncements();
+            if (topAvatar) {
+                topAvatar.textContent =
+                    initials(userName);
+            }
+
+            if (profileAvatar) {
+                profileAvatar.textContent =
+                    initials(userName);
+            }
 
 
         } catch (error) {
 
-            console.error(
-                "Page load error:",
-                error
-            );
+            console.error(error);
 
             localStorage.removeItem(
                 "barangay_token"
             );
 
-            location.href =
-                "index.html";
+            localStorage.removeItem(
+                "barangay_role"
+            );
+
+            window.location.href =
+                "resident-login.html";
 
             return;
         }
 
 
-        /* ================================================= */
-        /* LOGOUT */
-        /* ================================================= */
+        /* SEARCH */
 
-        const logoutBtn =
+        const searchInput =
             document.getElementById(
-                "logoutBtn"
+                "announcementSearch"
             );
 
-        if (logoutBtn) {
+        if (searchInput) {
 
-            logoutBtn.onclick = () => {
+            searchInput.addEventListener(
+                "input",
+                () => {
 
-                localStorage.clear();
-
-                location.href =
-                    "index.html";
-
-            };
-
-        }
-
-
-        /* ================================================= */
-        /* CHANGE PASSWORD BUTTON */
-        /* ================================================= */
-
-        const passwordBtn =
-            document.getElementById(
-                "passwordBtn"
-            );
-
-        if (passwordBtn) {
-
-            passwordBtn.onclick = () => {
-
-                const passwordModal =
-                    document.getElementById(
-                        "passwordModal"
-                    );
-
-                if (passwordModal) {
-
-                    passwordModal.classList.remove(
-                        "hidden"
+                    loadAnnouncements(
+                        searchInput.value.trim()
                     );
 
                 }
-
-            };
-
+            );
         }
 
 
-        /* ================================================= */
-        /* CLOSE MODALS */
-        /* ================================================= */
+        /* PASSWORD */
 
         document
-            .querySelectorAll(
-                "[data-close]"
-            )
-            .forEach(button => {
-
-                button.onclick = () => {
-
-                    const modal =
-                        document.getElementById(
-                            button.dataset.close
-                        );
-
-                    if (modal) {
-
-                        modal.classList.add(
-                            "hidden"
-                        );
-
-                    }
-
-                };
-
-            });
-
-
-        /* ================================================= */
-        /* CHANGE PASSWORD */
-        /* ================================================= */
-
-        const passwordForm =
-            document.getElementById(
-                "passwordForm"
+            .getElementById("passwordBtn")
+            ?.addEventListener(
+                "click",
+                openPasswordModal
             );
 
-        if (passwordForm) {
 
-            passwordForm.onsubmit =
-                async event => {
-
-                    event.preventDefault();
-
-
-                    const currentPassword =
-                        document.getElementById(
-                            "currentPassword"
-                        );
-
-                    const newPassword =
-                        document.getElementById(
-                            "newPassword"
-                        );
-
-                    const confirmPassword =
-                        document.getElementById(
-                            "confirmPassword"
-                        );
-
-                    const message =
-                        document.getElementById(
-                            "passwordMessage"
-                        );
+        document
+            .getElementById("closePasswordModal")
+            ?.addEventListener(
+                "click",
+                closePasswordModal
+            );
 
 
-                    if (
-                        !currentPassword ||
-                        !newPassword ||
-                        !confirmPassword
-                    ) {
-                        return;
-                    }
+        document
+            .getElementById("passwordForm")
+            ?.addEventListener(
+                "submit",
+                changePassword
+            );
 
 
-                    if (
-                        newPassword.value !==
-                        confirmPassword.value
-                    ) {
+        /* LOGOUT */
 
-                        if (message) {
-
-                            message.textContent =
-                                "New passwords do not match.";
-
-                            message.className =
-                                "form-message error";
-
-                        }
-
-                        return;
-                    }
+        document
+            .getElementById("logoutBtn")
+            ?.addEventListener(
+                "click",
+                logout
+            );
 
 
-                    try {
+        /* LOAD */
 
-                        await api(
-                            "/api/auth/change-password",
-                            {
-                                method: "PUT",
-
-                                body: JSON.stringify({
-                                    currentPassword:
-                                        currentPassword.value,
-
-                                    newPassword:
-                                        newPassword.value
-                                })
-                            }
-                        );
-
-
-                        if (message) {
-
-                            message.textContent =
-                                "Password changed successfully.";
-
-                            message.className =
-                                "form-message success";
-
-                        }
-
-
-                        passwordForm.reset();
-
-
-                    } catch (error) {
-
-                        if (message) {
-
-                            message.textContent =
-                                error.message;
-
-                            message.className =
-                                "form-message error";
-
-                        }
-
-                    }
-
-                };
-
-        }
+        loadAnnouncements();
 
     }
 );

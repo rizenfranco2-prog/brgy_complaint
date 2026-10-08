@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Announcements • Barangay Connect</title>
+
+    <link rel="stylesheet" href="sheet.css">
+</head>
+
+<body class="app-body">
+
+    <!-- ================= TOPBAR ================= -->
+    <header class="topbar">
+
+        <a href="admin-dashboard.html" class="top-brand">
+            <span>BC</span>
+            Admin Console
+        </a>
+
+        <div class="top-search">
+            <input type="text"
+                   id="adminSearch"
+                   placeholder="Search...">
+        </div>
+
+        <div class="top-user">
+
+            <span class="avatar tiny" id="topAvatar">A</span>
+
+            <div class="top-user-info">
+                <strong id="topName">Admin</strong>
+                <small>Administrator</small>
+            </div>
+
+            <button id="logoutBtn" class="logout-btn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= LAYOUT ================= -->
+    <div class="app-layout">
+
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+
+            <nav>
+
+                <a class="nav-item"
+                   href="admin-dashboard.html">
+                    ▦
+                    <span>Posts</span>
+                </a>
+
+                <button class="nav-item"
+                        id="adminPasswordBtn"
+                        type="button">
+                    ⚿
+                    <span>Change Password</span>
+                </button>
+
+                <a class="nav-item active"
+                   href="admin-announcements.html">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+                <a class="nav-item"
+                   href="reports.html">
+                    📊
+                    <span>Reports & Charts</span>
+                </a>
+
+                <a class="nav-item"
+                   href="complaint-status.html">
+                    📋
+                    <span>Complaint Status</span>
+                </a>
+
+                <a class="nav-item"
+                   href="officials-admin.html">
+                    🏛️
+                    <span>Officials</span>
+                </a>
+
+                <a class="nav-item"
+                   href="admin-notes.html">
+                    📝
+                    <span>Admin Notes</span>
+                </a>
+
+                <a class="nav-item"
+                   href="date-filter.html">
+                    📅
+                    <span>Date Filter</span>
+                </a>
+
+                <a class="nav-item"
+                   href="music.html">
+                    🎵
+                    <span>Music</span>
+                </a>
+
+                <a class="nav-item"
+                   href="dashboard.html">
+                    👥
+                    <span>User Feed</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-content">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Announcements</h1>
+
+                    <p>
+                        Create and manage official barangay announcements.
+                    </p>
+                </div>
+
+                <button id="addAnnouncementBtn"
+                        class="primary-btn">
+                    + Add Announcement
+                </button>
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <div class="announcement-search">
+
+                <input type="text"
+                       id="announcementSearch"
+                       placeholder="Search announcements...">
+
+            </div>
+
+
+            <!-- ANNOUNCEMENTS -->
+            <section id="announcementList"
+                     class="announcement-list">
+
+                <div id="loading"
+                     class="loading">
+                    Loading announcements...
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= PASSWORD MODAL ================= -->
+    <div id="passwordModal"
+         class="modal">
+
+        <div class="modal-card">
+
+            <button class="modal-close"
+                    id="closePasswordModal">
+                ×
+            </button>
+
+            <h2>Change Password</h2>
+
+            <form id="passwordForm">
+
+                <label>Current Password</label>
+
+                <input type="password"
+                       id="currentPassword"
+                       required>
+
+                <label>New Password</label>
+
+                <input type="password"
+                       id="newPassword"
+                       required>
+
+                <label>Confirm New Password</label>
+
+                <input type="password"
+                       id="confirmPassword"
+                       required>
+
+                <button type="submit"
+                        class="primary-btn">
+                    Change Password
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= ANNOUNCEMENT MODAL ================= -->
+    <div id="announcementModal"
+         class="modal">
+
+        <div class="modal-card">
+
+            <button class="modal-close"
+                    id="closeAnnouncementModal">
+                ×
+            </button>
+
+            <h2 id="announcementModalTitle">
+                Add Announcement
+            </h2>
+
+            <form id="announcementForm">
+
+                <input type="hidden"
+                       id="announcementId">
+
+                <label>Announcement</label>
+
+                <textarea id="announcementContent"
+                          rows="6"
+                          placeholder="Write your announcement..."
+                          required>
+                </textarea>
+
+                <label>Image URL (optional)</label>
+
+                <input type="text"
+                       id="announcementImage"
+                       placeholder="https://...">
+
+                <button type="submit"
+                        class="primary-btn">
+                    Save Announcement
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TOAST ================= -->
+    <div id="toast"
+         class="toast">
+    </div>
+
+
+    <script src="config.js"></script>
+    <script src="admin-announcements.js"></script>
+
+</body>
+</html>
