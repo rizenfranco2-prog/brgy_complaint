@@ -4566,3 +4566,26 @@ body.app-body {
         opacity: 1 !important;
         visibility: visible !important;
     }
+
+/* Hide all modals by default */
+.modal {
+    display: none; /* Add this line */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+}
+
+    /* Show modal when active class is present */
+    .modal.active,
+    .modal.show,
+    .modal.open {
+        display: flex !important;
+    }
