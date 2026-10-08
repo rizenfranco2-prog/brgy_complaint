@@ -1842,8 +1842,24 @@ textarea {
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(13,22,38,.50);
+    background: rgba(13, 22, 38, .50);
 }
+
+
+    /* HIDE MODAL */
+
+    .modal.hidden {
+        display: none !important;
+    }
+
+
+    /* SHOW MODAL */
+
+    .modal:not(.hidden) {
+        display: grid !important;
+        place-items: center;
+    }
+
 
 .modal-card {
     position: relative;
@@ -1852,11 +1868,14 @@ textarea {
     background: white;
     border-radius: 18px;
     box-shadow: var(--shadow-lg);
+    color: var(--ink);
 }
+
 
     .modal-card h2 {
         margin-top: 0;
     }
+
 
 .close {
     position: absolute;
@@ -1866,12 +1885,13 @@ textarea {
     background: transparent;
     color: var(--muted);
     font-size: 27px;
+    cursor: pointer;
 }
+
 
     .close:hover {
         color: var(--ink);
     }
-
 
 /* =========================================================
    EMPTY / LOADING
