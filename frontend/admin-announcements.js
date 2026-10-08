@@ -655,12 +655,19 @@ document.addEventListener(
 
         /* CLOSE ANNOUNCEMENT */
 
-        document
-            .getElementById("closeAnnouncementModal")
-            ?.addEventListener(
+        const closeAnnouncementBtn =
+            document.getElementById("closeAnnouncementModal");
+
+        if (closeAnnouncementBtn) {
+            closeAnnouncementBtn.addEventListener(
                 "click",
-                closeAnnouncementModal
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeAnnouncementModal();
+                }
             );
+        }
 
 
         /* PASSWORD */
