@@ -1099,23 +1099,14 @@ async function submitAdminPassword(event) {
 
     event.preventDefault();
 
-
     const currentPassword =
-        document
-            .getElementById("adminCurrentPassword")
-            .value;
-
+        document.getElementById("adminCurrentPassword").value;
 
     const newPassword =
-        document
-            .getElementById("adminNewPassword")
-            .value;
-
+        document.getElementById("adminNewPassword").value;
 
     const confirmPassword =
-        document
-            .getElementById("adminConfirmPassword")
-            .value;
+        document.getElementById("adminConfirmPassword").value;
 
 
     if (newPassword !== confirmPassword) {
@@ -1145,7 +1136,7 @@ async function submitAdminPassword(event) {
         await api(
             "/api/auth/change-password",
             {
-                method: "POST",
+                method: "PUT",
 
                 body: JSON.stringify({
                     currentPassword,
@@ -1167,10 +1158,7 @@ async function submitAdminPassword(event) {
             .reset();
 
 
-        toast(
-            "Password changed successfully."
-        );
-
+        toast("Password changed successfully.");
 
     } catch (err) {
 
@@ -1430,7 +1418,7 @@ document.addEventListener(
 
         const passwordButton =
             document.getElementById(
-                "adminPasswordBtn"
+                "passwordBtn"
             );
 
 
