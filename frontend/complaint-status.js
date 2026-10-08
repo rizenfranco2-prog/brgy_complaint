@@ -98,18 +98,39 @@ async function loadComplaints() {
 
     try {
 
-        const data = await api("/api/posts");
+        // Load active complaints
+        const activeData = await api("/api/posts");
 
-        allComplaints = (data.posts || []).filter(post => {
+        // Load resolved/archived complaints
+        const archivedData = await api("/api/archive");
 
-            return (
-                post.type === "complaint" ||
-                post.category ||
-                post.address ||
-                post.contactNumber
-            );
+        const activeComplaints =
+            (activeData.posts || []).filter(post => {
 
-        });
+                return post.type === "complaint" ||
+                    post.category ||
+                    post.address ||
+                    post.contactNumber;
+
+            });
+
+
+        const resolvedComplaints =
+            Array.isArray(archivedData)
+                ? archivedData
+                : (
+                    archivedData.complaints ||
+                    archivedData.posts ||
+                    []
+                );
+
+
+        // Combine active + resolved complaints
+        allComplaints = [
+            ...activeComplaints,
+            ...resolvedComplaints
+        ];
+
 
         updateCounts();
 
