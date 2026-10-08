@@ -4518,3 +4518,22 @@ body.app-body {
         border: 1px solid #ffb8b8;
         color: #dc3545;
     }
+
+.nav-item {
+    position: relative;
+    z-index: 100;
+    pointer-events: auto !important;
+    cursor: pointer;
+}
+
+button.nav-item {
+    border: none;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+}
+
+.sidebar {
+    position: relative;
+    z-index: 100;
+}
