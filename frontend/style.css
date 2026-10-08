@@ -3651,28 +3651,68 @@ body.app-body {
     }
 
 
-/* ACTIONS */
+/* =========================
+   COMPLAINT ACTIONS
+========================= */
 
 .complaint-actions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
 }
 
-    .complaint-actions label {
-        color: #BFD7EE;
-        font-size: 13px;
+    .complaint-actions > div {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
     }
 
+    .complaint-actions label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+
+/* STATUS SELECT */
+
 .complaint-status-select {
-    padding: 9px 12px;
-    background: #0C223B;
-    color: #FFFFFF;
-    border: 1px solid #3B82F6;
-    border-radius: 8px;
+    min-width: 170px;
+    padding: 10px 36px 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
 }
+
+.delete-complaint-btn {
+    margin: 0;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .delete-complaint-btn:hover {
+        background: #dc2626;
+        color: #fff;
+    }
+
+    .delete-complaint-btn:active {
+        transform: scale(0.98);
+    }
 
 
 /* EMPTY */
@@ -4600,28 +4640,3 @@ body.app-body {
         grid-template-columns: 1fr;
     }
 }
-
-
-/* DELETE BUTTON */
-
-.delete-complaint-btn {
-    margin: 0;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 10px;
-    background: #fee2e2;
-    color: #b91c1c;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-    .delete-complaint-btn:hover {
-        background: #dc2626;
-        color: #fff;
-    }
-
-    .delete-complaint-btn:active {
-        transform: scale(0.98);
-    }
