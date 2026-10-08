@@ -66,7 +66,8 @@ function initials(name) {
 
 function toast(message) {
 
-    const element = document.getElementById("toast");
+    const element =
+        document.getElementById("toast");
 
     if (!element) return;
 
@@ -75,8 +76,105 @@ function toast(message) {
     element.classList.add("show");
 
     setTimeout(() => {
+
         element.classList.remove("show");
+
     }, 2500);
+}
+
+
+/* =========================================================
+   LOAD ADMIN ACCOUNT
+   ========================================================= */
+
+async function loadAdminAccount() {
+
+    try {
+
+        const me = await api("/api/auth/me");
+
+        if (me.role !== "admin") {
+
+            window.location.href = "dashboard.html";
+
+            return false;
+        }
+
+        const admin =
+            me.account ||
+            me.user ||
+            {};
+
+        const name =
+            admin.username ||
+            "Admin";
+
+
+        /* TOP NAME */
+
+        const adminName =
+            document.getElementById("adminName");
+
+        if (adminName) {
+            adminName.textContent = name;
+        }
+
+
+        /* TOP AVATAR */
+
+        const adminAvatar =
+            document.getElementById("adminAvatar");
+
+        if (adminAvatar) {
+            adminAvatar.textContent =
+                initials(name);
+        }
+
+
+        /* SIDEBAR NAME */
+
+        const sidebarName =
+            document.getElementById(
+                "sidebarAdminName"
+            );
+
+        if (sidebarName) {
+            sidebarName.textContent = name;
+        }
+
+
+        /* SIDEBAR AVATAR */
+
+        const sidebarAvatar =
+            document.getElementById(
+                "sidebarAvatar"
+            );
+
+        if (sidebarAvatar) {
+            sidebarAvatar.textContent =
+                initials(name);
+        }
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(error);
+
+        localStorage.removeItem(
+            "barangay_token"
+        );
+
+        localStorage.removeItem(
+            "barangay_role"
+        );
+
+        window.location.href =
+            "admin-login.html";
+
+        return false;
+    }
 }
 
 
@@ -87,37 +185,41 @@ function toast(message) {
 async function loadOfficials(search = "") {
 
     const cityContainer =
-        document.getElementById("cityOfficials");
+        document.getElementById(
+            "cityOfficials"
+        );
 
     const barangayContainer =
-        document.getElementById("barangayOfficials");
+        document.getElementById(
+            "barangayOfficials"
+        );
 
-
-    if (cityContainer) {
-        cityContainer.innerHTML = `
-            <div class="official-empty">
-                <strong>Loading officials...</strong>
-                Please wait.
-            </div>
-        `;
+    if (!cityContainer || !barangayContainer) {
+        return;
     }
 
 
-    if (barangayContainer) {
-        barangayContainer.innerHTML = `
-            <div class="official-empty">
-                <strong>Loading officials...</strong>
-                Please wait.
-            </div>
-        `;
-    }
+    cityContainer.innerHTML = `
+        <div class="official-empty">
+            <strong>Loading officials...</strong>
+            Please wait.
+        </div>
+    `;
+
+    barangayContainer.innerHTML = `
+        <div class="official-empty">
+            <strong>Loading officials...</strong>
+            Please wait.
+        </div>
+    `;
 
 
     try {
 
-        const query = search.trim()
-            ? `?search=${encodeURIComponent(search.trim())}`
-            : "";
+        const query =
+            search.trim()
+                ? `?search=${encodeURIComponent(search.trim())}`
+                : "";
 
 
         const data =
@@ -131,14 +233,16 @@ async function loadOfficials(search = "") {
         const cityOfficials =
             officials.filter(
                 official =>
-                    official.government === "City Government"
+                    official.government ===
+                    "City Government"
             );
 
 
         const barangayOfficials =
             officials.filter(
                 official =>
-                    official.government === "Barangay Government"
+                    official.government ===
+                    "Barangay Government"
             );
 
 
@@ -158,21 +262,17 @@ async function loadOfficials(search = "") {
 
         console.error(error);
 
-        if (cityContainer) {
-            cityContainer.innerHTML = `
-                <div class="official-empty">
-                    Failed to load officials.
-                </div>
-            `;
-        }
+        cityContainer.innerHTML = `
+            <div class="official-empty">
+                Failed to load officials.
+            </div>
+        `;
 
-        if (barangayContainer) {
-            barangayContainer.innerHTML = `
-                <div class="official-empty">
-                    Failed to load officials.
-                </div>
-            `;
-        }
+        barangayContainer.innerHTML = `
+            <div class="official-empty">
+                Failed to load officials.
+            </div>
+        `;
 
         toast(error.message);
     }
@@ -180,20 +280,22 @@ async function loadOfficials(search = "") {
 
 
 /* =========================================================
-   RENDER
+   RENDER OFFICIALS
    ========================================================= */
 
-function renderOfficials(container, officials) {
-
-    if (!container) return;
-
+function renderOfficials(
+    container,
+    officials
+) {
 
     if (!officials.length) {
 
         container.innerHTML = `
             <div class="official-empty">
                 <strong>No officials found.</strong>
-                Add an official using the button above.
+                <span>
+                    Add an official using the button above.
+                </span>
             </div>
         `;
 
@@ -202,123 +304,128 @@ function renderOfficials(container, officials) {
 
 
     container.innerHTML =
-        officials.map(createOfficialCard).join("");
+        officials.map(official => {
+
+            const image =
+                official.image
+                    ? `
+                        <img
+                            src="${escapeHTML(
+                        official.image
+                    )}"
+                            class="official-photo"
+                            alt="${escapeHTML(
+                        official.name
+                    )}"
+                        >
+                      `
+                    : `
+                        <div class="official-photo official-initials">
+                            ${escapeHTML(
+                        initials(
+                            official.name
+                        )
+                    )}
+                        </div>
+                      `;
+
+
+            return `
+                <article
+                    class="official-card"
+                    data-id="${official._id}"
+                >
+
+                    ${image}
+
+                    <div class="official-card-info">
+
+                        <h3>
+                            ${escapeHTML(
+                official.name
+            )}
+                        </h3>
+
+                        <strong>
+                            ${escapeHTML(
+                official.position
+            )}
+                        </strong>
+
+                        ${official.barangay
+                    ? `
+                                    <p>
+                                        Barangay:
+                                        ${escapeHTML(
+                        official.barangay
+                    )}
+                                    </p>
+                                  `
+                    : ""
+                }
+
+                        ${official.contactNumber
+                    ? `
+                                    <p>
+                                        📞
+                                        ${escapeHTML(
+                        official.contactNumber
+                    )}
+                                    </p>
+                                  `
+                    : ""
+                }
+
+                        ${official.email
+                    ? `
+                                    <p>
+                                        ✉️
+                                        ${escapeHTML(
+                        official.email
+                    )}
+                                    </p>
+                                  `
+                    : ""
+                }
+
+                    </div>
+
+
+                    <div class="official-card-actions">
+
+                        <button
+                            type="button"
+                            class="official-edit-btn"
+                            onclick="editOfficial('${official._id}')">
+                            Edit
+                        </button>
+
+                        <button
+                            type="button"
+                            class="official-delete-btn"
+                            onclick="deleteOfficial('${official._id}')">
+                            Delete
+                        </button>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
 }
 
 
 /* =========================================================
-   OFFICIAL CARD
-   ========================================================= */
-
-function createOfficialCard(official) {
-
-    const photo = official.image
-        ? `
-            <img
-                src="${escapeHTML(official.image)}"
-                class="official-image"
-                alt="Official photo"
-            >
-        `
-        : `
-            <div class="official-avatar">
-                ${escapeHTML(initials(official.name))}
-            </div>
-        `;
-
-
-    return `
-        <article
-            class="official-card"
-            data-id="${official._id}"
-        >
-
-            <div class="official-card-main">
-
-                ${photo}
-
-                <div class="official-info">
-
-                    <h3>
-                        ${escapeHTML(official.name)}
-                    </h3>
-
-                    <p class="official-position">
-                        ${escapeHTML(official.position)}
-                    </p>
-
-                    ${official.barangay
-            ? `
-                                <p>
-                                    Barangay:
-                                    ${escapeHTML(
-                official.barangay
-            )}
-                                </p>
-                            `
-            : ""
-        }
-
-                    ${official.contactNumber
-            ? `
-                                <p>
-                                    ☎
-                                    ${escapeHTML(
-                official.contactNumber
-            )}
-                                </p>
-                            `
-            : ""
-        }
-
-                    ${official.email
-            ? `
-                                <p>
-                                    ✉
-                                    ${escapeHTML(
-                official.email
-            )}
-                                </p>
-                            `
-            : ""
-        }
-
-                </div>
-
-            </div>
-
-
-            <div class="official-actions">
-
-                <button
-                    type="button"
-                    class="official-edit-btn"
-                    onclick="editOfficial('${official._id}')">
-                    Edit
-                </button>
-
-                <button
-                    type="button"
-                    class="official-delete-btn"
-                    onclick="deleteOfficial('${official._id}')">
-                    Delete
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-
-/* =========================================================
-   OPEN ADD
+   OPEN ADD MODAL
    ========================================================= */
 
 function openAddOfficial() {
 
     const form =
-        document.getElementById("officialForm");
+        document.getElementById(
+            "officialForm"
+        );
 
     if (form) {
         form.reset();
@@ -341,33 +448,37 @@ function openAddOfficial() {
 
 
     document.getElementById(
-        "officialModal"
-    ).classList.remove("hidden");
+        "officialFormMessage"
+    ).textContent = "";
+
 
     document.getElementById(
         "officialModal"
-    ).classList.add("show");
+    ).classList.remove("hidden");
 }
 
 
 /* =========================================================
-   CLOSE ADD / EDIT MODAL
+   CLOSE MODAL
    ========================================================= */
 
 function closeOfficialModal() {
 
     const modal =
-        document.getElementById("officialModal");
+        document.getElementById(
+            "officialModal"
+        );
 
-    if (!modal) return;
+    if (modal) {
 
-    modal.classList.remove("show");
-    modal.classList.add("hidden");
+        modal.classList.add("hidden");
+
+    }
 }
 
 
 /* =========================================================
-   EDIT
+   EDIT OFFICIAL
    ========================================================= */
 
 async function editOfficial(id) {
@@ -379,9 +490,10 @@ async function editOfficial(id) {
 
 
         const official =
-            (data.officials || []).find(
-                item => item._id === id
-            );
+            (data.officials || [])
+                .find(item =>
+                    item._id === id
+                );
 
 
         if (!official) {
@@ -393,62 +505,67 @@ async function editOfficial(id) {
 
 
         document.getElementById(
-            "officialModalTitle"
-        ).textContent = "Edit Official";
-
-
-        document.getElementById(
-            "saveOfficialBtn"
-        ).textContent = "Save Changes";
-
-
-        document.getElementById(
             "officialId"
         ).value = official._id;
 
 
         document.getElementById(
             "officialName"
-        ).value = official.name || "";
+        ).value =
+            official.name || "";
 
 
         document.getElementById(
             "officialPosition"
-        ).value = official.position || "";
+        ).value =
+            official.position || "";
 
 
         document.getElementById(
             "officialGovernment"
-        ).value = official.government || "";
+        ).value =
+            official.government || "";
 
 
         document.getElementById(
             "officialBarangay"
-        ).value = official.barangay || "";
+        ).value =
+            official.barangay || "";
 
 
         document.getElementById(
             "officialContact"
-        ).value = official.contactNumber || "";
+        ).value =
+            official.contactNumber || "";
 
 
         document.getElementById(
             "officialEmail"
-        ).value = official.email || "";
+        ).value =
+            official.email || "";
 
 
         document.getElementById(
             "officialImage"
-        ).value = official.image || "";
+        ).value =
+            official.image || "";
+
+
+        document.getElementById(
+            "officialModalTitle"
+        ).textContent =
+            "Edit Official";
+
+
+        document.getElementById(
+            "saveOfficialBtn"
+        ).textContent =
+            "Update Official";
 
 
         document.getElementById(
             "officialModal"
         ).classList.remove("hidden");
-
-        document.getElementById(
-            "officialModal"
-        ).classList.add("show");
 
 
     } catch (error) {
@@ -461,7 +578,7 @@ async function editOfficial(id) {
 
 
 /* =========================================================
-   SAVE
+   SAVE OFFICIAL
    ========================================================= */
 
 async function saveOfficial(event) {
@@ -470,7 +587,9 @@ async function saveOfficial(event) {
 
 
     const id =
-        document.getElementById("officialId").value;
+        document.getElementById(
+            "officialId"
+        ).value;
 
 
     const name =
@@ -526,6 +645,7 @@ async function saveOfficial(event) {
 
 
     const officialData = {
+
         name,
         position,
         government,
@@ -533,6 +653,7 @@ async function saveOfficial(event) {
         contactNumber,
         email,
         image
+
     };
 
 
@@ -544,7 +665,9 @@ async function saveOfficial(event) {
                 `/api/officials/${id}`,
                 {
                     method: "PUT",
-                    body: JSON.stringify(officialData)
+                    body: JSON.stringify(
+                        officialData
+                    )
                 }
             );
 
@@ -558,7 +681,9 @@ async function saveOfficial(event) {
                 "/api/officials",
                 {
                     method: "POST",
-                    body: JSON.stringify(officialData)
+                    body: JSON.stringify(
+                        officialData
+                    )
                 }
             );
 
@@ -583,14 +708,18 @@ async function saveOfficial(event) {
 
 
 /* =========================================================
-   DELETE
+   DELETE OFFICIAL
    ========================================================= */
 
 async function deleteOfficial(id) {
 
-    if (!confirm(
-        "Are you sure you want to delete this official?"
-    )) {
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this official?"
+        );
+
+
+    if (!confirmed) {
         return;
     }
 
@@ -623,30 +752,22 @@ async function deleteOfficial(id) {
 
 
 /* =========================================================
-   PASSWORD MODAL
+   CHANGE PASSWORD MODAL
    ========================================================= */
 
 function openPasswordModal() {
 
-    const modal =
-        document.getElementById("passwordModal");
-
-    if (!modal) return;
-
-    modal.classList.remove("hidden");
-    modal.classList.add("show");
+    document.getElementById(
+        "passwordModal"
+    )?.classList.remove("hidden");
 }
 
 
 function closePasswordModal() {
 
-    const modal =
-        document.getElementById("passwordModal");
-
-    if (!modal) return;
-
-    modal.classList.remove("show");
-    modal.classList.add("hidden");
+    document.getElementById(
+        "passwordModal"
+    )?.classList.add("hidden");
 }
 
 
@@ -654,7 +775,7 @@ function closePasswordModal() {
    CHANGE PASSWORD
    ========================================================= */
 
-async function changePassword(event) {
+async function changeAdminPassword(event) {
 
     event.preventDefault();
 
@@ -679,9 +800,10 @@ async function changePassword(event) {
 
     if (newPassword !== confirmPassword) {
 
-        toast(
-            "New passwords do not match."
-        );
+        document.getElementById(
+            "adminPasswordMessage"
+        ).textContent =
+            "Passwords do not match.";
 
         return;
     }
@@ -702,132 +824,30 @@ async function changePassword(event) {
         );
 
 
-        toast(
-            "Password changed successfully."
-        );
+        document.getElementById(
+            "adminPasswordMessage"
+        ).textContent =
+            "Password changed successfully.";
 
 
-        document
-            .getElementById("adminPasswordForm")
-            ?.reset();
+        document.getElementById(
+            "adminPasswordForm"
+        ).reset();
 
 
-        closePasswordModal();
+        setTimeout(() => {
 
+            closePasswordModal();
 
-    } catch (error) {
-
-        toast(error.message);
-    }
-}
-
-
-/* =========================================================
-   ADMIN AUTH
-   ========================================================= */
-
-async function checkAdmin() {
-
-    if (!token()) {
-
-        window.location.href =
-            "admin-login.html";
-
-        return false;
-    }
-
-
-    try {
-
-        const me =
-            await api("/api/auth/me");
-
-
-        if (me.role !== "admin") {
-
-            window.location.href =
-                "dashboard.html";
-
-            return false;
-        }
-
-
-        const adminName =
-            me.account?.username ||
-            me.user?.username ||
-            "Admin";
-
-
-        const adminAvatar =
-            document.getElementById(
-                "adminAvatar"
-            );
-
-
-        const adminNameElement =
-            document.getElementById(
-                "adminName"
-            );
-
-
-        const sidebarAvatar =
-            document.getElementById(
-                "sidebarAvatar"
-            );
-
-
-        const sidebarAdminName =
-            document.getElementById(
-                "sidebarAdminName"
-            );
-
-
-        if (adminNameElement) {
-            adminNameElement.textContent =
-                adminName;
-        }
-
-
-        if (adminAvatar) {
-            adminAvatar.textContent =
-                initials(adminName);
-        }
-
-
-        if (sidebarAdminName) {
-            sidebarAdminName.textContent =
-                adminName;
-        }
-
-
-        if (sidebarAvatar) {
-            sidebarAvatar.textContent =
-                initials(adminName);
-        }
-
-
-        return true;
+        }, 1000);
 
 
     } catch (error) {
 
-        console.error(error);
-
-
-        localStorage.removeItem(
-            "barangay_token"
-        );
-
-        localStorage.removeItem(
-            "barangay_role"
-        );
-
-
-        window.location.href =
-            "admin-login.html";
-
-
-        return false;
+        document.getElementById(
+            "adminPasswordMessage"
+        ).textContent =
+            error.message;
     }
 }
 
@@ -836,7 +856,7 @@ async function checkAdmin() {
    LOGOUT
    ========================================================= */
 
-function logout() {
+function logoutAdmin() {
 
     localStorage.removeItem(
         "barangay_token"
@@ -859,79 +879,101 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
+        /* ADMIN CHECK */
+
+        if (!token()) {
+
+            window.location.href =
+                "admin-login.html";
+
+            return;
+        }
+
+
         const isAdmin =
-            await checkAdmin();
-
-        if (!isAdmin) return;
+            await loadAdminAccount();
 
 
-        /* ADD */
+        if (!isAdmin) {
+            return;
+        }
+
+
+        /* LOAD OFFICIALS */
+
+        loadOfficials();
+
+
+        /* ADD BUTTON */
 
         document
-            .getElementById("addOfficialBtn")
+            .getElementById(
+                "addOfficialBtn"
+            )
             ?.addEventListener(
                 "click",
                 openAddOfficial
             );
 
 
-        /* SAVE */
+        /* CLOSE OFFICIAL MODAL */
 
         document
-            .getElementById("officialForm")
+            .getElementById(
+                "closeOfficialModal"
+            )
+            ?.addEventListener(
+                "click",
+                closeOfficialModal
+            );
+
+
+        document
+            .getElementById(
+                "cancelOfficialBtn"
+            )
+            ?.addEventListener(
+                "click",
+                closeOfficialModal
+            );
+
+
+        /* SAVE OFFICIAL */
+
+        document
+            .getElementById(
+                "officialForm"
+            )
             ?.addEventListener(
                 "submit",
                 saveOfficial
             );
 
 
-        /* CLOSE */
-
-        document
-            .getElementById("closeOfficialModal")
-            ?.addEventListener(
-                "click",
-                closeOfficialModal
-            );
-
-
-        /* CANCEL */
-
-        document
-            .getElementById("cancelOfficialBtn")
-            ?.addEventListener(
-                "click",
-                closeOfficialModal
-            );
-
-
         /* SEARCH */
 
-        const searchInput =
-            document.getElementById(
+        document
+            .getElementById(
                 "officialSearch"
-            );
-
-
-        if (searchInput) {
-
-            searchInput.addEventListener(
+            )
+            ?.addEventListener(
                 "input",
-                () => {
+                event => {
 
                     loadOfficials(
-                        searchInput.value
+                        event.target.value
                     );
 
                 }
             );
-        }
 
 
         /* PASSWORD */
 
         document
-            .getElementById("adminPasswordBtn")
+            .getElementById(
+                "adminPasswordBtn"
+            )
             ?.addEventListener(
                 "click",
                 openPasswordModal
@@ -939,7 +981,9 @@ document.addEventListener(
 
 
         document
-            .getElementById("closePasswordModal")
+            .getElementById(
+                "closePasswordModal"
+            )
             ?.addEventListener(
                 "click",
                 closePasswordModal
@@ -947,26 +991,69 @@ document.addEventListener(
 
 
         document
-            .getElementById("adminPasswordForm")
+            .getElementById(
+                "adminPasswordForm"
+            )
             ?.addEventListener(
                 "submit",
-                changePassword
+                changeAdminPassword
             );
 
 
         /* LOGOUT */
 
         document
-            .getElementById("adminLogout")
+            .getElementById(
+                "adminLogout"
+            )
             ?.addEventListener(
                 "click",
-                logout
+                logoutAdmin
             );
 
 
-        /* LOAD */
+        /* CLOSE MODAL WHEN CLICKING OUTSIDE */
 
-        loadOfficials();
+        document
+            .getElementById(
+                "officialModal"
+            )
+            ?.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.id ===
+                        "officialModal"
+                    ) {
+
+                        closeOfficialModal();
+
+                    }
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "passwordModal"
+            )
+            ?.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.id ===
+                        "passwordModal"
+                    ) {
+
+                        closePasswordModal();
+
+                    }
+
+                }
+            );
 
     }
 );
