@@ -480,24 +480,33 @@ async function changePassword(event) {
     event.preventDefault();
 
     const currentPassword =
-        document.getElementById("currentPassword").value;
+        document.getElementById("currentPassword").value.trim();
 
     const newPassword =
-        document.getElementById("newPassword").value;
+        document.getElementById("newPassword").value.trim();
 
     const confirmPassword =
-        document.getElementById("confirmPassword").value;
+        document.getElementById("confirmPassword").value.trim();
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        toast("Please fill in all password fields.");
+        return;
+    }
 
     if (newPassword !== confirmPassword) {
-
         toast("New passwords do not match.");
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        toast("New password must be at least 6 characters.");
         return;
     }
 
     try {
 
         await api("/api/auth/change-password", {
-            method: "POST",
+            method: "PUT",
             body: JSON.stringify({
                 currentPassword,
                 newPassword
@@ -506,13 +515,13 @@ async function changePassword(event) {
 
         toast("Password changed successfully.");
 
-        document.getElementById(
-            "passwordForm"
-        ).reset();
+        document.getElementById("passwordForm").reset();
 
         closePasswordModal();
 
     } catch (error) {
+
+        console.error("Change password error:", error);
 
         toast(error.message);
     }
