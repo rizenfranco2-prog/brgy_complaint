@@ -470,6 +470,42 @@ function closePasswordModal() {
     }
 }
 
+const adminPasswordBtn = document.getElementById("adminPasswordBtn");
+
+if (adminPasswordBtn) {
+    adminPasswordBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const passwordModal = document.getElementById("passwordModal");
+
+        if (passwordModal) {
+            passwordModal.classList.add("show");
+        } else {
+            console.error("passwordModal was not found.");
+        }
+    });
+}
+
+
+/* CLOSE PASSWORD MODAL */
+
+const closePasswordBtn =
+    document.getElementById("closePasswordModal");
+
+if (closePasswordBtn) {
+    closePasswordBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const passwordModal =
+            document.getElementById("passwordModal");
+
+        if (passwordModal) {
+            passwordModal.classList.remove("show");
+        }
+    });
+}
+
 
 /* =====================================================
    CHANGE PASSWORD
