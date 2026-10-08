@@ -287,7 +287,7 @@ function openAddAnnouncement() {
 
     document.getElementById(
         "announcementModal"
-    ).classList.add("show");
+    ).classList.remove("hidden");
 }
 
 
