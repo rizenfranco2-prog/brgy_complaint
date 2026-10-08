@@ -4431,3 +4431,90 @@ body.app-body {
             background: #f3f4f6 !important;
             color: #111827 !important;
         }
+
+
+/* ================================
+   OFFICIAL CARD FIX
+================================ */
+
+.official-card {
+    width: 100%;
+    max-width: 720px;
+    min-height: 190px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 18px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #d9e5e8;
+    border-radius: 12px;
+    color: #12343b;
+}
+
+    .official-card img,
+    .official-card .official-avatar {
+        width: 82px;
+        height: 82px;
+        min-width: 82px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #dff7f8;
+        border: 2px solid #9edfe4;
+    }
+
+.official-info {
+    flex: 1;
+    min-width: 0;
+    color: #12343b !important;
+}
+
+    .official-info h3,
+    .official-info .official-name {
+        margin: 0 0 5px;
+        color: #12343b !important;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .official-info p,
+    .official-info .official-position,
+    .official-info .official-government,
+    .official-info .official-barangay,
+    .official-info .official-contact,
+    .official-info .official-email {
+        margin: 5px 0;
+        color: #45636a !important;
+        font-size: 13px;
+    }
+
+    .official-info .official-position {
+        color: #087f89 !important;
+        font-weight: 600;
+    }
+
+.official-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: auto;
+}
+
+    .official-actions button {
+        width: 65px;
+        padding: 7px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .official-actions .edit-btn {
+        background: #e6f8fa;
+        border: 1px solid #8ed8df;
+        color: #087f89;
+    }
+
+    .official-actions .delete-btn {
+        background: #fff0f0;
+        border: 1px solid #ffb8b8;
+        color: #dc3545;
+    }
