@@ -1,7 +1,7 @@
 /* =========================================================
    BARANGAY CONNECT
    PROFESSIONAL CIVIC DESIGN
-   Navy • Teal • Emerald
+   Navy â€¢ Teal â€¢ Emerald
    ========================================================= */
 
 :root {
@@ -2026,7 +2026,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — 1100
+   RESPONSIVE â€” 1100
    ========================================================= */
 
 @media (max-width: 1100px) {
@@ -2054,7 +2054,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — 850
+   RESPONSIVE â€” 850
    ========================================================= */
 
 @media (max-width: 850px) {
@@ -2121,6 +2121,7 @@ textarea {
         width: auto;
         flex: 0 0 auto;
         white-space: nowrap;
+
     }
 
 
@@ -2172,7 +2173,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — 700
+   RESPONSIVE â€” 700
    ========================================================= */
 
 @media (max-width: 700px) {
@@ -2234,7 +2235,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — 600
+   RESPONSIVE â€” 600
    ========================================================= */
 
 @media (max-width: 600px) {
@@ -2346,7 +2347,7 @@ textarea {
 
 
 /* =========================================================
-   RESPONSIVE — 480
+   RESPONSIVE â€” 480
    ========================================================= */
 
 @media (max-width: 480px) {
@@ -2421,7 +2422,7 @@ textarea {
 
 
 /* =========================================================
-   BARANGAY CONNECT — PROFESSIONAL DASHBOARD COLORS
+   BARANGAY CONNECT â€” PROFESSIONAL DASHBOARD COLORS
    Dashboard + Admin Dashboard Enhancement
    ========================================================= */
 
@@ -2435,7 +2436,7 @@ textarea {
 
 
 /* ---------------------------------------------------------
-   TOPBAR — PROFESSIONAL
+   TOPBAR â€” PROFESSIONAL
    --------------------------------------------------------- */
 
 .topbar {
@@ -3231,7 +3232,7 @@ textarea {
 }
 
 /* =========================================================
-   BARANGAY CONNECT — TEAL BACKGROUND
+   BARANGAY CONNECT â€” TEAL BACKGROUND
    RESIDENT + ADMIN DASHBOARD
    ========================================================= */
 
@@ -3703,7 +3704,7 @@ body.app-body {
     }
 }
 /* =========================================================
-   BARANGAY CONNECT — RESIDENT UI REVISION
+   BARANGAY CONNECT â€” RESIDENT UI REVISION
    IMPORTANT: These rules are appended to the existing CSS.
    They are scoped to resident pages so existing admin styles,
    JavaScript, IDs, classes, forms, modals and API behavior stay intact.
@@ -3725,414 +3726,417 @@ body.app-body:has(.feed) {
     color: var(--resident-text) !important;
 }
 
-    body.app-body:has(.feed) .topbar {
-        height: 76px;
-        padding: 0 30px;
-        background: rgba(255,255,255,.94) !important;
-        color: var(--resident-text) !important;
-        border-bottom: 1px solid var(--resident-line) !important;
-        box-shadow: 0 4px 20px rgba(24,50,71,.06);
-        backdrop-filter: blur(14px);
-    }
+body.app-body:has(.feed) .topbar {
+    height: 76px;
+    padding: 0 30px;
+    background: rgba(255,255,255,.94) !important;
+    color: var(--resident-text) !important;
+    border-bottom: 1px solid var(--resident-line) !important;
+    box-shadow: 0 4px 20px rgba(24,50,71,.06);
+    backdrop-filter: blur(14px);
+}
 
-    body.app-body:has(.feed) .top-brand {
-        color: var(--resident-text) !important;
-        font-size: 18px;
-        font-weight: 850;
-    }
+body.app-body:has(.feed) .top-brand {
+    color: var(--resident-text) !important;
+    font-size: 18px;
+    font-weight: 850;
+}
 
-        body.app-body:has(.feed) .top-brand > span {
-            width: 40px;
-            height: 40px;
-            border-radius: 13px;
-            background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
-            box-shadow: 0 8px 20px rgba(23,105,170,.20);
-        }
+body.app-body:has(.feed) .top-brand > span {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
+    box-shadow: 0 8px 20px rgba(23,105,170,.20);
+}
 
-    body.app-body:has(.feed) .top-search {
-        max-width: 560px;
-        height: 44px;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 14px;
-        background: #f6f9fc !important;
-        color: var(--resident-muted);
-    }
+body.app-body:has(.feed) .top-search {
+    max-width: 560px;
+    height: 44px;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 14px;
+    background: #f6f9fc !important;
+    color: var(--resident-muted);
+}
 
-        body.app-body:has(.feed) .top-search:focus-within {
-            border-color: #86b8dc !important;
-            box-shadow: 0 0 0 4px rgba(23,105,170,.08);
-            background: #fff !important;
-        }
+body.app-body:has(.feed) .top-search:focus-within {
+    border-color: #86b8dc !important;
+    box-shadow: 0 0 0 4px rgba(23,105,170,.08);
+    background: #fff !important;
+}
 
-        body.app-body:has(.feed) .top-search input {
-            color: var(--resident-text) !important;
-        }
+body.app-body:has(.feed) .top-search input {
+    color: var(--resident-text) !important;
+}
 
-    body.app-body:has(.feed) .top-user {
-        color: var(--resident-text) !important;
-    }
+body.app-body:has(.feed) .top-user {
+    color: var(--resident-text) !important;
+}
 
-    body.app-body:has(.feed) .top-profile-info small,
-    body.app-body:has(.feed) .top-user-info small {
-        color: var(--resident-muted) !important;
-    }
+body.app-body:has(.feed) .top-profile-info small,
+body.app-body:has(.feed) .top-user-info small {
+    color: var(--resident-muted) !important;
+}
 
-    body.app-body:has(.feed) .avatar {
-        background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
-        color: #fff !important;
-        border: 0;
-        box-shadow: 0 5px 14px rgba(23,105,170,.16);
-    }
+body.app-body:has(.feed) .avatar {
+    background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
+    color: #fff !important;
+    border: 0;
+    box-shadow: 0 5px 14px rgba(23,105,170,.16);
+}
 
-    body.app-body:has(.feed) .icon-btn,
-    body.app-body:has(.feed) #logoutBtn {
-        background: #fff !important;
-        color: #415466 !important;
-        border: 1px solid #d9e4eb !important;
-        border-radius: 11px;
-        padding: 9px 13px;
-        font-weight: 750;
-    }
+body.app-body:has(.feed) .icon-btn,
+body.app-body:has(.feed) #logoutBtn {
+    background: #fff !important;
+    color: #415466 !important;
+    border: 1px solid #d9e4eb !important;
+    border-radius: 11px;
+    padding: 9px 13px;
+    font-weight: 750;
+}
 
-        body.app-body:has(.feed) .icon-btn:hover,
-        body.app-body:has(.feed) #logoutBtn:hover {
-            background: #fff5f5 !important;
-            color: #c0394b !important;
-            border-color: #f0c7cc !important;
-        }
+body.app-body:has(.feed) .icon-btn:hover,
+body.app-body:has(.feed) #logoutBtn:hover {
+    background: #fff5f5 !important;
+    color: #c0394b !important;
+    border-color: #f0c7cc !important;
+}
 
-    body.app-body:has(.feed) .layout {
-        max-width: 1380px;
-        grid-template-columns: 238px minmax(0,1fr);
-        gap: 34px;
-        padding: 30px 28px 70px;
-        background: transparent !important;
-    }
+body.app-body:has(.feed) .layout {
+    max-width: 1380px;
+    grid-template-columns: 238px minmax(0,1fr);
+    gap: 34px;
+    padding: 30px 28px 70px;
+    background: transparent !important;
+}
 
-    body.app-body:has(.feed) .sidebar {
-        width: 238px;
-        position: sticky;
-        top: 98px;
-        background: rgba(255,255,255,.96) !important;
-        color: var(--resident-text) !important;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 20px;
-        box-shadow: 0 8px 28px rgba(24,50,71,.06);
-        overflow: hidden;
-    }
+body.app-body:has(.feed) .sidebar {
+    width: 238px;
+    position: sticky;
+    top: 98px;
+    background: rgba(255,255,255,.96) !important;
+    color: var(--resident-text) !important;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(24,50,71,.06);
+    overflow: hidden;
+}
 
-    body.app-body:has(.feed) .profile-mini {
-        margin: 12px;
-        width: calc(100% - 24px);
-        padding: 14px;
-        border: 1px solid #dcece9 !important;
-        border-radius: 16px;
-        background: linear-gradient(145deg,#effaf8,#f8fcff) !important;
-    }
+body.app-body:has(.feed) .profile-mini {
+    margin: 12px;
+    width: calc(100% - 24px);
+    padding: 14px;
+    border: 1px solid #dcece9 !important;
+    border-radius: 16px;
+    background: linear-gradient(145deg,#effaf8,#f8fcff) !important;
+}
 
-        body.app-body:has(.feed) .profile-mini strong {
-            color: var(--resident-text) !important;
-        }
+body.app-body:has(.feed) .profile-mini strong {
+    color: var(--resident-text) !important;
+}
 
-        body.app-body:has(.feed) .profile-mini small {
-            color: var(--resident-muted) !important;
-        }
+body.app-body:has(.feed) .profile-mini small {
+    color: var(--resident-muted) !important;
+}
 
-    body.app-body:has(.feed) .sidebar nav {
-        padding: 6px 12px 16px;
-        gap: 5px;
-    }
+body.app-body:has(.feed) .sidebar nav {
+    padding: 6px 12px 16px;
+    gap: 5px;
+}
 
-    body.app-body:has(.feed) .nav-item,
-    body.app-body:has(.feed) .nav-link {
-        min-height: 46px;
-        border-radius: 12px;
-        padding: 12px 14px;
-        color: #607487 !important;
-        font-weight: 700;
-        border: 1px solid transparent;
-        transition: .18s ease;
-    }
+body.app-body:has(.feed) .nav-item,
+body.app-body:has(.feed) .nav-link {
+    min-height: 46px;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #607487 !important;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: .18s ease;
+}
 
-        body.app-body:has(.feed) .nav-item:hover,
-        body.app-body:has(.feed) .nav-link:hover {
-            background: #f0f7fb !important;
-            color: var(--resident-blue) !important;
-            transform: translateX(2px);
-        }
+body.app-body:has(.feed) .nav-item:hover,
+body.app-body:has(.feed) .nav-link:hover {
+    background: #f0f7fb !important;
+    color: var(--resident-blue) !important;
+    transform: translateX(2px);
+}
 
-        body.app-body:has(.feed) .nav-item.active,
-        body.app-body:has(.feed) .nav-link.active {
-            background: linear-gradient(90deg,#eaf5fc,#effaf8) !important;
-            color: #125e8e !important;
-            border-color: #d4e9ee !important;
-            box-shadow: none !important;
-        }
+body.app-body:has(.feed) .nav-item.active,
+body.app-body:has(.feed) .nav-link.active {
+    background: linear-gradient(90deg,#eaf5fc,#effaf8) !important;
+    color: #125e8e !important;
+    border-color: #d4e9ee !important;
+    box-shadow: none !important;
+}
 
-    body.app-body:has(.feed) .feed {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        min-width: 0;
-    }
+body.app-body:has(.feed) .feed {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    min-width: 0;
+}
 
-    /* Resident page header / welcome */
-    body.app-body:has(.feed) .welcome {
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 22px;
-        padding: 32px 34px;
-        border-radius: 22px;
-        border: 1px solid #d9e8ef !important;
-        background: radial-gradient(circle at 92% 20%,rgba(15,157,138,.18),transparent 30%), radial-gradient(circle at 10% 100%,rgba(23,105,170,.13),transparent 35%), linear-gradient(135deg,#ffffff,#f4faff) !important;
-        box-shadow: 0 12px 32px rgba(24,50,71,.07);
-    }
+/* Resident page header / welcome */
+body.app-body:has(.feed) .welcome {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 22px;
+    padding: 32px 34px;
+    border-radius: 22px;
+    border: 1px solid #d9e8ef !important;
+    background:
+        radial-gradient(circle at 92% 20%,rgba(15,157,138,.18),transparent 30%),
+        radial-gradient(circle at 10% 100%,rgba(23,105,170,.13),transparent 35%),
+        linear-gradient(135deg,#ffffff,#f4faff) !important;
+    box-shadow: 0 12px 32px rgba(24,50,71,.07);
+}
 
-        body.app-body:has(.feed) .welcome::after {
-            content: "";
-            position: absolute;
-            right: -42px;
-            top: -48px;
-            width: 160px;
-            height: 160px;
-            border: 22px solid rgba(23,105,170,.06);
-            border-radius: 50%;
-        }
+body.app-body:has(.feed) .welcome::after {
+    content: "";
+    position: absolute;
+    right: -42px;
+    top: -48px;
+    width: 160px;
+    height: 160px;
+    border: 22px solid rgba(23,105,170,.06);
+    border-radius: 50%;
+}
 
-        body.app-body:has(.feed) .welcome > div {
-            position: relative;
-            z-index: 1;
-        }
+body.app-body:has(.feed) .welcome > div {
+    position: relative;
+    z-index: 1;
+}
 
-        body.app-body:has(.feed) .welcome .eyebrow {
-            color: var(--resident-teal) !important;
-            font-size: 11px;
-            letter-spacing: .14em;
-            font-weight: 850;
-        }
+body.app-body:has(.feed) .welcome .eyebrow {
+    color: var(--resident-teal) !important;
+    font-size: 11px;
+    letter-spacing: .14em;
+    font-weight: 850;
+}
 
-        body.app-body:has(.feed) .welcome h1 {
-            margin: 0;
-            color: #183247 !important;
-            font-size: clamp(27px,4vw,38px);
-            line-height: 1.12;
-            letter-spacing: -.035em;
-        }
+body.app-body:has(.feed) .welcome h1 {
+    margin: 0;
+    color: #183247 !important;
+    font-size: clamp(27px,4vw,38px);
+    line-height: 1.12;
+    letter-spacing: -.035em;
+}
 
-        body.app-body:has(.feed) .welcome .muted {
-            margin: 9px 0 0;
-            color: var(--resident-muted) !important;
-            font-size: 14px;
-        }
+body.app-body:has(.feed) .welcome .muted {
+    margin: 9px 0 0;
+    color: var(--resident-muted) !important;
+    font-size: 14px;
+}
 
-    /* Complaint composer */
-    body.app-body:has(.feed) .composer.card {
-        padding: 25px;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 20px;
-        background: #fff !important;
-        box-shadow: 0 9px 28px rgba(24,50,71,.065);
-    }
+/* Complaint composer */
+body.app-body:has(.feed) .composer.card {
+    padding: 25px;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 20px;
+    background: #fff !important;
+    box-shadow: 0 9px 28px rgba(24,50,71,.065);
+}
 
-    body.app-body:has(.feed) .composer-head {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
+body.app-body:has(.feed) .composer-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
 
-        body.app-body:has(.feed) .composer-head strong {
-            color: var(--resident-text) !important;
-        }
+body.app-body:has(.feed) .composer-head strong {
+    color: var(--resident-text) !important;
+}
 
-        body.app-body:has(.feed) .composer-head small {
-            display: block;
-            margin-top: 2px;
-            color: var(--resident-muted) !important;
-        }
+body.app-body:has(.feed) .composer-head small {
+    display: block;
+    margin-top: 2px;
+    color: var(--resident-muted) !important;
+}
 
-    body.app-body:has(.feed) .complaint-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2,minmax(0,1fr));
-        gap: 15px;
-    }
+body.app-body:has(.feed) .complaint-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 15px;
+}
 
-    body.app-body:has(.feed) .form-group label {
-        color: #41586b !important;
-        font-weight: 750;
-    }
+body.app-body:has(.feed) .form-group label {
+    color: #41586b !important;
+    font-weight: 750;
+}
 
-    body.app-body:has(.feed) input,
-    body.app-body:has(.feed) select,
-    body.app-body:has(.feed) textarea {
-        border: 1px solid #d8e3ea !important;
-        background: #fbfdff !important;
-        color: #21394d !important;
-        border-radius: 12px;
-        transition: .18s ease;
-    }
+body.app-body:has(.feed) input,
+body.app-body:has(.feed) select,
+body.app-body:has(.feed) textarea {
+    border: 1px solid #d8e3ea !important;
+    background: #fbfdff !important;
+    color: #21394d !important;
+    border-radius: 12px;
+    transition: .18s ease;
+}
 
-        body.app-body:has(.feed) input:focus,
-        body.app-body:has(.feed) select:focus,
-        body.app-body:has(.feed) textarea:focus {
-            border-color: #8bb9d8 !important;
-            box-shadow: 0 0 0 4px rgba(23,105,170,.08) !important;
-            background: #fff !important;
-        }
+body.app-body:has(.feed) input:focus,
+body.app-body:has(.feed) select:focus,
+body.app-body:has(.feed) textarea:focus {
+    border-color: #8bb9d8 !important;
+    box-shadow: 0 0 0 4px rgba(23,105,170,.08) !important;
+    background: #fff !important;
+}
 
-    body.app-body:has(.feed) .complaint-description {
-        margin-top: 15px;
-    }
+body.app-body:has(.feed) .complaint-description {
+    margin-top: 15px;
+}
 
-    body.app-body:has(.feed) .image-upload {
-        margin-top: 15px;
-    }
+body.app-body:has(.feed) .image-upload {
+    margin-top: 15px;
+}
 
-    body.app-body:has(.feed) .image-upload-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 9px 13px;
-        border: 1px solid #d5e5ed;
-        border-radius: 11px;
-        background: #f5fafc;
-        color: #236483;
-        font-weight: 750;
-        cursor: pointer;
-    }
+body.app-body:has(.feed) .image-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    border: 1px solid #d5e5ed;
+    border-radius: 11px;
+    background: #f5fafc;
+    color: #236483;
+    font-weight: 750;
+    cursor: pointer;
+}
 
-        body.app-body:has(.feed) .image-upload-btn:hover {
-            background: #edf7fb;
-            border-color: #bcd8e5;
-        }
+body.app-body:has(.feed) .image-upload-btn:hover {
+    background: #edf7fb;
+    border-color: #bcd8e5;
+}
 
-    body.app-body:has(.feed) .complaint-status-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 17px;
-        padding: 12px 14px;
-        border-radius: 13px;
-        background: #f6fafb;
-        border: 1px solid #e0ecef;
-    }
+body.app-body:has(.feed) .complaint-status-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 17px;
+    padding: 12px 14px;
+    border-radius: 13px;
+    background: #f6fafb;
+    border: 1px solid #e0ecef;
+}
 
-    body.app-body:has(.feed) .status-label {
-        color: #516a7c;
-        font-size: 12px;
-        font-weight: 800;
-    }
+body.app-body:has(.feed) .status-label {
+    color: #516a7c;
+    font-size: 12px;
+    font-weight: 800;
+}
 
-    body.app-body:has(.feed) .status-badge.pending {
-        padding: 5px 9px;
-        border-radius: 999px;
-        background: #fff5d9 !important;
-        color: #986a09 !important;
-        font-size: 11px;
-        font-weight: 800;
-    }
+body.app-body:has(.feed) .status-badge.pending {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #fff5d9 !important;
+    color: #986a09 !important;
+    font-size: 11px;
+    font-weight: 800;
+}
 
-    body.app-body:has(.feed) .complaint-status-info small {
-        color: var(--resident-muted);
-    }
+body.app-body:has(.feed) .complaint-status-info small {
+    color: var(--resident-muted);
+}
 
-    body.app-body:has(.feed) .composer-actions {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 18px;
-    }
+body.app-body:has(.feed) .composer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+}
 
-    body.app-body:has(.feed) #charCount {
-        color: #8a9baa;
-        font-size: 12px;
-    }
+body.app-body:has(.feed) #charCount {
+    color: #8a9baa;
+    font-size: 12px;
+}
 
-    body.app-body:has(.feed) .primary-btn {
-        background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
-        color: #fff !important;
-        border: 0 !important;
-        border-radius: 11px;
-        box-shadow: 0 8px 18px rgba(23,105,170,.18);
-    }
+body.app-body:has(.feed) .primary-btn {
+    background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
+    color: #fff !important;
+    border: 0 !important;
+    border-radius: 11px;
+    box-shadow: 0 8px 18px rgba(23,105,170,.18);
+}
 
-        body.app-body:has(.feed) .primary-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 11px 22px rgba(23,105,170,.23);
-        }
+body.app-body:has(.feed) .primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 11px 22px rgba(23,105,170,.23);
+}
 
-    /* Generated feed posts — preserve all JS behavior/classes */
-    body.app-body:has(.feed) #feedList {
-        display: grid;
-        gap: 17px;
-        margin-top: 20px;
-    }
+/* Generated feed posts â€” preserve all JS behavior/classes */
+body.app-body:has(.feed) #feedList {
+    display: grid;
+    gap: 17px;
+    margin-top: 20px;
+}
 
-    body.app-body:has(.feed) .post.card,
-    body.app-body:has(.feed) .post-card,
-    body.app-body:has(.feed) .feed-card {
-        background: #fff !important;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 19px;
-        box-shadow: 0 7px 24px rgba(24,50,71,.055);
-    }
+body.app-body:has(.feed) .post.card,
+body.app-body:has(.feed) .post-card,
+body.app-body:has(.feed) .feed-card {
+    background: #fff !important;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 19px;
+    box-shadow: 0 7px 24px rgba(24,50,71,.055);
+}
 
-        body.app-body:has(.feed) .post.card:hover,
-        body.app-body:has(.feed) .post-card:hover,
-        body.app-body:has(.feed) .feed-card:hover {
-            border-color: #cbdfe8 !important;
-            box-shadow: 0 13px 32px rgba(24,50,71,.085);
-        }
+body.app-body:has(.feed) .post.card:hover,
+body.app-body:has(.feed) .post-card:hover,
+body.app-body:has(.feed) .feed-card:hover {
+    border-color: #cbdfe8 !important;
+    box-shadow: 0 13px 32px rgba(24,50,71,.085);
+}
 
-    body.app-body:has(.feed) .post-head {
-        padding: 20px 20px 0;
-    }
+body.app-body:has(.feed) .post-head {
+    padding: 20px 20px 0;
+}
 
-    body.app-body:has(.feed) .post-author strong {
-        color: #21394d !important;
-    }
+body.app-body:has(.feed) .post-author strong {
+    color: #21394d !important;
+}
 
-    body.app-body:has(.feed) .post-author small,
-    body.app-body:has(.feed) .post-meta {
-        color: #8393a1 !important;
-    }
+body.app-body:has(.feed) .post-author small,
+body.app-body:has(.feed) .post-meta {
+    color: #8393a1 !important;
+}
 
-    body.app-body:has(.feed) .post-content {
-        padding: 0 20px;
-        color: #334b5d !important;
-        font-size: 15px;
-        line-height: 1.72;
-    }
+body.app-body:has(.feed) .post-content {
+    padding: 0 20px;
+    color: #334b5d !important;
+    font-size: 15px;
+    line-height: 1.72;
+}
 
-    body.app-body:has(.feed) .post-image-container {
-        margin: 0 20px 15px;
-        overflow: hidden;
-        border-radius: 14px;
-        border: 1px solid #e0e8ed;
-    }
+body.app-body:has(.feed) .post-image-container {
+    margin: 0 20px 15px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid #e0e8ed;
+}
 
-    body.app-body:has(.feed) .post-image {
-        width: 100%;
-        max-height: 460px;
-        object-fit: cover;
-    }
+body.app-body:has(.feed) .post-image {
+    width: 100%;
+    max-height: 460px;
+    object-fit: cover;
+}
 
-    body.app-body:has(.feed) .comments {
-        margin: 0 20px;
-        padding-top: 12px;
-        border-top: 1px solid #edf1f4;
-    }
+body.app-body:has(.feed) .comments {
+    margin: 0 20px;
+    padding-top: 12px;
+    border-top: 1px solid #edf1f4;
+}
 
-    body.app-body:has(.feed) .comment-body {
-        background: #f5f8fa !important;
-        border-radius: 13px;
-    }
+body.app-body:has(.feed) .comment-body {
+    background: #f5f8fa !important;
+    border-radius: 13px;
+}
 
-        body.app-body:has(.feed) .comment-body strong {
-            color: #29465b !important;
-        }
+body.app-body:has(.feed) .comment-body strong {
+    color: #29465b !important;
+}
 
 /* Announcements resident page */
 body.app-body:has(#announcementList) .welcome {
@@ -4146,17 +4150,17 @@ body.app-body:has(#announcementList) #announcementList {
     gap: 18px;
 }
 
-    body.app-body:has(#announcementList) #announcementList .post.card {
-        overflow: hidden;
-    }
+body.app-body:has(#announcementList) #announcementList .post.card {
+    overflow: hidden;
+}
 
-    body.app-body:has(#announcementList) #announcementList .post-image-container {
-        margin: 14px 20px 16px;
-    }
+body.app-body:has(#announcementList) #announcementList .post-image-container {
+    margin: 14px 20px 16px;
+}
 
-    body.app-body:has(#announcementList) #announcementList .post-content {
-        margin: 15px 0;
-    }
+body.app-body:has(#announcementList) #announcementList .post-content {
+    margin: 15px 0;
+}
 
 /* Loading / empty */
 body.app-body:has(.feed) .loading,
@@ -4205,259 +4209,262 @@ body.app-body:has(.main-content) {
     color: var(--resident-text) !important;
 }
 
-    body.app-body:has(.main-content) .topbar {
-        height: 76px;
-        padding: 0 30px;
-        background: rgba(255,255,255,.94) !important;
-        color: var(--resident-text) !important;
-        border-bottom: 1px solid var(--resident-line) !important;
-        box-shadow: 0 4px 20px rgba(24,50,71,.06);
-        backdrop-filter: blur(14px);
-    }
+body.app-body:has(.main-content) .topbar {
+    height: 76px;
+    padding: 0 30px;
+    background: rgba(255,255,255,.94) !important;
+    color: var(--resident-text) !important;
+    border-bottom: 1px solid var(--resident-line) !important;
+    box-shadow: 0 4px 20px rgba(24,50,71,.06);
+    backdrop-filter: blur(14px);
+}
 
-    body.app-body:has(.main-content) .top-brand {
-        color: var(--resident-text) !important;
-        font-weight: 850;
-    }
+body.app-body:has(.main-content) .top-brand {
+    color: var(--resident-text) !important;
+    font-weight: 850;
+}
 
-        body.app-body:has(.main-content) .top-brand > span {
-            width: 40px;
-            height: 40px;
-            border-radius: 13px;
-            background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
-        }
+body.app-body:has(.main-content) .top-brand > span {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
+}
 
-    body.app-body:has(.main-content) .top-search {
-        max-width: 560px;
-        height: 44px;
-        border-radius: 14px;
-        background: #f6f9fc !important;
-        border: 1px solid var(--resident-line) !important;
-    }
+body.app-body:has(.main-content) .top-search {
+    max-width: 560px;
+    height: 44px;
+    border-radius: 14px;
+    background: #f6f9fc !important;
+    border: 1px solid var(--resident-line) !important;
+}
 
-    body.app-body:has(.main-content) .top-user {
-        color: var(--resident-text) !important;
-    }
+body.app-body:has(.main-content) .top-user {
+    color: var(--resident-text) !important;
+}
 
-    body.app-body:has(.main-content) .top-user-info small {
-        color: var(--resident-muted) !important;
-    }
+body.app-body:has(.main-content) .top-user-info small {
+    color: var(--resident-muted) !important;
+}
 
-    body.app-body:has(.main-content) .avatar {
-        background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
-        color: #fff !important;
-    }
+body.app-body:has(.main-content) .avatar {
+    background: linear-gradient(135deg,#1769aa,#0f9d8a) !important;
+    color: #fff !important;
+}
 
-    body.app-body:has(.main-content) #logoutBtn {
-        background: #fff !important;
-        color: #415466 !important;
-        border: 1px solid #d9e4eb !important;
-        border-radius: 11px;
-    }
+body.app-body:has(.main-content) #logoutBtn {
+    background: #fff !important;
+    color: #415466 !important;
+    border: 1px solid #d9e4eb !important;
+    border-radius: 11px;
+}
 
-    body.app-body:has(.main-content) .layout {
-        max-width: 1380px;
-        grid-template-columns: 238px minmax(0,1fr);
-        gap: 34px;
-        padding: 30px 28px 70px;
-        background: transparent !important;
-    }
+body.app-body:has(.main-content) .layout {
+    max-width: 1380px;
+    grid-template-columns: 238px minmax(0,1fr);
+    gap: 34px;
+    padding: 30px 28px 70px;
+    background: transparent !important;
+}
 
-    body.app-body:has(.main-content) .sidebar {
-        width: 238px;
-        position: sticky;
-        top: 98px;
-        background: #fff !important;
-        color: var(--resident-text) !important;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 20px;
-        box-shadow: 0 8px 28px rgba(24,50,71,.06);
-    }
+body.app-body:has(.main-content) .sidebar {
+    width: 238px;
+    position: sticky;
+    top: 98px;
+    background: #fff !important;
+    color: var(--resident-text) !important;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(24,50,71,.06);
+}
 
-    body.app-body:has(.main-content) .profile-mini {
-        margin: 12px;
-        width: calc(100% - 24px);
-        padding: 14px;
-        border: 1px solid #dcece9 !important;
-        border-radius: 16px;
-        background: linear-gradient(145deg,#effaf8,#f8fcff) !important;
-    }
+body.app-body:has(.main-content) .profile-mini {
+    margin: 12px;
+    width: calc(100% - 24px);
+    padding: 14px;
+    border: 1px solid #dcece9 !important;
+    border-radius: 16px;
+    background: linear-gradient(145deg,#effaf8,#f8fcff) !important;
+}
 
-        body.app-body:has(.main-content) .profile-mini strong,
-        body.app-body:has(.main-content) .profile-mini small {
-            color: var(--resident-text) !important;
-        }
+body.app-body:has(.main-content) .profile-mini strong,
+body.app-body:has(.main-content) .profile-mini small {
+    color: var(--resident-text) !important;
+}
 
-    body.app-body:has(.main-content) .sidebar-nav {
-        padding: 6px 12px 16px;
-    }
+body.app-body:has(.main-content) .sidebar-nav {
+    padding: 6px 12px 16px;
+}
 
-    body.app-body:has(.main-content) .nav-link {
-        min-height: 46px;
-        border-radius: 12px;
-        color: #607487 !important;
-        font-weight: 700;
-        border: 1px solid transparent;
-    }
+body.app-body:has(.main-content) .nav-link {
+    min-height: 46px;
+    border-radius: 12px;
+    color: #607487 !important;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
 
-        body.app-body:has(.main-content) .nav-link:hover {
-            background: #f0f7fb !important;
-            color: var(--resident-blue) !important;
-        }
+body.app-body:has(.main-content) .nav-link:hover {
+    background: #f0f7fb !important;
+    color: var(--resident-blue) !important;
+}
 
-        body.app-body:has(.main-content) .nav-link.active {
-            background: linear-gradient(90deg,#eaf5fc,#effaf8) !important;
-            color: #125e8e !important;
-            border-color: #d4e9ee !important;
-            box-shadow: none !important;
-        }
+body.app-body:has(.main-content) .nav-link.active {
+    background: linear-gradient(90deg,#eaf5fc,#effaf8) !important;
+    color: #125e8e !important;
+    border-color: #d4e9ee !important;
+    box-shadow: none !important;
+}
 
-    body.app-body:has(.main-content) .main-content {
-        width: 100%;
-        max-width: 930px;
-        margin: 0 auto;
-        min-width: 0;
-        background: transparent !important;
-    }
+body.app-body:has(.main-content) .main-content {
+    width: 100%;
+    max-width: 930px;
+    margin: 0 auto;
+    min-width: 0;
+    background: transparent !important;
+}
 
-    body.app-body:has(.main-content) .official-page-header {
-        position: relative;
-        min-height: 205px;
-        padding: 34px;
-        margin-bottom: 18px;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        border: 1px solid #d9e8ef;
-        border-radius: 22px;
-        background: radial-gradient(circle at 90% 20%,rgba(15,157,138,.17),transparent 30%), radial-gradient(circle at 10% 100%,rgba(23,105,170,.12),transparent 35%), linear-gradient(135deg,#fff,#f4faff);
-        box-shadow: 0 12px 32px rgba(24,50,71,.07);
-    }
+body.app-body:has(.main-content) .official-page-header {
+    position: relative;
+    min-height: 205px;
+    padding: 34px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid #d9e8ef;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 90% 20%,rgba(15,157,138,.17),transparent 30%),
+        radial-gradient(circle at 10% 100%,rgba(23,105,170,.12),transparent 35%),
+        linear-gradient(135deg,#fff,#f4faff);
+    box-shadow: 0 12px 32px rgba(24,50,71,.07);
+}
 
-    body.app-body:has(.main-content) .official-eyebrow {
-        margin: 0 0 8px;
-        color: var(--resident-teal);
-        font-size: 11px;
-        font-weight: 850;
-        letter-spacing: .14em;
-    }
+body.app-body:has(.main-content) .official-eyebrow {
+    margin: 0 0 8px;
+    color: var(--resident-teal);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .14em;
+}
 
-    body.app-body:has(.main-content) .official-page-header h1 {
-        margin: 0;
-        color: var(--resident-text);
-        font-size: clamp(29px,4vw,39px);
-        letter-spacing: -.035em;
-    }
+body.app-body:has(.main-content) .official-page-header h1 {
+    margin: 0;
+    color: var(--resident-text);
+    font-size: clamp(29px,4vw,39px);
+    letter-spacing: -.035em;
+}
 
-    body.app-body:has(.main-content) .official-page-header p:last-child {
-        margin: 9px 0 0;
-        color: var(--resident-muted);
-    }
+body.app-body:has(.main-content) .official-page-header p:last-child {
+    margin: 9px 0 0;
+    color: var(--resident-muted);
+}
 
-    body.app-body:has(.main-content) .official-search {
-        width: 100%;
-        max-width: none;
-        margin-bottom: 24px;
-        padding: 4px;
-        background: #fff;
-        border: 1px solid var(--resident-line);
-        border-radius: 15px;
-        box-shadow: 0 6px 20px rgba(24,50,71,.04);
-    }
+body.app-body:has(.main-content) .official-search {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 24px;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid var(--resident-line);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(24,50,71,.04);
+}
 
-        body.app-body:has(.main-content) .official-search input {
-            border: 0 !important;
-            background: transparent !important;
-            box-shadow: none !important;
-        }
+body.app-body:has(.main-content) .official-search input {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
-    body.app-body:has(.main-content) .official-section {
-        margin-top: 25px;
-    }
+body.app-body:has(.main-content) .official-section {
+    margin-top: 25px;
+}
 
-    body.app-body:has(.main-content) .official-section-heading {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 14px;
-    }
+body.app-body:has(.main-content) .official-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
 
-    body.app-body:has(.main-content) .official-section-icon {
-        width: 42px;
-        height: 42px;
-        display: grid;
-        place-items: center;
-        border-radius: 13px;
-        background: #eaf5fc;
-        border: 1px solid #d6eaf5;
-    }
+body.app-body:has(.main-content) .official-section-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #eaf5fc;
+    border: 1px solid #d6eaf5;
+}
 
-    body.app-body:has(.main-content) .official-section-heading h2 {
-        margin: 0;
-        color: var(--resident-text);
-        font-size: 20px;
-    }
+body.app-body:has(.main-content) .official-section-heading h2 {
+    margin: 0;
+    color: var(--resident-text);
+    font-size: 20px;
+}
 
-    body.app-body:has(.main-content) .official-section-heading p {
-        margin: 2px 0 0;
-        color: var(--resident-muted);
-        font-size: 12px;
-    }
+body.app-body:has(.main-content) .official-section-heading p {
+    margin: 2px 0 0;
+    color: var(--resident-muted);
+    font-size: 12px;
+}
 
-    body.app-body:has(.main-content) .official-grid {
-        display: grid;
-        grid-template-columns: repeat(3,minmax(0,1fr));
-        gap: 17px;
-    }
+body.app-body:has(.main-content) .official-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 17px;
+}
 
-    body.app-body:has(.main-content) .official-card {
-        overflow: hidden;
-        background: #fff !important;
-        border: 1px solid var(--resident-line) !important;
-        border-radius: 18px;
-        box-shadow: 0 7px 23px rgba(24,50,71,.055);
-        transition: .2s ease;
-    }
+body.app-body:has(.main-content) .official-card {
+    overflow: hidden;
+    background: #fff !important;
+    border: 1px solid var(--resident-line) !important;
+    border-radius: 18px;
+    box-shadow: 0 7px 23px rgba(24,50,71,.055);
+    transition: .2s ease;
+}
 
-        body.app-body:has(.main-content) .official-card:hover {
-            transform: translateY(-3px);
-            border-color: #c7dce6 !important;
-            box-shadow: 0 14px 30px rgba(24,50,71,.09);
-        }
+body.app-body:has(.main-content) .official-card:hover {
+    transform: translateY(-3px);
+    border-color: #c7dce6 !important;
+    box-shadow: 0 14px 30px rgba(24,50,71,.09);
+}
 
-        body.app-body:has(.main-content) .official-card img,
-        body.app-body:has(.main-content) .official-card .official-photo {
-            width: 100%;
-            height: 205px;
-            object-fit: cover;
-            background: linear-gradient(135deg,#e6f2fa,#e6f7f3);
-        }
+body.app-body:has(.main-content) .official-card img,
+body.app-body:has(.main-content) .official-card .official-photo {
+    width: 100%;
+    height: 205px;
+    object-fit: cover;
+    background: linear-gradient(135deg,#e6f2fa,#e6f7f3);
+}
 
-        body.app-body:has(.main-content) .official-card .official-info {
-            padding: 17px;
-        }
+body.app-body:has(.main-content) .official-card .official-info {
+    padding: 17px;
+}
 
-        body.app-body:has(.main-content) .official-card h3 {
-            margin: 0;
-            color: var(--resident-text);
-            font-size: 17px;
-        }
+body.app-body:has(.main-content) .official-card h3 {
+    margin: 0;
+    color: var(--resident-text);
+    font-size: 17px;
+}
 
-        body.app-body:has(.main-content) .official-card .position {
-            display: inline-flex;
-            margin: 7px 0 12px;
-            padding: 5px 9px;
-            border-radius: 999px;
-            background: #eaf5fc;
-            color: #1769aa;
-            font-size: 10px;
-            font-weight: 850;
-        }
+body.app-body:has(.main-content) .official-card .position {
+    display: inline-flex;
+    margin: 7px 0 12px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eaf5fc;
+    color: #1769aa;
+    font-size: 10px;
+    font-weight: 850;
+}
 
-        body.app-body:has(.main-content) .official-card p {
-            color: var(--resident-muted);
-            font-size: 12px;
-        }
+body.app-body:has(.main-content) .official-card p {
+    color: var(--resident-muted);
+    font-size: 12px;
+}
 
 /* Resident responsive layout */
 @media (max-width: 1050px) {
@@ -4514,13 +4521,13 @@ body.app-body:has(.main-content) {
         margin-bottom: 16px;
     }
 
-        body.app-body:has(.feed) .sidebar nav,
-        body.app-body:has(.main-content) .sidebar-nav {
-            display: grid;
-            grid-template-columns: repeat(3,minmax(0,1fr));
-            gap: 6px;
-            padding: 6px 10px 10px;
-        }
+    body.app-body:has(.feed) .sidebar nav,
+    body.app-body:has(.main-content) .sidebar-nav {
+        display: grid;
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap: 6px;
+        padding: 6px 10px 10px;
+    }
 
     body.app-body:has(.feed) .nav-item,
     body.app-body:has(.feed) .nav-link,
@@ -4559,10 +4566,10 @@ body.app-body:has(.main-content) {
         border-radius: 18px;
     }
 
-        body.app-body:has(.feed) .welcome h1,
-        body.app-body:has(.main-content) .official-page-header h1 {
-            font-size: 27px;
-        }
+    body.app-body:has(.feed) .welcome h1,
+    body.app-body:has(.main-content) .official-page-header h1 {
+        font-size: 27px;
+    }
 
     body.app-body:has(.feed) .composer.card {
         padding: 19px;
@@ -4574,9 +4581,9 @@ body.app-body:has(.main-content) {
         flex-direction: column;
     }
 
-        body.app-body:has(.feed) .composer-actions .primary-btn {
-            width: 100%;
-        }
+    body.app-body:has(.feed) .composer-actions .primary-btn {
+        width: 100%;
+    }
 
     body.app-body:has(.main-content) .official-grid {
         grid-template-columns: 1fr;
