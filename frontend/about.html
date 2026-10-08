@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About Us • Barangay Connect</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app-body">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+
+        <a class="top-brand" href="dashboard.html">
+            <span>BC</span>
+            Barangay Connect
+        </a>
+
+        <div class="top-user">
+
+            <div class="clickable-profile">
+
+                <span class="avatar tiny" id="topAvatar">
+                    U
+                </span>
+
+                <span id="topName">
+                    User
+                </span>
+
+            </div>
+
+            <button class="icon-btn" id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="profile-mini">
+
+                <span class="avatar large" id="profileAvatar">
+                    U
+                </span>
+
+                <strong id="profileName">
+                    User
+                </strong>
+
+                <small id="profileEmail">
+                    email
+                </small>
+
+            </div>
+
+
+            <nav>
+
+                <a class="nav-item"
+                   href="dashboard.html">
+                    ⌂
+                    <span>Community Feed</span>
+                </a>
+
+
+                <a class="nav-item"
+                   href="announcements.html">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+
+                <a href="officials.html"
+                   class="nav-link">
+                    🏛️
+                    <span>Officials</span>
+                </a>
+
+
+                <a class="nav-item active"
+                   href="about.html">
+                    ℹ️
+                    <span>About Us</span>
+                </a>
+
+
+                <a class="nav-item"
+                   href="contact.html">
+                    📞
+                    <span>Contact</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="feed">
+
+            <section class="welcome">
+
+                <div>
+
+                    <p class="eyebrow">
+                        ABOUT BARANGAY CONNECT
+                    </p>
+
+                    <h1>
+                        About Us
+                    </h1>
+
+                    <p class="muted">
+                        Learn more about Barangay Connect and
+                        our community.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <section class="content-card">
+
+                <h2>
+                    Barangay Connect
+                </h2>
+
+                <p>
+                    Barangay Connect is a community platform
+                    designed to connect residents with their
+                    barangay.
+                </p>
+
+
+                <h2>
+                    Our Purpose
+                </h2>
+
+                <p>
+                    Our platform provides residents with a
+                    convenient way to stay informed about
+                    barangay announcements, share community
+                    concerns, and communicate with others.
+                </p>
+
+
+                <h2>
+                    Our Community
+                </h2>
+
+                <p>
+                    We aim to encourage better communication
+                    between residents and barangay officials
+                    and help build a more informed and connected
+                    community.
+                </p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+
+    <script src="config.js"></script>
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>

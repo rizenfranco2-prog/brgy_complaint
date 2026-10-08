@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Contact • Barangay Connect</title>
+
+    <link rel="icon"
+          href="favicon.ico"
+          type="image/x-icon">
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body class="app-body">
+
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+
+        <a class="top-brand"
+           href="dashboard.html">
+
+            <span>BC</span>
+            Barangay Connect
+
+        </a>
+
+
+        <div class="top-user">
+
+            <div class="clickable-profile">
+
+                <span class="avatar tiny"
+                      id="topAvatar">
+                    U
+                </span>
+
+                <span id="topName">
+                    User
+                </span>
+
+            </div>
+
+
+            <button class="icon-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+
+            <div class="profile-mini">
+
+                <span class="avatar large"
+                      id="profileAvatar">
+                    U
+                </span>
+
+                <strong id="profileName">
+                    User
+                </strong>
+
+                <small id="profileEmail">
+                    email
+                </small>
+
+            </div>
+
+
+            <nav>
+
+
+                <a class="nav-item"
+                   href="dashboard.html">
+                    ⌂
+                    <span>Community Feed</span>
+                </a>
+
+
+                <a class="nav-item"
+                   href="announcements.html">
+                    📢
+                    <span>Announcements</span>
+                </a>
+
+
+                <a href="officials.html"
+                   class="nav-link">
+                    🏛️
+                    <span>Officials</span>
+                </a>
+
+
+                <a class="nav-item"
+                   href="about.html">
+                    ℹ️
+                    <span>About Us</span>
+                </a>
+
+
+                <a class="nav-item active"
+                   href="contact.html">
+                    📞
+                    <span>Contact</span>
+                </a>
+
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="feed">
+
+
+            <section class="welcome">
+
+                <div>
+
+                    <p class="eyebrow">
+                        GET IN TOUCH
+                    </p>
+
+                    <h1>
+                        Contact Us
+                    </h1>
+
+                    <p class="muted">
+                        Need assistance? You can contact
+                        your barangay office using the
+                        information below.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT CARDS -->
+            <section class="contact-grid">
+
+
+                <div class="content-card">
+
+                    <div class="contact-icon">
+                        📍
+                    </div>
+
+                    <h2>
+                        Barangay Office
+                    </h2>
+
+                    <p>
+                        Visit the barangay office for
+                        assistance and community concerns.
+                    </p>
+
+                    <strong>
+                        Office Address
+                    </strong>
+
+                    <p>
+                        Your Barangay Office Address
+                    </p>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="contact-icon">
+                        📞
+                    </div>
+
+                    <h2>
+                        Phone
+                    </h2>
+
+                    <p>
+                        You can contact the barangay
+                        office through:
+                    </p>
+
+                    <strong>
+                        Contact Number
+                    </strong>
+
+                    <p>
+                        09XX-XXX-XXXX
+                    </p>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="contact-icon">
+                        ✉️
+                    </div>
+
+                    <h2>
+                        Email
+                    </h2>
+
+                    <p>
+                        For inquiries and other concerns,
+                        you may send an email.
+                    </p>
+
+                    <strong>
+                        Email Address
+                    </strong>
+
+                    <p>
+                        barangay@example.com
+                    </p>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="contact-icon">
+                        🕐
+                    </div>
+
+                    <h2>
+                        Office Hours
+                    </h2>
+
+                    <p>
+                        The barangay office is available
+                        during the following hours:
+                    </p>
+
+                    <strong>
+                        Monday – Friday
+                    </strong>
+
+                    <p>
+                        8:00 AM – 5:00 PM
+                    </p>
+
+                </div>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- TOAST -->
+    <div class="toast"
+         id="toast"></div>
+
+
+    <script src="config.js"></script>
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>
