@@ -4362,9 +4362,18 @@ body.app-body {
 
     /* ANNOUNCEMENT CONTENT */
 
-    .app-body .announcement-list {
+    .app-body .announcement-search input {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .app-body .announcement-search {
         width: 100%;
-        max-width: 900px;
+    }
+
+    .app-body .announcement-list {
+        width: 100% !important;
+        max-width: 100% !important;
     }
     /* =========================================================
    ANNOUNCEMENT MODAL FIX
