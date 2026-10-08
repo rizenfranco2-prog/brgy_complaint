@@ -596,7 +596,7 @@ app.get("/api/officials", auth, async (req, res) => {
     }
 });
 
-app.post("/api/officials", adminOnly, async (req, res) => {
+app.post("/api/officials", auth, adminOnly, async (req, res) => {
     try {
         const {
             name,
@@ -638,7 +638,7 @@ app.post("/api/officials", adminOnly, async (req, res) => {
     }
 });
 
-app.put("/api/officials/:id", adminOnly, async (req, res) => {
+app.put("/api/officials/:id", auth, adminOnly, async (req, res) => {
     try {
         const {
             name,
@@ -688,7 +688,7 @@ app.put("/api/officials/:id", adminOnly, async (req, res) => {
     }
 });
 
-app.delete("/api/officials/:id", adminOnly, async (req, res) => {
+app.delete("/api/officials/:id", auth, adminOnly, async (req, res) => {
     try {
         const official = await Official.findByIdAndDelete(
             req.params.id
