@@ -211,13 +211,14 @@
 
 
     <!-- ================= ANNOUNCEMENT MODAL ================= -->
-    <div id="announcementModal"
-         class="modal">
+    <div id="announcementModal" class="modal">
 
         <div class="modal-card">
 
-            <button class="modal-close"
-                    id="closeAnnouncementModal">
+            <button type="button"
+                    class="modal-close"
+                    id="closeAnnouncementModal"
+                    onclick="document.getElementById('announcementModal').classList.remove('show')">
                 ×
             </button>
 
@@ -235,8 +236,7 @@
                 <textarea id="announcementContent"
                           rows="6"
                           placeholder="Write your announcement..."
-                          required>
-                </textarea>
+                          required></textarea>
 
                 <label>Image URL (optional)</label>
 
