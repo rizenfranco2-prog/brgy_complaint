@@ -8,7 +8,7 @@ function token() {
 
 
 /* =========================================================
-   API HELPER
+   API
    ========================================================= */
 
 async function api(path, options = {}) {
@@ -66,8 +66,7 @@ function initials(name) {
 
 function toast(message) {
 
-    const element =
-        document.getElementById("toast");
+    const element = document.getElementById("toast");
 
     if (!element) return;
 
@@ -93,34 +92,41 @@ async function loadOfficials(search = "") {
     const barangayContainer =
         document.getElementById("barangayOfficials");
 
+
     if (cityContainer) {
         cityContainer.innerHTML = `
-            <div class="loading">
-                Loading officials...
+            <div class="official-empty">
+                <strong>Loading officials...</strong>
+                Please wait.
             </div>
         `;
     }
+
 
     if (barangayContainer) {
         barangayContainer.innerHTML = `
-            <div class="loading">
-                Loading officials...
+            <div class="official-empty">
+                <strong>Loading officials...</strong>
+                Please wait.
             </div>
         `;
     }
 
+
     try {
 
-        const query =
-            search.trim()
-                ? `?search=${encodeURIComponent(search.trim())}`
-                : "";
+        const query = search.trim()
+            ? `?search=${encodeURIComponent(search.trim())}`
+            : "";
+
 
         const data =
             await api(`/api/officials${query}`);
 
+
         const officials =
             data.officials || [];
+
 
         const cityOfficials =
             officials.filter(
@@ -128,15 +134,25 @@ async function loadOfficials(search = "") {
                     official.government === "City Government"
             );
 
+
         const barangayOfficials =
             officials.filter(
                 official =>
                     official.government === "Barangay Government"
             );
 
-        renderCityOfficials(cityOfficials);
 
-        renderBarangayOfficials(barangayOfficials);
+        renderOfficials(
+            cityContainer,
+            cityOfficials
+        );
+
+
+        renderOfficials(
+            barangayContainer,
+            barangayOfficials
+        );
+
 
     } catch (error) {
 
@@ -144,7 +160,7 @@ async function loadOfficials(search = "") {
 
         if (cityContainer) {
             cityContainer.innerHTML = `
-                <div class="loading">
+                <div class="official-empty">
                     Failed to load officials.
                 </div>
             `;
@@ -152,7 +168,7 @@ async function loadOfficials(search = "") {
 
         if (barangayContainer) {
             barangayContainer.innerHTML = `
-                <div class="loading">
+                <div class="official-empty">
                     Failed to load officials.
                 </div>
             `;
@@ -164,53 +180,26 @@ async function loadOfficials(search = "") {
 
 
 /* =========================================================
-   RENDER CITY OFFICIALS
+   RENDER
    ========================================================= */
 
-function renderCityOfficials(officials) {
-
-    const container =
-        document.getElementById("cityOfficials");
+function renderOfficials(container, officials) {
 
     if (!container) return;
+
 
     if (!officials.length) {
 
         container.innerHTML = `
-            <div class="loading">
-                No city officials found.
+            <div class="official-empty">
+                <strong>No officials found.</strong>
+                Add an official using the button above.
             </div>
         `;
 
         return;
     }
 
-    container.innerHTML =
-        officials.map(createOfficialCard).join("");
-}
-
-
-/* =========================================================
-   RENDER BARANGAY OFFICIALS
-   ========================================================= */
-
-function renderBarangayOfficials(officials) {
-
-    const container =
-        document.getElementById("barangayOfficials");
-
-    if (!container) return;
-
-    if (!officials.length) {
-
-        container.innerHTML = `
-            <div class="loading">
-                No barangay officials found.
-            </div>
-        `;
-
-        return;
-    }
 
     container.innerHTML =
         officials.map(createOfficialCard).join("");
@@ -223,19 +212,20 @@ function renderBarangayOfficials(officials) {
 
 function createOfficialCard(official) {
 
-    const image = official.image
+    const photo = official.image
         ? `
             <img
                 src="${escapeHTML(official.image)}"
                 class="official-image"
-                alt="Official"
+                alt="Official photo"
             >
-          `
+        `
         : `
             <div class="official-avatar">
                 ${escapeHTML(initials(official.name))}
             </div>
-          `;
+        `;
+
 
     return `
         <article
@@ -245,7 +235,7 @@ function createOfficialCard(official) {
 
             <div class="official-card-main">
 
-                ${image}
+                ${photo}
 
                 <div class="official-info">
 
@@ -265,7 +255,7 @@ function createOfficialCard(official) {
                 official.barangay
             )}
                                 </p>
-                              `
+                            `
             : ""
         }
 
@@ -277,7 +267,7 @@ function createOfficialCard(official) {
                 official.contactNumber
             )}
                                 </p>
-                              `
+                            `
             : ""
         }
 
@@ -289,7 +279,7 @@ function createOfficialCard(official) {
                 official.email
             )}
                                 </p>
-                              `
+                            `
             : ""
         }
 
@@ -302,14 +292,14 @@ function createOfficialCard(official) {
 
                 <button
                     type="button"
-                    class="edit-official-btn"
+                    class="official-edit-btn"
                     onclick="editOfficial('${official._id}')">
                     Edit
                 </button>
 
                 <button
                     type="button"
-                    class="delete-official-btn"
+                    class="official-delete-btn"
                     onclick="deleteOfficial('${official._id}')">
                     Delete
                 </button>
@@ -322,7 +312,7 @@ function createOfficialCard(official) {
 
 
 /* =========================================================
-   OPEN ADD MODAL
+   OPEN ADD
    ========================================================= */
 
 function openAddOfficial() {
@@ -334,11 +324,25 @@ function openAddOfficial() {
         form.reset();
     }
 
-    document.getElementById("officialId").value = "";
+
+    document.getElementById(
+        "officialId"
+    ).value = "";
+
 
     document.getElementById(
         "officialModalTitle"
     ).textContent = "Add Official";
+
+
+    document.getElementById(
+        "saveOfficialBtn"
+    ).textContent = "Add Official";
+
+
+    document.getElementById(
+        "officialModal"
+    ).classList.remove("hidden");
 
     document.getElementById(
         "officialModal"
@@ -347,7 +351,7 @@ function openAddOfficial() {
 
 
 /* =========================================================
-   CLOSE OFFICIAL MODAL
+   CLOSE ADD / EDIT MODAL
    ========================================================= */
 
 function closeOfficialModal() {
@@ -355,14 +359,15 @@ function closeOfficialModal() {
     const modal =
         document.getElementById("officialModal");
 
-    if (modal) {
-        modal.classList.remove("show");
-    }
+    if (!modal) return;
+
+    modal.classList.remove("show");
+    modal.classList.add("hidden");
 }
 
 
 /* =========================================================
-   EDIT OFFICIAL
+   EDIT
    ========================================================= */
 
 async function editOfficial(id) {
@@ -372,10 +377,12 @@ async function editOfficial(id) {
         const data =
             await api("/api/officials");
 
+
         const official =
             (data.officials || []).find(
                 item => item._id === id
             );
+
 
         if (!official) {
 
@@ -384,45 +391,65 @@ async function editOfficial(id) {
             return;
         }
 
+
         document.getElementById(
             "officialModalTitle"
         ).textContent = "Edit Official";
+
+
+        document.getElementById(
+            "saveOfficialBtn"
+        ).textContent = "Save Changes";
+
 
         document.getElementById(
             "officialId"
         ).value = official._id;
 
+
         document.getElementById(
             "officialName"
         ).value = official.name || "";
+
 
         document.getElementById(
             "officialPosition"
         ).value = official.position || "";
 
+
         document.getElementById(
             "officialGovernment"
         ).value = official.government || "";
+
 
         document.getElementById(
             "officialBarangay"
         ).value = official.barangay || "";
 
+
         document.getElementById(
             "officialContact"
         ).value = official.contactNumber || "";
+
 
         document.getElementById(
             "officialEmail"
         ).value = official.email || "";
 
+
         document.getElementById(
             "officialImage"
         ).value = official.image || "";
 
+
+        document.getElementById(
+            "officialModal"
+        ).classList.remove("hidden");
+
         document.getElementById(
             "officialModal"
         ).classList.add("show");
+
 
     } catch (error) {
 
@@ -434,43 +461,58 @@ async function editOfficial(id) {
 
 
 /* =========================================================
-   SAVE OFFICIAL
+   SAVE
    ========================================================= */
 
 async function saveOfficial(event) {
 
     event.preventDefault();
 
+
     const id =
         document.getElementById("officialId").value;
 
+
     const name =
-        document.getElementById("officialName")
-            .value.trim();
+        document.getElementById(
+            "officialName"
+        ).value.trim();
+
 
     const position =
-        document.getElementById("officialPosition")
-            .value.trim();
+        document.getElementById(
+            "officialPosition"
+        ).value.trim();
+
 
     const government =
-        document.getElementById("officialGovernment")
-            .value;
+        document.getElementById(
+            "officialGovernment"
+        ).value;
+
 
     const barangay =
-        document.getElementById("officialBarangay")
-            .value.trim();
+        document.getElementById(
+            "officialBarangay"
+        ).value.trim();
+
 
     const contactNumber =
-        document.getElementById("officialContact")
-            .value.trim();
+        document.getElementById(
+            "officialContact"
+        ).value.trim();
+
 
     const email =
-        document.getElementById("officialEmail")
-            .value.trim();
+        document.getElementById(
+            "officialEmail"
+        ).value.trim();
+
 
     const image =
-        document.getElementById("officialImage")
-            .value.trim();
+        document.getElementById(
+            "officialImage"
+        ).value.trim();
 
 
     if (!name || !position || !government) {
@@ -484,7 +526,6 @@ async function saveOfficial(event) {
 
 
     const officialData = {
-
         name,
         position,
         government,
@@ -492,7 +533,6 @@ async function saveOfficial(event) {
         contactNumber,
         email,
         image
-
     };
 
 
@@ -500,37 +540,38 @@ async function saveOfficial(event) {
 
         if (id) {
 
-            await api(`/api/officials/${id}`, {
+            await api(
+                `/api/officials/${id}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(officialData)
+                }
+            );
 
-                method: "PUT",
-
-                body: JSON.stringify(
-                    officialData
-                )
-
-            });
-
-            toast("Official updated successfully.");
+            toast(
+                "Official updated successfully."
+            );
 
         } else {
 
-            await api("/api/officials", {
+            await api(
+                "/api/officials",
+                {
+                    method: "POST",
+                    body: JSON.stringify(officialData)
+                }
+            );
 
-                method: "POST",
-
-                body: JSON.stringify(
-                    officialData
-                )
-
-            });
-
-            toast("Official added successfully.");
+            toast(
+                "Official added successfully."
+            );
         }
 
 
         closeOfficialModal();
 
         loadOfficials();
+
 
     } catch (error) {
 
@@ -542,32 +583,35 @@ async function saveOfficial(event) {
 
 
 /* =========================================================
-   DELETE OFFICIAL
+   DELETE
    ========================================================= */
 
 async function deleteOfficial(id) {
 
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this official?"
-        );
-
-    if (!confirmed) {
+    if (!confirm(
+        "Are you sure you want to delete this official?"
+    )) {
         return;
     }
 
 
     try {
 
-        await api(`/api/officials/${id}`, {
+        await api(
+            `/api/officials/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
 
-            method: "DELETE"
 
-        });
+        toast(
+            "Official deleted successfully."
+        );
 
-        toast("Official deleted successfully.");
 
         loadOfficials();
+
 
     } catch (error) {
 
@@ -587,9 +631,10 @@ function openPasswordModal() {
     const modal =
         document.getElementById("passwordModal");
 
-    if (modal) {
-        modal.classList.add("show");
-    }
+    if (!modal) return;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("show");
 }
 
 
@@ -598,9 +643,10 @@ function closePasswordModal() {
     const modal =
         document.getElementById("passwordModal");
 
-    if (modal) {
-        modal.classList.remove("show");
-    }
+    if (!modal) return;
+
+    modal.classList.remove("show");
+    modal.classList.add("hidden");
 }
 
 
@@ -612,19 +658,30 @@ async function changePassword(event) {
 
     event.preventDefault();
 
+
     const currentPassword =
-        document.getElementById("currentPassword").value;
+        document.getElementById(
+            "adminCurrentPassword"
+        ).value;
+
 
     const newPassword =
-        document.getElementById("newPassword").value;
+        document.getElementById(
+            "adminNewPassword"
+        ).value;
+
 
     const confirmPassword =
-        document.getElementById("confirmPassword").value;
+        document.getElementById(
+            "adminConfirmPassword"
+        ).value;
 
 
     if (newPassword !== confirmPassword) {
 
-        toast("New passwords do not match.");
+        toast(
+            "New passwords do not match."
+        );
 
         return;
     }
@@ -651,10 +708,12 @@ async function changePassword(event) {
 
 
         document
-            .getElementById("passwordForm")
+            .getElementById("adminPasswordForm")
             ?.reset();
 
+
         closePasswordModal();
+
 
     } catch (error) {
 
@@ -664,7 +723,7 @@ async function changePassword(event) {
 
 
 /* =========================================================
-   ADMIN AUTH CHECK
+   ADMIN AUTH
    ========================================================= */
 
 async function checkAdmin() {
@@ -699,57 +758,61 @@ async function checkAdmin() {
             "Admin";
 
 
-        const topName =
-            document.getElementById("topName");
-
-        const topAvatar =
-            document.getElementById("topAvatar");
-
-        const profileName =
-            document.getElementById("profileName");
-
-        const profileAvatar =
-            document.getElementById("profileAvatar");
-
-        const profileEmail =
-            document.getElementById("profileEmail");
+        const adminAvatar =
+            document.getElementById(
+                "adminAvatar"
+            );
 
 
-        if (topName) {
-            topName.textContent =
+        const adminNameElement =
+            document.getElementById(
+                "adminName"
+            );
+
+
+        const sidebarAvatar =
+            document.getElementById(
+                "sidebarAvatar"
+            );
+
+
+        const sidebarAdminName =
+            document.getElementById(
+                "sidebarAdminName"
+            );
+
+
+        if (adminNameElement) {
+            adminNameElement.textContent =
                 adminName;
         }
 
 
-        if (topAvatar) {
-            topAvatar.textContent =
+        if (adminAvatar) {
+            adminAvatar.textContent =
                 initials(adminName);
         }
 
 
-        if (profileName) {
-            profileName.textContent =
+        if (sidebarAdminName) {
+            sidebarAdminName.textContent =
                 adminName;
         }
 
 
-        if (profileAvatar) {
-            profileAvatar.textContent =
+        if (sidebarAvatar) {
+            sidebarAvatar.textContent =
                 initials(adminName);
-        }
-
-
-        if (profileEmail) {
-            profileEmail.textContent =
-                "Administrator";
         }
 
 
         return true;
 
+
     } catch (error) {
 
         console.error(error);
+
 
         localStorage.removeItem(
             "barangay_token"
@@ -759,8 +822,10 @@ async function checkAdmin() {
             "barangay_role"
         );
 
+
         window.location.href =
             "admin-login.html";
+
 
         return false;
     }
@@ -800,7 +865,7 @@ document.addEventListener(
         if (!isAdmin) return;
 
 
-        /* ADD OFFICIAL */
+        /* ADD */
 
         document
             .getElementById("addOfficialBtn")
@@ -810,7 +875,7 @@ document.addEventListener(
             );
 
 
-        /* OFFICIAL FORM */
+        /* SAVE */
 
         document
             .getElementById("officialForm")
@@ -820,10 +885,20 @@ document.addEventListener(
             );
 
 
-        /* CLOSE OFFICIAL MODAL */
+        /* CLOSE */
 
         document
             .getElementById("closeOfficialModal")
+            ?.addEventListener(
+                "click",
+                closeOfficialModal
+            );
+
+
+        /* CANCEL */
+
+        document
+            .getElementById("cancelOfficialBtn")
             ?.addEventListener(
                 "click",
                 closeOfficialModal
@@ -836,6 +911,7 @@ document.addEventListener(
             document.getElementById(
                 "officialSearch"
             );
+
 
         if (searchInput) {
 
@@ -871,7 +947,7 @@ document.addEventListener(
 
 
         document
-            .getElementById("passwordForm")
+            .getElementById("adminPasswordForm")
             ?.addEventListener(
                 "submit",
                 changePassword
@@ -881,7 +957,7 @@ document.addEventListener(
         /* LOGOUT */
 
         document
-            .getElementById("logoutBtn")
+            .getElementById("adminLogout")
             ?.addEventListener(
                 "click",
                 logout
