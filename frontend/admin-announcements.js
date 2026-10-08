@@ -328,7 +328,7 @@ async function editAnnouncement(id) {
 
         document.getElementById(
             "announcementModal"
-        ).classList.add("show");
+        ).classList.remove("hidden");
 
     } catch (error) {
 
@@ -440,7 +440,7 @@ function closeAnnouncementModal() {
         document.getElementById("announcementModal");
 
     if (modal) {
-        modal.classList.remove("show");
+        modal.classList.add("hidden");
     }
 }
 
@@ -455,7 +455,7 @@ function openPasswordModal() {
         document.getElementById("passwordModal");
 
     if (modal) {
-        modal.classList.add("show");
+        modal.classList.remove("hidden");
     }
 }
 
@@ -466,7 +466,7 @@ function closePasswordModal() {
         document.getElementById("passwordModal");
 
     if (modal) {
-        modal.classList.remove("show");
+        modal.classList.add("hidden");
     }
 }
 
