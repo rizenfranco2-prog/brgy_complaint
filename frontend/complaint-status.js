@@ -681,20 +681,38 @@ async function checkAdmin() {
    LOGOUT
 ========================= */
 
-function logoutAdmin() {
+function logoutAdmin(event) {
 
-    localStorage.removeItem(
-        "barangay_token"
-    );
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 
-    localStorage.removeItem(
-        "barangay_role"
-    );
+    localStorage.removeItem("barangay_token");
+    localStorage.removeItem("barangay_role");
 
-    window.location.href =
-        "admin-login.html";
+    window.location.replace("admin-login.html");
 }
 
+
+/* =========================
+   SETUP LOGOUT
+========================= */
+
+function setupLogout() {
+
+    const logoutButtons =
+        document.querySelectorAll("#adminLogout");
+
+    logoutButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            logoutAdmin
+        );
+
+    });
+}
 
 /* =========================
    START
@@ -711,10 +729,7 @@ document.addEventListener(
         setupStatusFilter();
 
 
-        const logout =
-            document.getElementById(
-                "adminLogout"
-            );
+        setupLogout();
 
         if (logout) {
 
