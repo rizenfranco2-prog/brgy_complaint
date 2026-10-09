@@ -1089,7 +1089,11 @@ document.addEventListener(
             /* LOAD POSTS */
             /* ========================================= */
 
+            /* LOAD POSTS */
             await loadPosts();
+
+            /* LOAD NOTIFICATIONS */
+            await loadNotifications();
 
 
         } catch (error) {
