@@ -4806,3 +4806,20 @@ body.app-body {
     .delete-comment-btn:hover {
         background: #fecaca;
     }
+
+.comments-section .comment-item .delete-comment-btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin-top: 5px !important;
+    padding: 5px 10px !important;
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+}
