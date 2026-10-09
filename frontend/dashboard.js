@@ -577,6 +577,9 @@ function renderPosts(list = posts) {
                     input.value = "";
 
                     await loadPosts();
+                    await loadNotifications();
+
+                    toast("Comment added successfully.");
 
                 } catch (err) {
 

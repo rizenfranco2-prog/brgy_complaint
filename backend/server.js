@@ -1507,50 +1507,33 @@ app.post(
                 }
 
 
-                const post =
-                    await Post.create({
-
-                        authorId:
-                            admin._id,
-
-                        authorName:
-                            `${admin.username} (Admin)`,
-
-                        type:
-                            "announcement",
-
-                        content,
-
-                        image,
-
-                        isAnnouncement:
-                            true,
-
-                        archived:
-                            false
-
-                    });
-
-
-                return res.status(201).json({
-                    message:
-                        "Announcement published.",
-                    post
+                const post = await Post.create({
+                    authorId: admin._id,
+                    authorName: `${admin.username} (Admin)`,
+                    type: "announcement",
+                    content,
+                    image,
+                    isAnnouncement: true,
+                    archived: false
                 });
 
-            }
+                // Notify all registered residents about the announcement.
+                const residents = await User.find({}, "_id").lean();
 
+                if (residents.length > 0) {
+                    await Notification.insertMany(
+                        residents.map(resident => ({
+                            recipientId: String(resident._id),
+                            postId: String(post._id),
+                            message: `New announcement: ${content.slice(0, 120)}`
+                        }))
+                    );
+                }
 
-            const residents = await User.find({}, "_id").lean();
-
-            if (residents.length > 0) {
-                await Notification.insertMany(
-                    residents.map(resident => ({
-                        recipientId: String(resident._id),
-                        postId: String(post._id),
-                        message: `New announcement: ${content.slice(0, 120)}`
-                    }))
-                );
+                return res.status(201).json({
+                    message: "Announcement published and residents notified.",
+                    post
+                });
             }
 
 
@@ -1978,16 +1961,18 @@ app.put(
                 new Date();
 
 
+
             await post.save();
 
+            await Notification.create({
+                recipientId: String(post.authorId),
+                postId: String(post._id),
+                message: "Your complaint status changed to Resolved."
+            });
 
             res.json({
-
-                message:
-                    "Complaint resolved and archived.",
-
+                message: "Complaint resolved and archived.",
                 post
-
             });
 
         } catch (err) {
@@ -2094,14 +2079,16 @@ app.put(
 
             await post.save();
 
+            // Notify the resident who submitted the complaint.
+            await Notification.create({
+                recipientId: String(post.authorId),
+                postId: String(post._id),
+                message: `Your complaint status changed to ${status}.`
+            });
 
             res.json({
-
-                message:
-                    `Complaint status changed to ${status}.`,
-
+                message: `Complaint status changed to ${status}.`,
                 post
-
             });
 
         } catch (err) {
