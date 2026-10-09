@@ -29,6 +29,39 @@ async function api(path, options = {}) {
 }
 
 
+async function deleteComment(commentId) {
+    if (!confirm("Are you sure you want to delete this comment?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `${API_URL}/api/comments/${commentId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("barangay_token")}`
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to delete comment.");
+        }
+
+        alert("Comment deleted successfully.");
+
+        // Reload the announcements and comments.
+        await loadAnnouncements();
+
+    } catch (error) {
+        alert(error.message || "Something went wrong.");
+    }
+}
+
+
 function escapeHTML(value) {
     const div = document.createElement("div");
     div.textContent = value ?? "";
@@ -223,46 +256,44 @@ function renderAnnouncements(announcements) {
                 </div>
 
 
-                <div class="comments-section">
 
-                    <h4>
-                        Comments (${comments.length})
-                    </h4>
+<div class="comments-section">
 
-                    ${
-                        comments.map(comment => `
-                            <div class="comment-item">
+    <h4>
+        Comments (${comments.length})
+    </h4>
 
-                                <span class="avatar">
-                                    ${escapeHTML(
-                                        initials(
-                                            comment.authorName
-                                        )
-                                    )}
-                                </span>
+    ${comments.map(comment => `
+            <div class="comment-item">
 
-                                <div class="comment-body">
+                <span class="avatar">
+                    ${escapeHTML(initials(comment.authorName))}
+                </span>
 
-                                    <strong>
-                                        ${escapeHTML(
-                                            comment.authorName ||
-                                            "User"
-                                        )}
-                                    </strong>
+                <div class="comment-body">
 
-                                    <p>
-                                        ${escapeHTML(
-                                            comment.content
-                                        )}
-                                    </p>
+                    <strong>
+                        ${escapeHTML(comment.authorName || "User")}
+                    </strong>
 
-                                </div>
+                    <p>
+                        ${escapeHTML(comment.content)}
+                    </p>
 
-                            </div>
-                        `).join("")
-                    }
+                    <button
+                        type="button"
+                        class="delete-comment-btn"
+                        onclick="deleteComment('${comment._id}')">
+                        Delete Comment
+                    </button>
 
                 </div>
+
+            </div>
+        `).join("")
+    }
+
+</div>
 
             </article>
         `;
@@ -345,6 +376,34 @@ async function editAnnouncement(id) {
     }
 }
 
+document.addEventListener("click", async (event) => {
+    const button = event.target.closest(".delete-comment-btn");
+
+    if (!button) return;
+
+    if (!confirm("Are you sure you want to delete this comment?")) {
+        return;
+    }
+
+    try {
+        button.disabled = true;
+
+        const commentId = button.dataset.commentId;
+
+        await api(`/api/comments/${commentId}`, {
+            method: "DELETE"
+        });
+
+        // Refresh the comments displayed on the dashboard
+        await loadPosts();
+
+        alert("Comment deleted successfully.");
+
+    } catch (error) {
+        button.disabled = false;
+        alert(error.message || "Failed to delete comment.");
+    }
+});
 
 /* =====================================================
    DELETE ANNOUNCEMENT
