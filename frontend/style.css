@@ -4649,6 +4649,7 @@ body.app-body {
 .notification-panel {
     padding: 20px;
     margin: 20px 0;
+    color: #000;
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
