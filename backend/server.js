@@ -100,7 +100,7 @@ const postSchema = new mongoose.Schema({
             note: String
         }],
         default: []
-    }
+    },
 
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -212,6 +212,32 @@ const postSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+const Notification = mongoose.model(
+    "Notification",
+    new mongoose.Schema({
+        recipientId: {
+            type: String,
+            required: true
+        },
+        postId: {
+            type: String,
+            required: true
+        },
+        message: {
+            type: String,
+            required: true
+        },
+        read: {
+            type: Boolean,
+            default: false
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    })
+);
 
 
 
@@ -2550,31 +2576,7 @@ app.get(
     }
 );
 
-const Notification = mongoose.model(
-    "Notification",
-    new mongoose.Schema({
-        recipientId: {
-            type: String,
-            required: true
-        },
-        postId: {
-            type: String,
-            required: true
-        },
-        message: {
-            type: String,
-            required: true
-        },
-        read: {
-            type: Boolean,
-            default: false
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    })
-);
+
 
 
 
