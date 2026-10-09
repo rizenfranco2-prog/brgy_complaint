@@ -86,6 +86,22 @@ const adminSchema = new mongoose.Schema({
 
 const postSchema = new mongoose.Schema({
 
+    statusHistory: {
+        type: [{
+            status: {
+                type: String,
+                enum: ["Pending", "In Progress", "Resolved"]
+            },
+            changedBy: String,
+            changedAt: {
+                type: Date,
+                default: Date.now
+            },
+            note: String
+        }],
+        default: []
+    }
+
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -235,6 +251,8 @@ const commentSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+
 
 
 /* =========================================================
@@ -431,6 +449,136 @@ app.get("/api/health", (req, res) => {
     });
 
 });
+
+app.get("/api/notifications", auth, async (req, res) => {
+    try {
+        if (req.auth.role !== "user") {
+            return res.status(403).json({
+                message: "Resident access required."
+            });
+        }
+
+        const notifications = await Notification.find({
+            recipientId: String(req.auth.id)
+        }).sort({ createdAt: -1 });
+
+        res.json({ notifications });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Could not load notifications."
+        });
+    }
+});
+
+app.patch(
+    "/api/notifications/:id/read",
+    auth,
+    async (req, res) => {
+        try {
+            const notification = await Notification.findOneAndUpdate(
+                {
+                    _id: req.params.id,
+                    recipientId: String(req.auth.id)
+                },
+                { read: true },
+                { new: true }
+            );
+
+            if (!notification) {
+                return res.status(404).json({
+                    message: "Notification not found."
+                });
+            }
+
+            res.json({ notification });
+        } catch (err) {
+            res.status(500).json({
+                message: "Could not update notification."
+            });
+        }
+    }
+);
+
+app.patch(
+    "/api/posts/:id/status",
+    auth,
+    adminOnly,
+    async (req, res) => {
+        try {
+            const allowedStatuses = [
+                "Pending",
+                "In Progress",
+                "Resolved"
+            ];
+
+            const { status, note = "" } = req.body;
+
+            if (!allowedStatuses.includes(status)) {
+                return res.status(400).json({
+                    message: "Invalid complaint status."
+                });
+            }
+
+            const post = await Post.findById(req.params.id);
+
+            if (!post) {
+                return res.status(404).json({
+                    message: "Complaint not found."
+                });
+            }
+
+            const previousStatus = post.status || "Pending";
+
+            if (previousStatus === status) {
+                return res.json({
+                    message: "Complaint status is unchanged.",
+                    post
+                });
+            }
+
+            post.status = status;
+
+            post.statusHistory = post.statusHistory || [];
+
+            post.statusHistory.push({
+                status,
+                changedBy: String(req.auth.id),
+                changedAt: new Date(),
+                note: String(note).slice(0, 500)
+            });
+
+            if (status === "Resolved") {
+                post.archived = true;
+                post.resolvedAt = new Date();
+            } else {
+                post.archived = false;
+                post.resolvedAt = undefined;
+            }
+
+            await post.save();
+
+            // Notify the resident who submitted the complaint.
+            if (post.authorId) {
+                await Notification.create({
+                    recipientId: String(post.authorId),
+                    postId: String(post._id),
+                    message: `Your complaint status changed to ${status}.`
+                });
+            }
+
+            res.json({
+                message: "Complaint status updated successfully.",
+                post
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                message: "Could not update complaint status."
+            });
+        }
+    }
+);
 
 
 /* =========================================================
@@ -2400,6 +2548,32 @@ app.get(
         }
 
     }
+);
+
+const Notification = mongoose.model(
+    "Notification",
+    new mongoose.Schema({
+        recipientId: {
+            type: String,
+            required: true
+        },
+        postId: {
+            type: String,
+            required: true
+        },
+        message: {
+            type: String,
+            required: true
+        },
+        read: {
+            type: Boolean,
+            default: false
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    })
 );
 
 

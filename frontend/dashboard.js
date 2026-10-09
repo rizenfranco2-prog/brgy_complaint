@@ -37,6 +37,75 @@ async function api(path, options = {}) {
 }
 
 
+async function loadNotifications() {
+    const container = document.getElementById("notificationList");
+
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_URL}/api/notifications`, {
+            headers: {
+                Authorization:
+                    `Bearer ${localStorage.getItem("barangay_token")}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Unable to load notifications.");
+        }
+
+        const notifications = data.notifications || [];
+
+        if (notifications.length === 0) {
+            container.textContent = "You're all caught up.";
+            return;
+        }
+
+        container.innerHTML = notifications.map(item => `
+            <article class="notification-item ${item.read ? "read" : "unread"}">
+                <p>${escapeHTML(item.message)}</p>
+                <small>${new Date(item.createdAt).toLocaleString()}</small>
+                ${!item.read ? `
+                    <button
+                        type="button"
+                        class="mark-read-btn"
+                        data-id="${escapeHTML(item._id)}">
+                        Mark as read
+                    </button>
+                ` : ""}
+            </article>
+        `).join("");
+
+        container.querySelectorAll(".mark-read-btn").forEach(button => {
+            button.addEventListener("click", async () => {
+                await markNotificationRead(button.dataset.id);
+                await loadNotifications();
+            });
+        });
+    } catch (error) {
+        container.textContent = error.message;
+    }
+}
+
+async function markNotificationRead(id) {
+    const response = await fetch(
+        `${API_URL}/api/notifications/${encodeURIComponent(id)}/read`,
+        {
+            method: "PATCH",
+            headers: {
+                Authorization:
+                    `Bearer ${localStorage.getItem("barangay_token")}`
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Could not mark notification as read.");
+    }
+}
+
 /* ================================================= */
 /* HELPERS */
 /* ================================================= */
@@ -102,6 +171,26 @@ function toast(message) {
 /* ================================================= */
 /* RENDER COMMUNITY POSTS */
 /* ================================================= */
+
+function renderComplaintHistory(history = []) {
+    if (!history.length) {
+        return "<p>No history available yet.</p>";
+    }
+
+    return `
+        <div class="complaint-timeline">
+            ${history.map(item => `
+                <div class="timeline-item">
+                    <strong>${escapeHTML(item.status)}</strong>
+                    <small>
+                        ${new Date(item.changedAt).toLocaleString()}
+                    </small>
+                    ${item.note ? `<p>${escapeHTML(item.note)}</p>` : ""}
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
 
 function renderPosts(list = posts) {
 
