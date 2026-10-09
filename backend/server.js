@@ -585,16 +585,14 @@ app.patch(
             await post.save();
 
             // Notify the resident who submitted the complaint.
-            if (post.authorId) {
-                await Notification.create({
-                    recipientId: String(post.authorId),
-                    postId: String(post._id),
-                    message: `Your complaint status changed to ${status}.`
-                });
-            }
+            await Notification.create({
+                recipientId: String(post.authorId),
+                postId: String(post._id),
+                message: `Your complaint status changed to ${status}.`
+            });
 
             res.json({
-                message: "Complaint status updated successfully.",
+                message: `Complaint status changed to ${status}.`,
                 post
             });
         } catch (err) {
@@ -1543,6 +1541,19 @@ app.post(
             }
 
 
+            const residents = await User.find({}, "_id").lean();
+
+            if (residents.length > 0) {
+                await Notification.insertMany(
+                    residents.map(resident => ({
+                        recipientId: String(resident._id),
+                        postId: String(post._id),
+                        message: `New announcement: ${content.slice(0, 120)}`
+                    }))
+                );
+            }
+
+
             /* =========================================
                RESIDENT COMPLAINT
             ========================================= */
@@ -2388,24 +2399,24 @@ app.post(
             }
 
 
-            const comment =
-                await Comment.create({
 
-                    postId:
-                        post._id,
+            const comment = await Comment.create({
+                postId: post._id,
+                authorId,
+                authorName,
+                content
+            });
 
-                    authorId,
-
-                    authorName,
-
-                    content
-
+            // Notify the post owner when someone else comments.
+            if (String(post.authorId) !== String(authorId)) {
+                await Notification.create({
+                    recipientId: String(post.authorId),
+                    postId: String(post._id),
+                    message: `${authorName} commented on your post: ${content.slice(0, 120)}`
                 });
+            }
 
-
-            res.status(201).json(
-                comment
-            );
+            res.status(201).json(comment);
 
         } catch (err) {
 
