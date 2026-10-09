@@ -4728,11 +4728,12 @@ body.app-body {
         margin: 6px 0 0;
         color: #475569;
     }
-
 .delete-comment-btn {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 6px 12px;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: 6px;
+    padding: 5px 10px;
     background: #dc2626;
     color: white;
     border: none;
@@ -4744,3 +4745,7 @@ body.app-body {
     .delete-comment-btn:hover {
         background: #b91c1c;
     }
+
+.comment-body {
+    display: block;
+}

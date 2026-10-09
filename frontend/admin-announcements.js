@@ -250,31 +250,30 @@ function renderAnnouncements(announcements) {
 
 
 
-<div class="comments-section">
-    <h4>Comments (${comments.length})</h4>
+< div class="comments-section" >
+            <h4>Comments (${comments.length})</h4>
 
-    ${comments.length === 0
+${
+            comments.length === 0
                 ? `<p>No comments yet.</p>`
                 : comments.map(comment => `
             <div class="comment-item">
                 <div class="comment-body">
-                    <strong>
-                        ${escapeHTML(comment.authorName || "User")}
-                    </strong>
-
-                    <p>${escapeHTML(comment.content)}</p>
+                    <strong>${escapeHTML(comment.authorName || "User")}</strong>
+                    <p>${escapeHTML(comment.content || "")}</p>
 
                     <button
                         type="button"
                         class="delete-comment-btn"
-                        data-comment-id="${escapeHTML(comment._id)}">
+                        data-comment-id="${comment._id}">
                         Delete Comment
                     </button>
                 </div>
             </div>
         `).join("")
-    }
-</div>
+        }
+
+</div >
 </article>
         `;
 
