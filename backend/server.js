@@ -235,7 +235,12 @@ const Notification = mongoose.model(
         createdAt: {
             type: Date,
             default: Date.now
-        }
+        },
+        
+        archived: {
+            type: Boolean,
+            default: false
+        },
     })
 );
 
@@ -497,34 +502,40 @@ app.get("/api/notifications", auth, async (req, res) => {
     }
 });
 
-app.patch(
-    "/api/notifications/:id/read",
-    auth,
-    async (req, res) => {
-        try {
-            const notification = await Notification.findOneAndUpdate(
-                {
-                    _id: req.params.id,
-                    recipientId: String(req.auth.id)
-                },
-                { read: true },
-                { new: true }
-            );
 
-            if (!notification) {
-                return res.status(404).json({
-                    message: "Notification not found."
-                });
-            }
+app.patch("/api/notifications/:id/read", auth, async (req, res) => {
+    try {
+        const notification = await Notification.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                recipientId: String(req.auth.id)
+            },
+            {
+                $set: {
+                    read: true,
+                    archived: true
+                }
+            },
+            { new: true }
+        );
 
-            res.json({ notification });
-        } catch (err) {
-            res.status(500).json({
-                message: "Could not update notification."
+        if (!notification) {
+            return res.status(404).json({
+                message: "Notification not found."
             });
         }
+
+        res.json({
+            message: "Notification marked as read and archived.",
+            notification
+        });
+    } catch (error) {
+        console.error("Mark notification as read error:", error);
+        res.status(500).json({
+            message: "Failed to archive notification."
+        });
     }
-);
+});
 
 app.patch(
     "/api/posts/:id/status",

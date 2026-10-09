@@ -58,15 +58,22 @@ async function loadNotifications() {
 
         const notifications = data.notifications || [];
 
-        if (notifications.length === 0) {
+        // Hide archived notifications from the user interface
+        const activeNotifications = notifications.filter(
+            notification => !notification.archived
+        );
+
+        if (activeNotifications.length === 0) {
             container.textContent = "You're all caught up.";
             return;
         }
 
-        container.innerHTML = notifications.map(item => `
+        // Display only active notifications
+        container.innerHTML = activeNotifications.map(item => `
             <article class="notification-item ${item.read ? "read" : "unread"}">
                 <p>${escapeHTML(item.message)}</p>
                 <small>${new Date(item.createdAt).toLocaleString()}</small>
+
                 ${!item.read ? `
                     <button
                         type="button"
@@ -80,10 +87,20 @@ async function loadNotifications() {
 
         container.querySelectorAll(".mark-read-btn").forEach(button => {
             button.addEventListener("click", async () => {
-                await markNotificationRead(button.dataset.id);
-                await loadNotifications();
+                try {
+                    button.disabled = true;
+
+                    await markNotificationRead(button.dataset.id);
+
+                    // Reload the list after archiving
+                    await loadNotifications();
+                } catch (error) {
+                    button.disabled = false;
+                    alert(error.message || "Failed to archive notification.");
+                }
             });
         });
+
     } catch (error) {
         container.textContent = error.message;
     }
