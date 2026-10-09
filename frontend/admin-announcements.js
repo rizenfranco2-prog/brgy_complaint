@@ -249,45 +249,33 @@ function renderAnnouncements(announcements) {
 
 
 
+
 <div class="comments-section">
+    <h4>Comments (${comments.length})</h4>
 
-    <h4>
-        Comments (${comments.length})
-    </h4>
-
-    ${comments.map(comment => `
+    ${comments.length === 0
+                ? `<p>No comments yet.</p>`
+                : comments.map(comment => `
             <div class="comment-item">
-
-                <span class="avatar">
-                    ${escapeHTML(initials(comment.authorName))}
-                </span>
-
                 <div class="comment-body">
-
                     <strong>
                         ${escapeHTML(comment.authorName || "User")}
                     </strong>
 
-                    <p>
-                        ${escapeHTML(comment.content)}
-                    </p>
+                    <p>${escapeHTML(comment.content)}</p>
 
                     <button
                         type="button"
                         class="delete-comment-btn"
-                        onclick="deleteComment('${comment._id}')">
+                        data-comment-id="${escapeHTML(comment._id)}">
                         Delete Comment
                     </button>
-
                 </div>
-
             </div>
         `).join("")
     }
-
 </div>
-
-            </article>
+</article>
         `;
 
     }).join("");
@@ -647,6 +635,23 @@ document.addEventListener(
                 openAddAnnouncement
             );
         }
+
+
+        /* DELETE COMMENT BUTTON EVENT */
+        document.addEventListener("click", async function (event) {
+            const button = event.target.closest(".delete-comment-btn");
+
+            if (!button) return;
+
+            const commentId = button.dataset.commentId;
+
+            if (!commentId) {
+                toast("Comment ID is missing.");
+                return;
+            }
+
+            await deleteComment(commentId);
+        });
 
 
         /* SEARCH */
