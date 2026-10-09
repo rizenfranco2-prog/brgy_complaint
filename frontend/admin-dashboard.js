@@ -306,30 +306,24 @@ function render(list = adminPosts) {
               `
             : "";
 
-        const commentsHTML =
-            comments.length
-                ? comments.map(comment => `
-                    <div class="admin-comment">
+        const commentsHTML = comments.length
+            ? comments.map(comment => `
+        <div class="admin-comment">
+            <div class="admin-comment-content">
+                <strong>${esc(comment.authorName || "User")}</strong>
+                <span>${esc(comment.content || "")}</span>
+                <small class="muted">${ago(comment.createdAt)}</small>
+            </div>
 
-                        <strong>
-                            ${esc(comment.authorName || "User")}
-                        </strong>
-
-                        <span>
-                            ${esc(comment.content || "")}
-                        </span>
-
-                        <small class="muted">
-                            ${ago(comment.createdAt)}
-                        </small>
-
-                    </div>
-                `).join("")
-                : `
-                    <p class="muted">
-                        No comments yet.
-                    </p>
-                `;
+            <button
+                type="button"
+                class="admin-delete-comment"
+                data-delete-comment="${esc(comment._id)}">
+                Delete
+            </button>
+        </div>
+    `).join("")
+            : `<p class="muted">No comments yet.</p>`;
 
         return `
 
@@ -579,6 +573,36 @@ function attachPostEvents() {
             );
 
         });
+
+    document.querySelectorAll("[data-delete-comment]").forEach(button => {
+        button.addEventListener("click", async () => {
+            const commentId = button.dataset.deleteComment;
+
+            if (!commentId) {
+                toast("Comment ID is missing.");
+                return;
+            }
+
+            if (!confirm("Are you sure you want to delete this comment?")) {
+                return;
+            }
+
+            button.disabled = true;
+
+            try {
+                await api(`/api/comments/${commentId}`, {
+                    method: "DELETE"
+                });
+
+                toast("Comment deleted successfully.");
+                await load();
+            } catch (err) {
+                console.error("Delete comment error:", err);
+                toast(err.message || "Could not delete comment.");
+                button.disabled = false;
+            }
+        });
+    });
 
 
     /*

@@ -4729,97 +4729,35 @@ body.app-body {
         color: #475569;
     }
 
-.comments-section {
-    margin-top: 14px;
-}
-
-    .comments-section h4 {
-        margin-bottom: 12px;
-        font-size: 13px;
-        color: #334155;
-    }
-
-.comment-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    width: fit-content;
-    max-width: 100%;
-    margin-bottom: 12px;
-}
-
-.comment-avatar {
+.admin-comment {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #d9f7f0;
-    color: #0f766e;
-    font-size: 8px;
-    font-weight: bold;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px;
+    margin: 8px 0;
+    background: #f1f5f9;
+    border-radius: 10px;
 }
 
-.comment-content {
+.admin-comment-content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 4px;
-    max-width: 280px;
-    padding: 8px 10px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    min-width: 0;
     overflow-wrap: anywhere;
 }
 
-    .comment-content strong {
-        font-size: 10px;
-        color: #334155;
-    }
-
-    .comment-content p {
-        margin: 0;
-        font-size: 10px;
-        line-height: 1.5;
-        color: #0f172a;
-    }
-
-.comment-time {
-    font-size: 9px;
-    color: #64748b;
-}
-
-.delete-comment-btn {
-    display: inline-block;
-    padding: 4px 8px;
+.admin-delete-comment {
+    flex-shrink: 0;
+    padding: 5px 9px;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
     background: #fee2e2;
     color: #b91c1c;
-    border: none;
-    border-radius: 5px;
-    font-size: 10px;
     cursor: pointer;
 }
 
-    .delete-comment-btn:hover {
+    .admin-delete-comment:hover {
         background: #fecaca;
     }
-
-.comments-section .comment-item .delete-comment-btn {
-    display: inline-block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    margin-top: 5px !important;
-    padding: 5px 10px !important;
-    background: #fee2e2 !important;
-    color: #b91c1c !important;
-    border: 1px solid #fecaca !important;
-    border-radius: 5px !important;
-    font-size: 11px !important;
-    cursor: pointer !important;
-}
