@@ -4749,3 +4749,49 @@ body.app-body {
 .comment-body {
     display: block;
 }
+
+/* Compact comment list */
+.comments-section {
+    margin-top: 12px;
+}
+
+    .comments-section h4 {
+        margin-bottom: 8px;
+    }
+
+.comment-item {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 6px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.comment-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+}
+
+    .comment-body strong {
+        font-size: 12px;
+        color: #1e293b;
+    }
+
+    .comment-body p {
+        margin: 0;
+        font-size: 13px;
+        color: #334155;
+        overflow-wrap: anywhere;
+    }
+
+.delete-comment-btn {
+    margin-top: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+}
