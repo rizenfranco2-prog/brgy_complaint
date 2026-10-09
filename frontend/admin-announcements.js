@@ -376,34 +376,6 @@ async function editAnnouncement(id) {
     }
 }
 
-document.addEventListener("click", async (event) => {
-    const button = event.target.closest(".delete-comment-btn");
-
-    if (!button) return;
-
-    if (!confirm("Are you sure you want to delete this comment?")) {
-        return;
-    }
-
-    try {
-        button.disabled = true;
-
-        const commentId = button.dataset.commentId;
-
-        await api(`/api/comments/${commentId}`, {
-            method: "DELETE"
-        });
-
-        // Refresh the comments displayed on the dashboard
-        await loadPosts();
-
-        alert("Comment deleted successfully.");
-
-    } catch (error) {
-        button.disabled = false;
-        alert(error.message || "Failed to delete comment.");
-    }
-});
 
 /* =====================================================
    DELETE ANNOUNCEMENT
