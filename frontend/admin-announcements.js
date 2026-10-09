@@ -30,34 +30,26 @@ async function api(path, options = {}) {
 
 
 async function deleteComment(commentId) {
+    if (!commentId) {
+        toast("Comment ID is missing.");
+        return;
+    }
+
     if (!confirm("Are you sure you want to delete this comment?")) {
         return;
     }
 
     try {
-        const response = await fetch(
-            `${API_URL}/api/comments/${commentId}`,
-            {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("barangay_token")}`
-                }
-            }
-        );
+        await api(`/api/comments/${commentId}`, {
+            method: "DELETE"
+        });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to delete comment.");
-        }
-
-        alert("Comment deleted successfully.");
-
-        // Reload the announcements and comments.
+        toast("Comment deleted successfully.");
         await loadAnnouncements();
 
     } catch (error) {
-        alert(error.message || "Something went wrong.");
+        console.error("Delete comment error:", error);
+        toast(error.message || "Failed to delete comment.");
     }
 }
 
