@@ -250,32 +250,50 @@ function renderAnnouncements(announcements) {
 
 
 
-< div class="comments-section" >
-            <h4>Comments (${comments.length})</h4>
+<div class="comments-section">
+    <h4>Comments (${comments.length})</h4>
 
-${
-            comments.length === 0
+    ${comments.length === 0
                 ? `<p>No comments yet.</p>`
-                : comments.map(comment => `
-            <div class="comment-item">
-                <div class="comment-body">
-                    <strong>${escapeHTML(comment.authorName || "User")}</strong>
-                    <p>${escapeHTML(comment.content || "")}</p>
+                : comments.map(comment => {
+                    const name = comment.authorName || "User";
 
-                    <button
-                        type="button"
-                        class="delete-comment-btn"
-                        data-comment-id="${comment._id}">
-                        Delete Comment
-                    </button>
-                </div>
-            </div>
-        `).join("")
-        }
+                    const initials = name
+                        .split(/\s+/)
+                        .map(word => word[0])
+                        .join("")
+                        .substring(0, 2)
+                        .toUpperCase();
 
-</div >
+                    return `
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            ${escapeHTML(initials)}
+                        </div>
+
+                        <div class="comment-content">
+                            <strong>${escapeHTML(name)}</strong>
+
+                            <p>${escapeHTML(comment.content || "")}</p>
+
+                            <span class="comment-time">
+                                ${timeAgo(comment.createdAt)}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="delete-comment-btn"
+                                data-comment-id="${comment._id}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                }).join("")
+            }
+</div>
 </article>
-        `;
+`;
 
     }).join("");
 }
