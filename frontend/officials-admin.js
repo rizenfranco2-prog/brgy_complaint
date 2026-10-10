@@ -515,6 +515,9 @@ async function editOfficial(id) {
         ).value =
             official.government || "";
 
+        document.getElementById("officialBarangay").value =
+            official.barangay || "";
+
 
         document.getElementById(
             "officialContact"
@@ -632,6 +635,7 @@ async function saveOfficial(event) {
         name,
         position,
         government,
+        barangay,
         contactNumber,
         email,
         image
