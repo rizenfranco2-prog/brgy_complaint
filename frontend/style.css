@@ -4856,3 +4856,24 @@ body.app-body {
     .admin-delete-comment:hover {
         background: #fecaca;
     }
+
+
+/* Notification that has already been read */
+/* Read notifications should appear faded */
+.notification-item.read {
+    opacity: 0.5;
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+/* Unread notifications remain highlighted */
+.notification-item.unread {
+    opacity: 1;
+    background-color: #ffffff;
+}
+
+/* Smooth appearance change */
+.notification-item {
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
