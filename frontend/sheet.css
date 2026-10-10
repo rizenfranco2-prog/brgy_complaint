@@ -2125,6 +2125,7 @@ textarea {
         width: auto;
         flex: 0 0 auto;
         white-space: nowrap;
+
     }
 
 
@@ -4463,7 +4464,6 @@ body.app-body {
         z-index: 10000 !important;
         box-shadow: 0 25px 70px rgba(15, 23, 42, 0.22);
     }
-
     .app-body .modal-close {
         position: absolute !important;
         top: 12px !important;
@@ -4887,7 +4887,6 @@ body.app-body {
         opacity: 0;
         transform: translateY(8px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -4922,9 +4921,7 @@ body {
 
 /* Reusable loading indicator: apply class="loading-spinner" to an element. */
 @keyframes bc-spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 .loading-spinner {
