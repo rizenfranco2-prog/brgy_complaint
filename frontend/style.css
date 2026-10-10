@@ -4961,3 +4961,110 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* =========================================
+RESPONSIVE OFFICIALS PAGE FIX
+========================================= */
+
+.official-section {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.official-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.official-card {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    align-content: start;
+    gap: 12px;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    min-height: 220px;
+    padding: 18px 14px;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+
+.official-photo {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.official-card-info {
+    min-width: 0;
+    padding-top: 6px;
+    padding-right: 0;
+}
+
+    .official-card-info h3 {
+        margin: 0 0 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .official-card-info strong {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 13px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .official-card-info p {
+        margin: 10px 0;
+        font-size: 12px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+.official-card-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+    .official-card-actions button {
+        min-width: 64px;
+    }
+
+/* Tablet */
+@media (max-width: 1100px) {
+    .official-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+    .official-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .official-card {
+        min-height: auto;
+    }
+
+    .official-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+}
