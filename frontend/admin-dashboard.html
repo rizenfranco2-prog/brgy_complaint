@@ -60,8 +60,16 @@
     <!-- MAIN LAYOUT -->
     <div class="layout">
 
+
         <!-- SIDEBAR -->
         <aside class="sidebar" id="mobileSidebar">
+
+            <button type="button"
+                    class="mobile-menu-close"
+                    id="mobileMenuClose"
+                    aria-label="Close navigation menu">
+                &times;
+            </button>
 
             <div class="profile-mini">
 
@@ -365,6 +373,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             const toggle = document.getElementById("mobileMenuToggle");
             const sidebar = document.getElementById("mobileSidebar");
+            const closeButton = document.getElementById("mobileMenuClose");
 
             if (!toggle || !sidebar) return;
 
@@ -391,6 +400,22 @@
 
             document.addEventListener("keydown", event => {
                 if (event.key === "Escape") closeMenu();
+            });
+            // Close using the X button
+            if (closeButton) {
+                closeButton.addEventListener("click", closeMenu);
+            }
+
+            // Close after selecting a navigation link
+            sidebar.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", closeMenu);
+            });
+
+            // Close using Escape
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") {
+                    closeMenu();
+                }
             });
         });
     </script>

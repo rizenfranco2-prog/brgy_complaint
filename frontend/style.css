@@ -5196,3 +5196,24 @@ body {
         box-shadow: inset 3px 0 0 currentColor;
     }
 }
+.mobile-menu-close {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        margin-left: auto;
+        margin-bottom: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #f1f5f9;
+        color: #1e293b;
+        font-size: 28px;
+        cursor: pointer;
+    }
+}
