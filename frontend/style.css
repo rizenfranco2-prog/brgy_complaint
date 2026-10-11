@@ -5068,3 +5068,49 @@ RESPONSIVE OFFICIALS PAGE FIX
         gap: 16px;
     }
 }
+
+
+
+/* =========================================
+   KEEP DESKTOP DESIGN ON MOBILE PHONES
+   ========================================= */
+
+/* Keep the page at desktop width */
+html,
+body {
+    min-width: 1024px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Prevent the main layout from shrinking */
+.app-body {
+    min-width: 1024px;
+}
+
+/* Keep desktop containers at their original width */
+.container,
+.main-content,
+.dashboard-container,
+.content-wrapper,
+.page-container {
+    min-width: 1024px;
+}
+
+/* Disable mobile-specific layout changes */
+@media screen and (max-width: 768px) {
+    html,
+    body,
+    .app-body {
+        min-width: 1024px;
+    }
+
+    .container,
+    .main-content,
+    .dashboard-container,
+    .content-wrapper,
+    .page-container {
+        min-width: 1024px;
+        max-width: none;
+    }
+}
