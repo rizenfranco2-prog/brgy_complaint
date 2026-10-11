@@ -5114,3 +5114,31 @@ body {
         max-width: none;
     }
 }
+
+/* Keep the sidebar on the left on mobile */
+@media screen and (max-width: 768px) {
+    .app-body {
+        display: flex;
+        flex-direction: row;
+        min-width: 1024px;
+        overflow-x: auto;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 240px;
+        min-width: 240px;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-left: 240px;
+        min-width: 784px;
+        width: calc(100% - 240px);
+    }
+}
