@@ -15,6 +15,15 @@
     <!-- TOP BAR -->
     <header class="topbar">
 
+        <button type="button"
+                class="mobile-menu-toggle"
+                id="mobileMenuToggle"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mobileSidebar">
+            ☰
+        </button>
+
         <a class="top-brand" href="admin-dashboard.html">
             <span>BC</span>
             Admin Console
@@ -52,7 +61,7 @@
     <div class="layout">
 
         <!-- SIDEBAR -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="mobileSidebar">
 
             <div class="profile-mini">
 
@@ -350,6 +359,42 @@
     <!-- SCRIPTS -->
     <script src="config.js"></script>
     <script src="admin-dashboard.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggle = document.getElementById("mobileMenuToggle");
+            const sidebar = document.getElementById("mobileSidebar");
+
+            if (!toggle || !sidebar) return;
+
+            function closeMenu() {
+                document.body.classList.remove("mobile-menu-open");
+                toggle.setAttribute("aria-expanded", "false");
+                toggle.setAttribute("aria-label", "Open navigation menu");
+            }
+
+            toggle.addEventListener("click", () => {
+                const isOpen = document.body.classList.toggle("mobile-menu-open");
+
+                toggle.setAttribute("aria-expanded", String(isOpen));
+                toggle.setAttribute(
+                    "aria-label",
+                    isOpen ? "Close navigation menu" : "Open navigation menu"
+                );
+            });
+
+            sidebar.querySelectorAll("a, .nav-item, .sidebar-item, .nav-link")
+                .forEach(item => {
+                    item.addEventListener("click", closeMenu);
+                });
+
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") closeMenu();
+            });
+        });
+    </script>
+
 
 </body>
 

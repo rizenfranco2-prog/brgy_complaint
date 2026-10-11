@@ -5115,30 +5115,84 @@ body {
     }
 }
 
-/* Keep the sidebar on the left on mobile */
-@media screen and (max-width: 768px) {
-    .app-body {
-        display: flex;
-        flex-direction: row;
-        min-width: 1024px;
-        overflow-x: auto;
+
+/* Mobile navigation drawer */
+.mobile-menu-toggle {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    .mobile-menu-toggle {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 12px;
+        background: #056873;
+        color: white;
+        font-size: 23px;
+        cursor: pointer;
     }
 
-    .sidebar {
+    .app-body .layout {
+        display: block;
+        width: 100%;
+        padding: 16px;
+    }
+
+    .app-body .sidebar {
         position: fixed;
         top: 0;
         left: 0;
         bottom: 0;
-        width: 240px;
-        min-width: 240px;
-        height: 100vh;
+        z-index: 2000;
+        width: min(290px, 85vw);
+        height: 100dvh;
+        margin: 0;
+        padding: 18px 12px;
         overflow-y: auto;
-        z-index: 1000;
+        border-radius: 0 20px 20px 0;
+        box-shadow: 12px 0 35px rgba(0,0,0,.2);
+        transform: translateX(-110%);
+        visibility: hidden;
+        transition: transform .25s ease, visibility .25s ease;
     }
 
-    .main-content {
-        margin-left: 240px;
-        min-width: 784px;
-        width: calc(100% - 240px);
+    .app-body.mobile-menu-open .sidebar {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .app-body .sidebar nav,
+    .app-body .sidebar .nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow: visible;
+    }
+
+    .app-body .sidebar .nav-item,
+    .app-body .sidebar .sidebar-item,
+    .app-body .sidebar .nav-link {
+        width: 100%;
+        min-height: 48px;
+        flex: none;
+        white-space: normal;
+        border-radius: 10px;
+    }
+
+    .app-body .sidebar .profile-mini {
+        display: block;
+    }
+
+    .app-body .sidebar .sidebar-title {
+        display: block;
+    }
+
+    .app-body .sidebar .nav-item.active,
+    .app-body .sidebar .sidebar-item.active {
+        box-shadow: inset 3px 0 0 currentColor;
     }
 }
