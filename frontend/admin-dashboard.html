@@ -383,39 +383,33 @@
                 toggle.setAttribute("aria-label", "Open navigation menu");
             }
 
-            toggle.addEventListener("click", () => {
-                const isOpen = document.body.classList.toggle("mobile-menu-open");
-
-                toggle.setAttribute("aria-expanded", String(isOpen));
-                toggle.setAttribute(
-                    "aria-label",
-                    isOpen ? "Close navigation menu" : "Open navigation menu"
-                );
-            });
-
-            sidebar.querySelectorAll("a, .nav-item, .sidebar-item, .nav-link")
-                .forEach(item => {
-                    item.addEventListener("click", closeMenu);
-                });
-
-            document.addEventListener("keydown", event => {
-                if (event.key === "Escape") closeMenu();
-            });
-            // Close using the X button
-            if (closeButton) {
-                closeButton.addEventListener("click", closeMenu);
+            function openMenu() {
+                document.body.classList.add("mobile-menu-open");
+                toggle.setAttribute("aria-expanded", "true");
+                toggle.setAttribute("aria-label", "Close navigation menu");
             }
 
-            // Close after selecting a navigation link
+            toggle.addEventListener("click", () => {
+                const isOpen = document.body.classList.contains("mobile-menu-open");
+                isOpen ? closeMenu() : openMenu();
+            });
+
+            // Make the X button close the sidebar
+            if (closeButton) {
+                closeButton.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    closeMenu();
+                });
+            }
+
+            // Close when a navigation link is selected
             sidebar.querySelectorAll("a").forEach(link => {
                 link.addEventListener("click", closeMenu);
             });
 
-            // Close using Escape
+            // Close when Escape is pressed
             document.addEventListener("keydown", event => {
-                if (event.key === "Escape") {
-                    closeMenu();
-                }
+                if (event.key === "Escape") closeMenu();
             });
         });
     </script>
