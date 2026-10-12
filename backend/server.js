@@ -19,6 +19,12 @@ const allowedOrigins = [
     "http://127.0.0.1:5500"
 ];
 
+const allowedOrigins = [
+    "https://brgycomplaint-frontend.vercel.app",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+];
+
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -30,6 +36,8 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.use(express.json({ limit: "2mb" }));
 
 app.use(express.json({ limit: "2mb" }));
 
