@@ -13,6 +13,7 @@ const app = express();
    MIDDLEWARE
 ========================================================= */
 
+<<<<<<< HEAD
 const allowedOrigins = [
     "https://brgycomplaint-frontend.vercel.app",
     "http://localhost:5500",
@@ -21,11 +22,18 @@ const allowedOrigins = [
 
 const allowedOrigins = [
     "https://brgycomplaint-frontend.vercel.app",
+=======
+const cors = require("cors");
+
+const allowedOrigins = [
+    "https://brgy-complaint.vercel.app",
+>>>>>>> dfabb7d (Fix CORS preflight error)
     "http://localhost:5500",
     "http://127.0.0.1:5500"
 ];
 
 app.use(cors({
+<<<<<<< HEAD
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
@@ -35,6 +43,12 @@ app.use(cors({
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
+=======
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    optionsSuccessStatus: 204
+>>>>>>> dfabb7d (Fix CORS preflight error)
 }));
 
 app.use(express.json({ limit: "2mb" }));
